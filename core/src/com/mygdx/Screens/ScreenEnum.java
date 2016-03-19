@@ -12,7 +12,8 @@ public enum ScreenEnum {
     },
     ROOMSELECTION {
         public AbstractScreen getScreen(Object... params) {
-            return new RoomSelectionScreen();
+            // pass username
+            return new RoomSelectionScreen((String) params[0]);
         }
     },
     LOBBY {
