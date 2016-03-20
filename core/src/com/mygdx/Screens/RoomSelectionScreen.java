@@ -11,13 +11,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.appwarp.WarpController;
+import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
+import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
+
+import java.util.ArrayList;
 
 /**
  * Created by user on 11/3/2016.
  */
 public class RoomSelectionScreen extends AbstractScreen{
 
+    private WarpClient warpClient;
+
     private final TextButton buttonCreateRoom;
+    private final TextButton buttonRefreshRoom;
+    private final TextButton buttonConnectRoom;
     private final TextField textNewRoom;
     private final Label labelWelcome;
     private final Label labelNewRoom;
@@ -27,13 +36,43 @@ public class RoomSelectionScreen extends AbstractScreen{
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     public RoomSelectionScreen(String username) {
-        buttonCreateRoom = new TextButton("Connect",skin);
+        init();
+        // look for rooms with 1 to 3 players already
+        // consider running a Thread to pull info on new rooms
+        warpClient.getRoomInRange(0, 3);
+        RoomData[] roomDataList = WarpController.getRoomDatas();
+        buttonCreateRoom = new TextButton("Create Room",skin);
         buttonCreateRoom.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 String text = textNewRoom.getText();
-                System.out.println("The user is: " + text);
                 if (text.length() > 0) {
+                    System.out.println("New Room " + text + " is created.");
+                    warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
+                    ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
+                }
+                return false;
+            }
+        });
+        buttonRefreshRoom = new TextButton("Refresh",skin);
+        buttonRefreshRoom.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                warpClient.getRoomInRange(0, 3);
+                RoomData[] roomDataList = WarpController.getRoomDatas();
+                addRoomToList(roomDataList);
+                return false;
+            }
+        });
+        buttonConnectRoom = new TextButton("Connect Room",skin);
+        buttonConnectRoom.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (listRooms.getSelected() != null){
+                    String selected = (String) listRooms.getSelected();
+                    String roomId = selected.substring(4);
+                    System.out.println("Joining Room " + roomId + ".");
+                    warpClient.subscribeRoom(roomId);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 }
                 return false;
@@ -41,11 +80,20 @@ public class RoomSelectionScreen extends AbstractScreen{
         });
         textNewRoom = new TextField("",skin);
         labelNewRoom = new Label("New Room:",skin);
-        labelWelcome = new Label("Welcome, " + username,skin);
+        labelWelcome = new Label("Welcome, " + WarpController.getLocalUser(),skin);
         labelRoomList = new Label("Room List", skin);
         listRooms = new List(skin);
-        listRooms.setItems("ISTD 3/4","EPD 2/4","ESD 3/4","ASD 4/4");
+        addRoomToList(roomDataList);
+//        listRooms.setItems("ISTD 3/4","EPD 2/4","ESD 3/4","ASD 4/4");
         buildStage();
+    }
+
+    private void init(){
+        try {
+            warpClient = WarpClient.getInstance();
+        } catch (Exception ex) {
+            System.out.println("Fail to init warpClient");
+        }
     }
 
     @Override
@@ -66,6 +114,20 @@ public class RoomSelectionScreen extends AbstractScreen{
         table.add(labelRoomList).colspan(2).space(30);
         table.row();
         table.add(listRooms).colspan(2);
+        table.row();
+        table.add(buttonRefreshRoom).colspan(2).space(10);
+        table.row();
+        table.add(buttonConnectRoom).colspan(2).space(10);
         addActor(table);
+    }
+
+    public void addRoomToList(RoomData[] roomDatas){
+        if (roomDatas != null){
+            String[] roomIdList = new String[roomDatas.length];
+            for (int i = 0;i<roomDatas.length;i++){
+                roomIdList[i] = "Rm: " + roomDatas[i].getId();
+            }
+            listRooms.setItems(roomIdList);
+        }
     }
 }

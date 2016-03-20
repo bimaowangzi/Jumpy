@@ -6,6 +6,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.AllUsersEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.MatchedRoomsEvent;
+import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 import com.shephertz.app42.gaming.multiplayer.client.listener.RoomRequestListener;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ZoneRequestListener;
@@ -49,7 +50,12 @@ public class ZoneListener implements ZoneRequestListener{
 
 	@Override
 	public void onGetMatchedRoomsDone (MatchedRoomsEvent me) {
-		
+		RoomData[] roomDataList = me.getRoomsData();
+		if(roomDataList!=null && roomDataList.length>0){
+			WarpController.setRoomDatas(roomDataList);
+		}else{
+			System.out.println("Unable to find matching rooms");
+		}
 	}
 
 	@Override

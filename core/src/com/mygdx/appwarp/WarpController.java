@@ -24,11 +24,13 @@ public class WarpController {
 	
 	private WarpClient warpClient;
 	
-	private String localUser;
-	private String roomId;
+	private static String localUser;
+	private static String roomId;
 	
 	private boolean isConnected = false;
 	boolean isUDPEnabled = false;
+
+	private static RoomData[] roomDatas = null;
 	
 	private WarpListener warpListener ;
 	
@@ -108,13 +110,13 @@ public class WarpController {
 	
 	public void onConnectDone(boolean status){
 		log("onConnectDone: "+status);
-		if(status){
-			warpClient.initUDP();
-			warpClient.joinRoomInRange(1, 1, false);
-		}else{
-			isConnected = false;
-			handleError();
-		}
+//		if(status){
+//			warpClient.initUDP();
+//			warpClient.joinRoomInRange(1, 3, false);
+//		}else{
+//			isConnected = false;
+//			handleError();
+//		}
 	}
 	
 	public void onDisconnectDone(boolean status){
@@ -123,30 +125,34 @@ public class WarpController {
 	
 	public void onRoomCreated(String roomId){
 		if(roomId!=null){
-			warpClient.joinRoom(roomId);
-		}else{
-			handleError();
-		}
-	}
-	
-	public void onJoinRoomDone(RoomEvent event){
-		log("onJoinRoomDone: "+event.getResult());
-		if(event.getResult()==WarpResponseResultCode.SUCCESS){// success case
-			this.roomId = event.getData().getId();
+			// join room is nested in subscribe loop
+			// we wan to always subscribe before we join room
+			// although it may not be that necessary for creating room
+			// but it is a good practice
 			warpClient.subscribeRoom(roomId);
-		}else if(event.getResult()==WarpResponseResultCode.RESOURCE_NOT_FOUND){// no such room found
-			HashMap<String, Object> data = new HashMap<String, Object>();
-			data.put("result", "");
-			warpClient.createRoom("superjumper", "shephertz", 2, data);
 		}else{
-			warpClient.disconnect();
 			handleError();
 		}
 	}
 	
-	public void onRoomSubscribed(String roomId){
-		log("onSubscribeRoomDone: "+roomId);
-		if(roomId!=null){
+//	public void onJoinRoomDone(RoomEvent event){
+//		log("onJoinRoomDone: "+event.getResult());
+//		if(event.getResult()==WarpResponseResultCode.SUCCESS){// success case
+//			this.roomId = event.getData().getId();
+//			warpClient.subscribeRoom(roomId);
+//		}else if(event.getResult()==WarpResponseResultCode.RESOURCE_NOT_FOUND){// no such room found
+//			HashMap<String, Object> data = new HashMap<String, Object>();
+//			data.put("result", "");
+//			warpClient.createRoom("superjumper", "shephertz", 2, data);
+//		}else{
+//			warpClient.disconnect();
+//			handleError();
+//		}
+//	}
+
+	public void onJoinRoomDone(String roomId){
+		log("onJoinRoomDone: "+roomId);
+		if(roomId!=null){// success case
 			isConnected = true;
 			warpClient.getLiveRoomInfo(roomId);
 		}else{
@@ -155,18 +161,40 @@ public class WarpController {
 		}
 	}
 	
-	public void onGetLiveRoomInfo(String[] liveUsers){
-		log("onGetLiveRoomInfo: "+liveUsers.length);
-		if(liveUsers!=null){
-			if(liveUsers.length==2){
-				startGame();	
-			}else{
-				waitForOtherUser();
-			}
-		}else{
+//	public void onRoomSubscribed(String roomId){
+//		log("onSubscribeRoomDone: "+roomId);
+//		if(roomId!=null){
+//			isConnected = true;
+//			warpClient.getLiveRoomInfo(roomId);
+//		}else{
+//			warpClient.disconnect();
+//			handleError();
+//		}
+//	}
+
+	public void onRoomSubscribed(RoomEvent event){
+		log("onSubscribeRoomDone: "+event.getResult());
+		if(event.getResult()==WarpResponseResultCode.SUCCESS) {// success case
+			this.roomId = event.getData().getId();
+			warpClient.joinRoom(roomId);
+		} else {
 			warpClient.disconnect();
 			handleError();
 		}
+	}
+	
+	public void onGetLiveRoomInfo(String[] liveUsers){
+		log("onGetLiveRoomInfo: "+liveUsers.length);
+//		if(liveUsers!=null){
+//			if(liveUsers.length==2){
+//				startGame();
+//			}else{
+//				waitForOtherUser();
+//			}
+//		}else{
+//			warpClient.disconnect();
+//			handleError();
+//		}
 	}
 	
 	public void onUserJoinedRoom(String roomId, String userName){
@@ -252,5 +280,29 @@ public class WarpController {
 		warpClient.removeRoomRequestListener(new RoomListener(this));
 		warpClient.removeNotificationListener(new NotificationListener(this));
 		warpClient.disconnect();
+	}
+
+	public static void setRoomDatas(RoomData[] roomDatas) {
+		WarpController.roomDatas = roomDatas;
+	}
+
+	public static RoomData[] getRoomDatas() {
+		return roomDatas;
+	}
+
+	public static void setInstance(WarpController instance) {
+		WarpController.instance = instance;
+	}
+
+//	public WarpClient getWarpClient() {
+//		return warpClient;
+//	}
+
+	public static String getRoomId() {
+		return roomId;
+	}
+
+	public static String getLocalUser() {
+		return localUser;
 	}
 }

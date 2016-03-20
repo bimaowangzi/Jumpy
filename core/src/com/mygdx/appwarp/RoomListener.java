@@ -23,7 +23,12 @@ public class RoomListener implements RoomRequestListener{
 	}
 
 	public void onJoinRoomDone(RoomEvent event) {
-		callBack.onJoinRoomDone(event);
+//		callBack.onJoinRoomDone(event);
+		if(event.getResult()==WarpResponseResultCode.SUCCESS) {
+			callBack.onJoinRoomDone(event.getData().getId());
+		} else {
+			callBack.onJoinRoomDone(null);
+		}
 	}
 
 	public void onLeaveRoomDone(RoomEvent arg0) {
@@ -36,7 +41,8 @@ public class RoomListener implements RoomRequestListener{
 
 	public void onSubscribeRoomDone(RoomEvent event) {
 		if(event.getResult()==WarpResponseResultCode.SUCCESS){
-			callBack.onRoomSubscribed(event.getData().getId());
+//			callBack.onRoomSubscribed(event.getData().getId());
+			callBack.onRoomSubscribed(event);
 		}else{
 			callBack.onRoomSubscribed(null);
 		}

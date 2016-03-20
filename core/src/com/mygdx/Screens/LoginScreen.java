@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.mygdx.appwarp.WarpController;
 
 /**
  * Created by user on 11/3/2016.
@@ -28,6 +29,9 @@ public class LoginScreen extends AbstractScreen{
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 String text = textUser.getText();
                 if (text.length()>0){
+                    // pass in text as localuser
+                    WarpController.getInstance().startApp(text);
+                    // can consider removing text from showscreen()
                     ScreenManager.getInstance().showScreen( ScreenEnum.ROOMSELECTION , text);
                 }
                 return false;
