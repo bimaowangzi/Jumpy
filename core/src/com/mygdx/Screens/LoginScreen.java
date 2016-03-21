@@ -31,8 +31,7 @@ public class LoginScreen extends AbstractScreen{
                 if (text.length()>0){
                     // pass in text as localuser
                     WarpController.getInstance().startApp(text);
-                    // can consider removing text from showscreen()
-                    ScreenManager.getInstance().showScreen( ScreenEnum.ROOMSELECTION , text);
+                    ScreenManager.getInstance().showScreen( ScreenEnum.ROOMSELECTION);
                 }
                 return false;
             }

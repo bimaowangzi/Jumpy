@@ -5,17 +5,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.utils.Align;
 import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by user on 11/3/2016.
@@ -33,10 +31,12 @@ public class RoomSelectionScreen extends AbstractScreen{
     private final Label labelRoomList;
     private final List listRooms;
 
+    HashMap<String,String> roomMap;
+
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-    public RoomSelectionScreen(String username) {
-        init();
+    public RoomSelectionScreen() {
+        getWarpClient();
         // look for rooms with 1 to 3 players already
         // consider running a Thread to pull info on new rooms
         warpClient.getRoomInRange(0, 3);
@@ -70,7 +70,8 @@ public class RoomSelectionScreen extends AbstractScreen{
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (listRooms.getSelected() != null){
                     String selected = (String) listRooms.getSelected();
-                    String roomId = selected.substring(4);
+                    String roomName = selected.substring(4);
+                    String roomId = roomMap.get(roomName);
                     System.out.println("Joining Room " + roomId + ".");
                     warpClient.subscribeRoom(roomId);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
@@ -88,11 +89,11 @@ public class RoomSelectionScreen extends AbstractScreen{
         buildStage();
     }
 
-    private void init(){
+    private void getWarpClient(){
         try {
             warpClient = WarpClient.getInstance();
         } catch (Exception ex) {
-            System.out.println("Fail to init warpClient");
+            System.out.println("Fail to get warpClient");
         }
     }
 
@@ -122,12 +123,15 @@ public class RoomSelectionScreen extends AbstractScreen{
     }
 
     public void addRoomToList(RoomData[] roomDatas){
+        roomMap = new HashMap<String, String>();
         if (roomDatas != null){
-            String[] roomIdList = new String[roomDatas.length];
+            String[] roomList = new String[roomDatas.length];
             for (int i = 0;i<roomDatas.length;i++){
-                roomIdList[i] = "Rm: " + roomDatas[i].getId();
+                RoomData roomData = roomDatas[i];
+                roomMap.put(roomData.getName(),roomData.getId());
+                roomList[i] = "Rm: " + roomData.getName();
             }
-            listRooms.setItems(roomIdList);
+            listRooms.setItems(roomList);
         }
     }
 }

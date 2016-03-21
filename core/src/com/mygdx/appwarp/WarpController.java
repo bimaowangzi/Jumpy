@@ -23,15 +23,17 @@ public class WarpController {
 	private final String secretKey = "10fca0a440aa2412530f11c3343d224291d5fece843d2bb566819f7957fd0b19";
 	
 	private WarpClient warpClient;
-	
+
 	private static String localUser;
 	private static String roomId;
-	
+	private static String[] liveUsers;
+
 	private boolean isConnected = false;
 	boolean isUDPEnabled = false;
 
 	private static RoomData[] roomDatas = null;
-	
+	private static RoomData room;
+
 	private WarpListener warpListener ;
 	
 	private int STATE;
@@ -173,9 +175,12 @@ public class WarpController {
 //	}
 
 	public void onRoomSubscribed(RoomEvent event){
-		log("onSubscribeRoomDone: "+event.getResult());
+		log("onSubscribeRoomDone: "+event.getData().getId());
 		if(event.getResult()==WarpResponseResultCode.SUCCESS) {// success case
-			this.roomId = event.getData().getId();
+			room = event.getData();
+			System.out.println("roomName is " + room.getName());
+			this.roomId = room.getId();
+			System.out.println("id is " + roomId);
 			warpClient.joinRoom(roomId);
 		} else {
 			warpClient.disconnect();
@@ -185,6 +190,7 @@ public class WarpController {
 	
 	public void onGetLiveRoomInfo(String[] liveUsers){
 		log("onGetLiveRoomInfo: "+liveUsers.length);
+		WarpController.liveUsers = liveUsers;
 //		if(liveUsers!=null){
 //			if(liveUsers.length==2){
 //				startGame();
@@ -294,9 +300,9 @@ public class WarpController {
 		WarpController.instance = instance;
 	}
 
-//	public WarpClient getWarpClient() {
-//		return warpClient;
-//	}
+	public static RoomData getRoom() {
+		return room;
+	}
 
 	public static String getRoomId() {
 		return roomId;
@@ -304,5 +310,9 @@ public class WarpController {
 
 	public static String getLocalUser() {
 		return localUser;
+	}
+
+	public static String[] getLiveUsers() {
+		return liveUsers;
 	}
 }

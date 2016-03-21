@@ -1,5 +1,7 @@
 package com.mygdx.Screens;
 
+import com.mygdx.appwarp.WarpController;
+
 /**
  * Created by user on 11/3/2016.
  */
@@ -12,8 +14,9 @@ public enum ScreenEnum {
     },
     ROOMSELECTION {
         public AbstractScreen getScreen(Object... params) {
-            // pass username
-            return new RoomSelectionScreen((String) params[0]);
+            // pass warpcontroller
+//            return new RoomSelectionScreen((WarpController) params[0]);
+            return new RoomSelectionScreen();
         }
     },
     LOBBY {
