@@ -49,7 +49,8 @@ public class WarpController {
 	public static final int GAME_LOOSE = 6;
 	public static final int ENEMY_LEFT = 7;
 
-	private static volatile boolean flag = false;
+	private static volatile boolean waitflag = false;
+	private static volatile boolean statusflag = false;
 	
 	public WarpController() {
 		initAppwarp();
@@ -114,13 +115,8 @@ public class WarpController {
 	
 	public void onConnectDone(boolean status){
 		log("onConnectDone: "+status);
-//		if(status){
-//			warpClient.initUDP();
-//			warpClient.joinRoomInRange(1, 3, false);
-//		}else{
-//			isConnected = false;
-//			handleError();
-//		}
+		statusflag = status;
+		waitflag = true;
 	}
 	
 	public void onDisconnectDone(boolean status){
@@ -193,7 +189,7 @@ public class WarpController {
 	public void onGetLiveRoomInfo(String[] liveUsers){
 		log("onGetLiveRoomInfo: "+liveUsers.length);
 		WarpController.liveUsers = liveUsers;
-		flag = true;
+		waitflag = true;
 //		if(liveUsers!=null){
 //			if(liveUsers.length==2){
 //				startGame();
@@ -210,9 +206,9 @@ public class WarpController {
 		/*
 		 * if room id is same and username is different then start the game
 		 */
-		if(localUser.equals(userName)==false){
-			startGame();
-		}
+//		if(localUser.equals(userName)==false){
+//			startGame();
+//		}
 	}
 
 	public void onSendChatDone(boolean status){
@@ -320,11 +316,20 @@ public class WarpController {
 		return liveUsers;
 	}
 
-	public static boolean isFlag() {
-		return flag;
+	public static boolean isWaitflag() {
+		return waitflag;
 	}
 
-	public static void setFlag(boolean flag) {
-		WarpController.flag = flag;
+	public static boolean isStatusflag() {
+		return statusflag;
+	}
+
+	public static void setWaitflag(boolean waitflag) {
+		WarpController.waitflag = waitflag;
+	}
+
+	// you might not need to set status flag
+	public static void setStatusflag(boolean statusflag) {
+		WarpController.statusflag = statusflag;
 	}
 }

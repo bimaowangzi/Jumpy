@@ -31,7 +31,16 @@ public class LoginScreen extends AbstractScreen{
                 if (text.length()>0){
                     // pass in text as localuser
                     WarpController.getInstance().startApp(text);
-                    ScreenManager.getInstance().showScreen( ScreenEnum.ROOMSELECTION);
+                    while(!WarpController.isWaitflag()){
+//                        System.out.println("Connecting to Appwarp...");
+                    }
+                    WarpController.setWaitflag(false);
+                    System.out.println("Status: " + WarpController.isStatusflag());
+                    if (WarpController.isStatusflag()){
+                        ScreenManager.getInstance().showScreen( ScreenEnum.ROOMSELECTION);
+                    } else {
+                        System.out.println("Unable to connect Appwarp, try a different ID and check your connections");
+                    }
                 }
                 return false;
             }

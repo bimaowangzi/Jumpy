@@ -13,6 +13,7 @@ public class ConnectionListener implements ConnectionRequestListener {
 	}
 	
 	public void onConnectDone(ConnectEvent e) {
+		System.out.println("Result: " + e.getResult());
 		if(e.getResult()==WarpResponseResultCode.SUCCESS){
 			callBack.onConnectDone(true);
 		}else{

@@ -49,6 +49,11 @@ public class RoomSelectionScreen extends AbstractScreen{
                 if (text.length() > 0) {
                     System.out.println("New Room " + text + " is created.");
                     warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
+                    while(!WarpController.isWaitflag()){
+                        //
+                        System.out.println("Connecting...");
+                    }
+                    WarpController.setWaitflag(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 }
                 return false;
@@ -74,11 +79,11 @@ public class RoomSelectionScreen extends AbstractScreen{
                     String roomId = roomMap.get(roomName);
                     System.out.println("Joining Room " + roomId + ".");
                     warpClient.subscribeRoom(roomId);
-                    while(!WarpController.isFlag()){
+                    while(!WarpController.isWaitflag()){
                         //
                         System.out.println("Connecting...");
                     }
-                    WarpController.setFlag(false);
+                    WarpController.setWaitflag(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
 
                 }
