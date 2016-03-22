@@ -74,7 +74,13 @@ public class RoomSelectionScreen extends AbstractScreen{
                     String roomId = roomMap.get(roomName);
                     System.out.println("Joining Room " + roomId + ".");
                     warpClient.subscribeRoom(roomId);
+                    while(!WarpController.isFlag()){
+                        //
+                        System.out.println("Connecting...");
+                    }
+                    WarpController.setFlag(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
+
                 }
                 return false;
             }

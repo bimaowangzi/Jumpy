@@ -45,11 +45,12 @@ public class LobbyScreen extends AbstractScreen {
     public LobbyScreen() {
         getWarpClient();
 
-        room = WarpController.getRoom();
+        room = WarpController.getRoom(); // returns null
         System.out.println(room + " test");
-        roomId = WarpController.getRoomId();
+        roomId = WarpController.getRoomId(); //returns null
         System.out.println(roomId + " test");
         roomName = room.getName();
+
 
         buttonSend = new TextButton("Send",skin);
         buttonSend.addListener(new InputListener() {
@@ -111,6 +112,7 @@ public class LobbyScreen extends AbstractScreen {
         labelPlayers = new Label("Players", skin);
         labelStatus = new Label("Status", skin);
         labelAvatar = new Label("Avatar", skin);
+
     }
 
     private void getWarpClient(){
@@ -133,6 +135,7 @@ public class LobbyScreen extends AbstractScreen {
         tableTop.add(labelRoom).left().pad(5);
         tableTop.add(labelNumOfPlayers).right().pad(5);
         tableBig.add(tableTop);
+        tableBig.row();
 
         Table tableMid = new Table();
         tableMid.setDebug(true);
