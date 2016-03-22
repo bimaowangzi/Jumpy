@@ -31,6 +31,8 @@ import com.mygdx.Jumpy;
 import com.mygdx.PlatformGenerator;
 import com.mygdx.PowerUps;
 import com.mygdx.Sprites.Player;
+import com.mygdx.appwarp.WarpController;
+import com.mygdx.appwarp.WarpListener;
 
 /**
  * Created by acer on 16/2/2016.
@@ -73,16 +75,7 @@ public class PlayScreen implements Screen
 
     private ShapeRenderer shapeRenderer;
 
-    private GameState currentState;
-
-    public enum GameState {
-
-        READY, RUNNING, GAMEOVER
-
-    }
-
     public PlayScreen(Jumpy game){
-        currentState = GameState.READY;
         this.game = game;
 
         gamecam = new OrthographicCamera();
