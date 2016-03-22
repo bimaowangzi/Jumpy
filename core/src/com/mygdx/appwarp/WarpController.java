@@ -48,6 +48,8 @@ public class WarpController {
 	public static final int GAME_WIN = 5;
 	public static final int GAME_LOOSE = 6;
 	public static final int ENEMY_LEFT = 7;
+
+	private static volatile boolean flag = false;
 	
 	public WarpController() {
 		initAppwarp();
@@ -191,6 +193,7 @@ public class WarpController {
 	public void onGetLiveRoomInfo(String[] liveUsers){
 		log("onGetLiveRoomInfo: "+liveUsers.length);
 		WarpController.liveUsers = liveUsers;
+		flag = true;
 //		if(liveUsers!=null){
 //			if(liveUsers.length==2){
 //				startGame();
@@ -265,6 +268,7 @@ public class WarpController {
 		if(roomId!=null && roomId.length()>0){
 			warpClient.deleteRoom(roomId);
 		}
+		System.out.println("Disconnect");
 		disconnect();
 	}
 	
@@ -302,11 +306,11 @@ public class WarpController {
 
 	public static RoomData getRoom() {
 		return room;
-	}
+	} //returns null WHY!?
 
 	public static String getRoomId() {
 		return roomId;
-	}
+	} //returns null WHY!?
 
 	public static String getLocalUser() {
 		return localUser;
@@ -314,5 +318,13 @@ public class WarpController {
 
 	public static String[] getLiveUsers() {
 		return liveUsers;
+	}
+
+	public static boolean isFlag() {
+		return flag;
+	}
+
+	public static void setFlag(boolean flag) {
+		WarpController.flag = flag;
 	}
 }
