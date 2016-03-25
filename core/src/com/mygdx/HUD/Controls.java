@@ -1,21 +1,12 @@
 package com.mygdx.HUD;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.Jumpy;
 
 /**
  * Created by user on 1/3/2016.
  */
 public class Controls implements Disposable {
+/*
 
     private Viewport viewport;
     public Stage stage;
@@ -58,30 +49,32 @@ public class Controls implements Disposable {
         stage.addActor(tabletop);
         Gdx.input.setInputProcessor(stage);
 
+
     }
+*/
 
     @Override
     public void dispose() {
-        stage.dispose();
+        //stage.dispose();
     }
 
 //    public void update(float dt){
 //
 //    };
-
-    public TextButton getButtonLeft() {
-        return buttonLeft;
-    }
-
-    public TextButton getButtonRight() {
-        return buttonRight;
-    }
-
-    public TextButton getButtonJump() {
-        return buttonJump;
-    }
-
-    public TextButton getToggleButton() {
-        return toggleButton;
-    }
+//
+//    public TextButton getButtonLeft() {
+//        return buttonLeft;
+//    }
+//
+//    public TextButton getButtonRight() {
+//        return buttonRight;
+//    }
+//
+//    public TextButton getButtonJump() {
+//        return buttonJump;
+//    }
+//
+//    public TextButton getToggleButton() {
+//        return toggleButton;
+//    }
 }
