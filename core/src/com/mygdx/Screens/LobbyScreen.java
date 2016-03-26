@@ -45,12 +45,13 @@ public class LobbyScreen extends AbstractScreen {
     public LobbyScreen() {
         getWarpClient();
 
-        room = WarpController.getRoom(); // returns null
-        System.out.println(room + " test");
-        roomId = WarpController.getRoomId(); //returns null
-        System.out.println(roomId + " test");
+        room = WarpController.getRoom();
+        roomId = WarpController.getRoomId();
         roomName = room.getName();
 
+        // start thread to update in-lobby players
+        final LobbyUpdateThread lobbyUpdateThread = new LobbyUpdateThread(warpClient,this,roomId);
+        lobbyUpdateThread.start();
 
         buttonSend = new TextButton("Send",skin);
         buttonSend.addListener(new InputListener() {
@@ -65,11 +66,16 @@ public class LobbyScreen extends AbstractScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 // Exit to RoomSel Screen
+                // unsubscribe, leave room
+                // delete room if empty
+                lobbyUpdateThread.interrupt();
+                warpClient.unsubscribeRoom(roomId);
 //                if (text.length() > 0) {
 //                    System.out.println("New Room " + text + " is created.");
 //                    warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
 //                    ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
 //                }
+//                ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
         });
@@ -108,7 +114,12 @@ public class LobbyScreen extends AbstractScreen {
         labelRoom = new Label(roomName,skin);
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();
-        labelNumOfPlayers = new Label(liveUsers.length + "/" + room.getMaxUsers(),skin);
+        // this is crashing on null
+        if (liveUsers != null){
+            labelNumOfPlayers = new Label(liveUsers.length + "/" + room.getMaxUsers(),skin);
+        } else {
+            labelNumOfPlayers = new Label(0 + "/" + room.getMaxUsers(),skin);
+        }
         labelPlayers = new Label("Players", skin);
         labelStatus = new Label("Status", skin);
         labelAvatar = new Label("Avatar", skin);
@@ -121,6 +132,14 @@ public class LobbyScreen extends AbstractScreen {
         } catch (Exception ex) {
             System.out.println("Fail to get warpClient");
         }
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+
+        liveUsers = WarpController.getLiveUsers();
+        labelNumOfPlayers.setText(liveUsers.length + "/" + room.getMaxUsers());
     }
 
     @Override
@@ -154,5 +173,30 @@ public class LobbyScreen extends AbstractScreen {
         tableBig.add(tableMid);
 
         addActor(tableBig);
+    }
+}
+
+class LobbyUpdateThread extends Thread{
+
+    WarpClient warpClient;
+    LobbyScreen lobbyScreen;
+    String roomId;
+
+    public LobbyUpdateThread(WarpClient warpClient, LobbyScreen lobbyScreen, String roomId) {
+        this.warpClient = warpClient;
+        this.lobbyScreen = lobbyScreen;
+        this.roomId = roomId;
+    }
+
+    @Override
+    public void run() {
+        while (!isInterrupted()){
+            warpClient.getLiveRoomInfo(roomId);
+            while (!WarpController.isWaitflag()){
+                // busy wait
+            }
+            WarpController.setWaitflag(false);
+        }
+        System.out.println("thread interrupted");
     }
 }

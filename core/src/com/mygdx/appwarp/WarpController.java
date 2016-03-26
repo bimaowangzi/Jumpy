@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Json;
 import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
+import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 
@@ -50,6 +51,7 @@ public class WarpController {
 	public static final int ENEMY_LEFT = 7;
 
 	private static volatile boolean waitflag = false;
+	private static volatile boolean waitRoomFlag = false;
 	private static volatile boolean statusflag = false;
 	
 	public WarpController() {
@@ -116,7 +118,7 @@ public class WarpController {
 	public void onConnectDone(boolean status){
 		log("onConnectDone: "+status);
 		statusflag = status;
-		waitflag = true;
+		WarpController.setWaitflag(true);
 	}
 	
 	public void onDisconnectDone(boolean status){
@@ -186,10 +188,11 @@ public class WarpController {
 		}
 	}
 	
-	public void onGetLiveRoomInfo(String[] liveUsers){
+	public void onGetLiveRoomInfo(LiveRoomInfoEvent event){
+		String[] liveUsers = event.getJoinedUsers();
 		log("onGetLiveRoomInfo: "+liveUsers.length);
 		WarpController.liveUsers = liveUsers;
-		waitflag = true;
+		WarpController.setWaitflag(true);
 //		if(liveUsers!=null){
 //			if(liveUsers.length==2){
 //				startGame();
@@ -235,9 +238,9 @@ public class WarpController {
 	
 	public void onUserLeftRoom(String roomId, String userName){
 		log("onUserLeftRoom "+userName+" in room "+roomId);
-		if(STATE==STARTED && !localUser.equals(userName)){// Game Started and other user left the room
-			warpListener.onGameFinished(ENEMY_LEFT, true);
-		}
+//		if(STATE==STARTED && !localUser.equals(userName)){// Game Started and other user left the room
+//			warpListener.onGameFinished(ENEMY_LEFT, true);
+//		}
 	}
 	
 	public int getState(){
@@ -290,6 +293,7 @@ public class WarpController {
 
 	public static void setRoomDatas(RoomData[] roomDatas) {
 		WarpController.roomDatas = roomDatas;
+		WarpController.setWaitRoomFlag(true);
 	}
 
 	public static RoomData[] getRoomDatas() {
@@ -324,12 +328,20 @@ public class WarpController {
 		return statusflag;
 	}
 
+	public static boolean isWaitRoomFlag() {
+		return waitRoomFlag;
+	}
+
 	public static void setWaitflag(boolean waitflag) {
+//		System.out.println("waitFlag set to " + waitflag);
 		WarpController.waitflag = waitflag;
 	}
 
-	// you might not need to set status flag
 	public static void setStatusflag(boolean statusflag) {
 		WarpController.statusflag = statusflag;
+	}
+
+	public static void setWaitRoomFlag(boolean waitRoomFlag) {
+		WarpController.waitRoomFlag = waitRoomFlag;
 	}
 }
