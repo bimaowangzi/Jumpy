@@ -22,7 +22,7 @@ public class ZoneListener implements ZoneRequestListener{
 
 	@Override
 	public void onCreateRoomDone (RoomEvent re) {
-		System.out.println("onCreateRoomDone: "+re.getResult());
+		System.out.println("onCreateRoomDone: " + re.getResult());
 		if(re.getResult()==WarpResponseResultCode.SUCCESS){
 			System.out.println("Room is created successfully.");
 			callBack.onRoomCreated(re.getData().getId());
@@ -44,8 +44,7 @@ public class ZoneListener implements ZoneRequestListener{
 
 	@Override
 	public void onGetLiveUserInfoDone (LiveUserInfoEvent arg0) {
-		
-		
+		callBack.onGetUserInfo(arg0);
 	}
 
 	@Override
@@ -67,8 +66,6 @@ public class ZoneListener implements ZoneRequestListener{
 
 	@Override
 	public void onSetCustomUserDataDone (LiveUserInfoEvent arg0) {
-		
-		
 	}
 	
 

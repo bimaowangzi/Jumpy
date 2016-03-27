@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -12,7 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
+import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
+
+import java.util.HashMap;
 
 /**
  * Created by user on 11/3/2016.
@@ -37,8 +41,11 @@ public class LobbyScreen extends AbstractScreen {
     private final Label labelRoom;
     private final Label labelNumOfPlayers;
     private final Label labelPlayers;
+    private final List listPlayers;
     private final Label labelStatus;
+    private final List listStatus;
     private final Label labelAvatar;
+    private final List listAvatar;
 
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
@@ -65,19 +72,14 @@ public class LobbyScreen extends AbstractScreen {
         buttonExit.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // Exit to RoomSel Screen
-                // unsubscribe, leave room
-                // delete room if empty
+                // Exit to RoomSel Screen, done
+                // unsubscribe, leave room, done
+                // delete room if empty, to be done
                 lobbyUpdateThread.interrupt();
                 System.out.println("Leaving Room " + roomId + ".");
                 warpClient.unsubscribeRoom(roomId);
                 warpClient.leaveRoom(roomId);
                 ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
-//                if (text.length() > 0) {
-//                    System.out.println("New Room " + text + " is created.");
-//                    warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
-//                }
-//                ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
         });
@@ -95,15 +97,18 @@ public class LobbyScreen extends AbstractScreen {
             }
         });
         buttonStatusToggle = new TextButton("Selecting",skin);
+        buttonStatusToggle.setChecked(false);
         buttonStatusToggle.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 // Toggle between Selecting and Ready
-//                if (text.length() > 0) {
-//                    System.out.println("New Room " + text + " is created.");
-//                    warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
-//                    ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
-//                }
+                if (buttonStatusToggle.isChecked()) {
+                    buttonStatusToggle.setText("Selecting");
+                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting");
+                } else {
+                    buttonStatusToggle.setText("Ready");
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready");
+                }
                 return false;
             }
         });
@@ -123,8 +128,13 @@ public class LobbyScreen extends AbstractScreen {
             labelNumOfPlayers = new Label(0 + "/" + room.getMaxUsers(),skin);
         }
         labelPlayers = new Label("Players", skin);
+        listPlayers = new List(skin);
+        listPlayers.setItems(liveUsers);
         labelStatus = new Label("Status", skin);
+        listStatus = new List(skin);
+//        addStatusToList(liveUsers);
         labelAvatar = new Label("Avatar", skin);
+        listAvatar = new List(skin);
 
     }
 
@@ -143,6 +153,8 @@ public class LobbyScreen extends AbstractScreen {
         liveUsers = WarpController.getLiveUsers();
         if (liveUsers!=null && room!=null){
             labelNumOfPlayers.setText(liveUsers.length + "/" + room.getMaxUsers());
+            listPlayers.setItems(liveUsers);
+            addStatusToList();
         }
     }
 
@@ -166,6 +178,12 @@ public class LobbyScreen extends AbstractScreen {
         tableMid.add(labelStatus);
         tableMid.add(labelAvatar);
         tableMid.row();
+
+        tableMid.add(listPlayers);
+        tableMid.add(listStatus);
+        tableMid.add(listAvatar);
+        tableMid.row();
+
         tableMid.add(scrollChat).colspan(3);
         tableMid.row();
         tableMid.add(textInput).colspan(2);
@@ -178,6 +196,31 @@ public class LobbyScreen extends AbstractScreen {
 
         addActor(tableBig);
     }
+
+    public void addStatusToList(){
+        liveUsers = WarpController.getLiveUsers();
+        String[] statuses = new String[liveUsers.length];
+        HashMap statusMap = WarpController.getStatusMap();
+        for (int i = 0;i<liveUsers.length;i++){
+            String user = liveUsers[i];
+            statuses[i] = (String) statusMap.get(user);
+            System.out.println(user + " is " + statuses[i]);
+        }
+        boolean nullCheck = false;
+        for (String status : statuses){
+            if (status==null){
+                nullCheck = true;
+                break;
+            }
+        }
+        if (!nullCheck){
+            listStatus.setItems(statuses);
+        }
+//        if (statuses[0]!=null){
+//            listStatus.setItems(statuses);
+//        }
+    }
+
 }
 
 class LobbyUpdateThread extends Thread{
@@ -200,6 +243,24 @@ class LobbyUpdateThread extends Thread{
                 // busy wait
             }
             WarpController.setWaitflag(false);
+
+            if (isInterrupted()){
+                break;
+            }
+
+            for (String user : WarpController.getLiveUsers()){
+                warpClient.getLiveUserInfo(user);
+                while (!WarpController.isWaitflag()){
+                    // busy wait
+                    if (isInterrupted()){
+                        break;
+                    }
+                }
+                WarpController.setWaitflag(false);
+                if (isInterrupted()){
+                    break;
+                }
+            }
         }
         System.out.println("thread interrupted");
     }

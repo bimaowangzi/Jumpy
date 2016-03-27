@@ -51,6 +51,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                 if (text.length() > 0) {
                     roomSelUpdateThread.interrupt();
 
+                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting");
                     warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
                     System.out.println("Creating Room...");
                     while(!WarpController.isWaitflag()){
@@ -69,6 +70,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                 if (listRooms.getSelected() != null){
                     roomSelUpdateThread.interrupt();
 
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting");
                     String selected = (String) listRooms.getSelected();
                     String roomName = selected.substring(4);
                     String roomId = roomMap.get(roomName);

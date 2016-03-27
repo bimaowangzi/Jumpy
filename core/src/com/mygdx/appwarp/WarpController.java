@@ -11,6 +11,7 @@ import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
+import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 
@@ -28,6 +29,8 @@ public class WarpController {
 	private static String localUser;
 	private static String roomId;
 	private static String[] liveUsers;
+
+	private static HashMap<String,String> statusMap = new HashMap<String,String>();
 
 	private boolean isConnected = false;
 	boolean isUDPEnabled = false;
@@ -118,7 +121,7 @@ public class WarpController {
 	public void onConnectDone(boolean status){
 		log("onConnectDone: "+status);
 		statusflag = status;
-		WarpController.setWaitflag(true);
+		setWaitflag(true);
 	}
 	
 	public void onDisconnectDone(boolean status){
@@ -136,21 +139,6 @@ public class WarpController {
 			handleError();
 		}
 	}
-	
-//	public void onJoinRoomDone(RoomEvent event){
-//		log("onJoinRoomDone: "+event.getResult());
-//		if(event.getResult()==WarpResponseResultCode.SUCCESS){// success case
-//			this.roomId = event.getData().getId();
-//			warpClient.subscribeRoom(roomId);
-//		}else if(event.getResult()==WarpResponseResultCode.RESOURCE_NOT_FOUND){// no such room found
-//			HashMap<String, Object> data = new HashMap<String, Object>();
-//			data.put("result", "");
-//			warpClient.createRoom("superjumper", "shephertz", 2, data);
-//		}else{
-//			warpClient.disconnect();
-//			handleError();
-//		}
-//	}
 
 	public void onJoinRoomDone(String roomId){
 		log("onJoinRoomDone: "+roomId);
@@ -162,17 +150,6 @@ public class WarpController {
 			handleError();
 		}
 	}
-	
-//	public void onRoomSubscribed(String roomId){
-//		log("onSubscribeRoomDone: "+roomId);
-//		if(roomId!=null){
-//			isConnected = true;
-//			warpClient.getLiveRoomInfo(roomId);
-//		}else{
-//			warpClient.disconnect();
-//			handleError();
-//		}
-//	}
 
 	public void onRoomSubscribed(RoomEvent event){
 		log("onSubscribeRoomDone: "+event.getData().getId());
@@ -197,7 +174,7 @@ public class WarpController {
 //			warpClient.deleteRoom(roomId);
 		}
 		WarpController.liveUsers = liveUsers;
-		WarpController.setWaitflag(true);
+		setWaitflag(true);
 //		if(liveUsers!=null){
 //			if(liveUsers.length==2){
 //				startGame();
@@ -211,9 +188,7 @@ public class WarpController {
 	}
 	
 	public void onUserJoinedRoom(String roomId, String userName){
-		/*
-		 * if room id is same and username is different then start the game
-		 */
+		log("onUserJoinRoom "+userName+" joined room "+roomId);
 //		if(localUser.equals(userName)==false){
 //			startGame();
 //		}
@@ -242,10 +217,21 @@ public class WarpController {
 	}
 	
 	public void onUserLeftRoom(String roomId, String userName){
-		log("onUserLeftRoom "+userName+" in room "+roomId);
+		log("onUserLeftRoom "+userName+" left room "+roomId);
 //		if(STATE==STARTED && !localUser.equals(userName)){// Game Started and other user left the room
 //			warpListener.onGameFinished(ENEMY_LEFT, true);
 //		}
+	}
+
+	public void onGetUserInfo(LiveUserInfoEvent event){
+		String status = event.getCustomData();
+		String user = event.getName();
+		if (!statusMap.containsKey(user)){
+			statusMap.put(user,status);
+		} else if (!statusMap.get(user).equals(status)){
+			statusMap.replace(user,status);
+		}
+		setWaitflag(true);
 	}
 	
 	public int getState(){
@@ -308,11 +294,6 @@ public class WarpController {
 		WarpController.setWaitRoomFlag(true);
 	}
 
-//	public static void clearRoomInfo(){
-//		roomId = null;
-//		room = null;
-//	}
-
 	public static RoomData[] getRoomDatas() {
 		return roomDatas;
 	}
@@ -359,5 +340,9 @@ public class WarpController {
 
 	public static void setWaitRoomFlag(boolean waitRoomFlag) {
 		WarpController.waitRoomFlag = waitRoomFlag;
+	}
+
+	public static HashMap<String, String> getStatusMap() {
+		return statusMap;
 	}
 }
