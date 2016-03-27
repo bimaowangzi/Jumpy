@@ -35,6 +35,7 @@ public class RoomSelectionScreen extends AbstractScreen{
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     public RoomSelectionScreen() {
+        System.out.println("roomSelConstructed");
         getWarpClient();
 
         // start thread to call getRoomInRange()
@@ -51,7 +52,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                     roomSelUpdateThread.interrupt();
 
                     warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
-                    System.out.println("Connecting...");
+                    System.out.println("Creating Room...");
                     while(!WarpController.isWaitflag()){
                     }
                     System.out.println("New Room " + text + " is created.");
@@ -73,8 +74,8 @@ public class RoomSelectionScreen extends AbstractScreen{
                     String roomId = roomMap.get(roomName);
                     System.out.println("Joining Room " + roomId + ".");
                     warpClient.subscribeRoom(roomId);
+                    System.out.println("Connecting...");
                     while(!WarpController.isWaitflag()){
-                        System.out.println("Connecting...");
                     }
                     WarpController.setWaitflag(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
@@ -141,6 +142,8 @@ public class RoomSelectionScreen extends AbstractScreen{
                 roomList[i] = "Rm: " + roomData.getName();
             }
             listRooms.setItems(roomList);
+        } else {
+            listRooms.clearItems();
         }
     }
 }

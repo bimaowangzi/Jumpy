@@ -190,7 +190,12 @@ public class WarpController {
 	
 	public void onGetLiveRoomInfo(LiveRoomInfoEvent event){
 		String[] liveUsers = event.getJoinedUsers();
-		log("onGetLiveRoomInfo: "+liveUsers.length);
+		if (liveUsers!=null){
+			log("onGetLiveRoomInfo: "+liveUsers.length);
+		} else {
+			log("onGetLiveRoomInfo: No users");
+//			warpClient.deleteRoom(roomId);
+		}
 		WarpController.liveUsers = liveUsers;
 		WarpController.setWaitflag(true);
 //		if(liveUsers!=null){
@@ -272,14 +277,21 @@ public class WarpController {
 	}
 	
 	public void handleLeave(){
-		if(isConnected){
-			warpClient.unsubscribeRoom(roomId);
-			warpClient.leaveRoom(roomId);
-			if(STATE!=STARTED){
-				warpClient.deleteRoom(roomId);
-			}
-			warpClient.disconnect();
-		}
+		warpClient.getLiveRoomInfo(roomId);
+		while (!waitflag){};
+		setWaitflag(false);
+		System.out.println("wait done in handle leave");
+//		roomId = null;
+//		room = null;
+
+//		if(isConnected){
+//			warpClient.unsubscribeRoom(roomId);
+//			warpClient.leaveRoom(roomId);
+//			if(STATE!=STARTED){
+//				warpClient.deleteRoom(roomId);
+//			}
+//			warpClient.disconnect();
+//		}
 	}
 	
 	private void disconnect(){
@@ -296,6 +308,11 @@ public class WarpController {
 		WarpController.setWaitRoomFlag(true);
 	}
 
+//	public static void clearRoomInfo(){
+//		roomId = null;
+//		room = null;
+//	}
+
 	public static RoomData[] getRoomDatas() {
 		return roomDatas;
 	}
@@ -306,11 +323,11 @@ public class WarpController {
 
 	public static RoomData getRoom() {
 		return room;
-	} //returns null WHY!?
+	}
 
 	public static String getRoomId() {
 		return roomId;
-	} //returns null WHY!?
+	}
 
 	public static String getLocalUser() {
 		return localUser;
@@ -333,7 +350,6 @@ public class WarpController {
 	}
 
 	public static void setWaitflag(boolean waitflag) {
-//		System.out.println("waitFlag set to " + waitflag);
 		WarpController.waitflag = waitflag;
 	}
 

@@ -22,19 +22,18 @@ public class ZoneListener implements ZoneRequestListener{
 
 	@Override
 	public void onCreateRoomDone (RoomEvent re) {
+		System.out.println("onCreateRoomDone: "+re.getResult());
 		if(re.getResult()==WarpResponseResultCode.SUCCESS){
 			System.out.println("Room is created successfully.");
 			callBack.onRoomCreated(re.getData().getId());
 		}else{
 			callBack.onRoomCreated(null);
 		}
-		
 	}
 
 	@Override
 	public void onDeleteRoomDone (RoomEvent arg0) {
-		
-		
+		System.out.println("onDeleteRoomDone: "+arg0.getResult());
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public class ZoneListener implements ZoneRequestListener{
 			WarpController.setRoomDatas(roomDataList);
 		}else{
 			WarpController.setRoomDatas(null);
-			System.out.println("Unable to find matching rooms");
+//			System.out.println("Unable to find matching rooms");
 		}
 	}
 

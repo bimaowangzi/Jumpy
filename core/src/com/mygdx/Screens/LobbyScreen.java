@@ -69,11 +69,13 @@ public class LobbyScreen extends AbstractScreen {
                 // unsubscribe, leave room
                 // delete room if empty
                 lobbyUpdateThread.interrupt();
+                System.out.println("Leaving Room " + roomId + ".");
                 warpClient.unsubscribeRoom(roomId);
+                warpClient.leaveRoom(roomId);
+                ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
 //                if (text.length() > 0) {
 //                    System.out.println("New Room " + text + " is created.");
 //                    warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
-//                    ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
 //                }
 //                ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
@@ -139,7 +141,9 @@ public class LobbyScreen extends AbstractScreen {
         super.render(delta);
 
         liveUsers = WarpController.getLiveUsers();
-        labelNumOfPlayers.setText(liveUsers.length + "/" + room.getMaxUsers());
+        if (liveUsers!=null && room!=null){
+            labelNumOfPlayers.setText(liveUsers.length + "/" + room.getMaxUsers());
+        }
     }
 
     @Override
