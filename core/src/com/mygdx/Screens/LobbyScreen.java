@@ -8,12 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
-import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 
 import java.util.HashMap;
@@ -36,8 +34,8 @@ public class LobbyScreen extends AbstractScreen {
     private final TextButton buttonStatusToggle;
     private final TextField textInput;
     private final ScrollPane scrollChat;
-    private final Table chatTable;
-    private final TextArea textAreaChat;
+//    private final Table chatTable;
+    private final Label labelChat;
     private final Label labelRoom;
     private final Label labelNumOfPlayers;
     private final Label labelPlayers;
@@ -64,8 +62,15 @@ public class LobbyScreen extends AbstractScreen {
         buttonSend.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-//                String text = textNewRoom.getText();
-                return false;
+                String text = textInput.getText();
+                if (text != null) {
+//                    warpClient.sendChat(WarpController.getLocalUser() + ": " + text);
+                    warpClient.sendChat(text);
+                    textInput.setText("");
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
         buttonExit = new TextButton("Exit",skin);
@@ -114,14 +119,17 @@ public class LobbyScreen extends AbstractScreen {
         });
 
         textInput = new TextField("",skin);
-        textAreaChat = new TextArea("",skin);
-        chatTable = new Table();
-        chatTable.add(textAreaChat);
-        scrollChat = new ScrollPane(chatTable);
+        labelChat = new Label("",skin);
+        labelChat.setFillParent(true);
+        WarpController.setLabelChat(labelChat);
+//        chatTable = new Table();
+//        chatTable.add(labelChat).expandX().expandY();
+//        chatTable.setFillParent(true);
+//        chatTable.left();
+        scrollChat = new ScrollPane(labelChat);
         labelRoom = new Label(roomName,skin);
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();
-        // this is crashing on null
         if (liveUsers != null){
             labelNumOfPlayers = new Label(liveUsers.length + "/" + room.getMaxUsers(),skin);
         } else {
@@ -132,7 +140,6 @@ public class LobbyScreen extends AbstractScreen {
         listPlayers.setItems(liveUsers);
         labelStatus = new Label("Status", skin);
         listStatus = new List(skin);
-//        addStatusToList(liveUsers);
         labelAvatar = new Label("Avatar", skin);
         listAvatar = new List(skin);
 
@@ -204,7 +211,7 @@ public class LobbyScreen extends AbstractScreen {
         for (int i = 0;i<liveUsers.length;i++){
             String user = liveUsers[i];
             statuses[i] = (String) statusMap.get(user);
-            System.out.println(user + " is " + statuses[i]);
+//            System.out.println(user + " is " + statuses[i]);
         }
         boolean nullCheck = false;
         for (String status : statuses){

@@ -6,6 +6,7 @@ import java.util.Hashtable;
 
 import org.json.JSONObject;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Json;
 import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
@@ -39,6 +40,7 @@ public class WarpController {
 	private static RoomData room;
 
 	private WarpListener warpListener ;
+	private static Label labelChat;
 	
 	private int STATE;
 	
@@ -344,5 +346,20 @@ public class WarpController {
 
 	public static HashMap<String, String> getStatusMap() {
 		return statusMap;
+	}
+
+	public static void setLabelChat(Label labelChat) {
+		WarpController.labelChat = labelChat;
+	}
+
+	public static void addChat(String message) {
+
+		String textHistory = labelChat.getText().toString();
+		labelChat.setText(textHistory + message + "\n");
+//		if (textHistory != null){
+//			labelChat.setText(textHistory + "\n" + message);
+//		} else {
+//			labelChat.setText(message);
+//		}
 	}
 }
