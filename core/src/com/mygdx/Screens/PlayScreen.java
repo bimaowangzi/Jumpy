@@ -29,9 +29,14 @@ public class PlayScreen extends AbstractScreen {
         world = new GameWorld(cam, gameWidth, gameHeight); // initialize world
         renderer = new GameRenderer(cam, world, gameWidth, gameHeight); // initialize renderer
 
-        Gdx.input.setInputProcessor(new InputHandler(world));
+        // shifted to show
+//        Gdx.input.setInputProcessor(new InputHandler(world));
     }
 
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(new InputHandler(world));
+    }
 
     @Override
     public void buildStage() {

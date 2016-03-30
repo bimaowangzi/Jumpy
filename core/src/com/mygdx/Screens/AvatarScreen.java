@@ -139,7 +139,7 @@ public class AvatarScreen extends AbstractScreen{
                 String user = WarpController.getLocalUser();
 
                 String avatar = avatarName;
-                warpClient.setCustomUserData(WarpController.getLocalUser(),WarpController.getStatusMap()+","+avatarName);
+                warpClient.setCustomUserData(WarpController.getLocalUser(),WarpController.getStatusMap().get(WarpController.getLocalUser())+","+avatarName);
 
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
