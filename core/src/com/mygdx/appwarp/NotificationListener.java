@@ -20,7 +20,7 @@ public class NotificationListener implements NotifyListener{
 	}
 	
 	public void onChatReceived(ChatEvent event) {
-		
+		callBack.addChat(event.getSender() + ": " + event.getMessage());
 	}
 
 	public void onRoomCreated(RoomData arg0) {

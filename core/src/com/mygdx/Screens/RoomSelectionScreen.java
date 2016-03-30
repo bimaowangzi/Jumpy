@@ -5,17 +5,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.utils.Align;
 import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by user on 11/3/2016.
@@ -25,7 +23,6 @@ public class RoomSelectionScreen extends AbstractScreen{
     private WarpClient warpClient;
 
     private final TextButton buttonCreateRoom;
-    private final TextButton buttonRefreshRoom;
     private final TextButton buttonConnectRoom;
     private final TextField textNewRoom;
     private final Label labelWelcome;
@@ -33,34 +30,36 @@ public class RoomSelectionScreen extends AbstractScreen{
     private final Label labelRoomList;
     private final List listRooms;
 
+    HashMap<String,String> roomMap;
+
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-    public RoomSelectionScreen(String username) {
-        init();
-        // look for rooms with 1 to 3 players already
-        // consider running a Thread to pull info on new rooms
-        warpClient.getRoomInRange(0, 3);
-        RoomData[] roomDataList = WarpController.getRoomDatas();
+    public RoomSelectionScreen() {
+        System.out.println("roomSelConstructed");
+        getWarpClient();
+
+        // start thread to call getRoomInRange()
+        final RoomSelUpdateThread roomSelUpdateThread = new RoomSelUpdateThread(warpClient,this);
+        roomSelUpdateThread.start();
+
+        final RoomData[] roomDataList = WarpController.getRoomDatas();
         buttonCreateRoom = new TextButton("Create Room",skin);
         buttonCreateRoom.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 String text = textNewRoom.getText();
                 if (text.length() > 0) {
-                    System.out.println("New Room " + text + " is created.");
+                    roomSelUpdateThread.interrupt();
+
+                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting");
                     warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
+                    System.out.println("Creating Room...");
+                    while(!WarpController.isWaitflag()){
+                    }
+                    System.out.println("New Room " + text + " is created.");
+                    WarpController.setWaitflag(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 }
-                return false;
-            }
-        });
-        buttonRefreshRoom = new TextButton("Refresh",skin);
-        buttonRefreshRoom.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                warpClient.getRoomInRange(0, 3);
-                RoomData[] roomDataList = WarpController.getRoomDatas();
-                addRoomToList(roomDataList);
                 return false;
             }
         });
@@ -69,11 +68,20 @@ public class RoomSelectionScreen extends AbstractScreen{
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (listRooms.getSelected() != null){
+                    roomSelUpdateThread.interrupt();
+
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting");
                     String selected = (String) listRooms.getSelected();
-                    String roomId = selected.substring(4);
+                    String roomName = selected.substring(4);
+                    String roomId = roomMap.get(roomName);
                     System.out.println("Joining Room " + roomId + ".");
                     warpClient.subscribeRoom(roomId);
+                    System.out.println("Connecting...");
+                    while(!WarpController.isWaitflag()){
+                    }
+                    WarpController.setWaitflag(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
+
                 }
                 return false;
             }
@@ -84,15 +92,14 @@ public class RoomSelectionScreen extends AbstractScreen{
         labelRoomList = new Label("Room List", skin);
         listRooms = new List(skin);
         addRoomToList(roomDataList);
-//        listRooms.setItems("ISTD 3/4","EPD 2/4","ESD 3/4","ASD 4/4");
         buildStage();
     }
 
-    private void init(){
+    private void getWarpClient(){
         try {
             warpClient = WarpClient.getInstance();
         } catch (Exception ex) {
-            System.out.println("Fail to init warpClient");
+            System.out.println("Fail to get warpClient");
         }
     }
 
@@ -115,19 +122,54 @@ public class RoomSelectionScreen extends AbstractScreen{
         table.row();
         table.add(listRooms).colspan(2);
         table.row();
-        table.add(buttonRefreshRoom).colspan(2).space(10);
-        table.row();
         table.add(buttonConnectRoom).colspan(2).space(10);
         addActor(table);
     }
 
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+
+        RoomData[] roomDataList = WarpController.getRoomDatas();
+        addRoomToList(roomDataList);
+    }
+
     public void addRoomToList(RoomData[] roomDatas){
+        roomMap = new HashMap<String, String>();
         if (roomDatas != null){
-            String[] roomIdList = new String[roomDatas.length];
+            String[] roomList = new String[roomDatas.length];
             for (int i = 0;i<roomDatas.length;i++){
-                roomIdList[i] = "Rm: " + roomDatas[i].getId();
+                RoomData roomData = roomDatas[i];
+                roomMap.put(roomData.getName(),roomData.getId());
+                roomList[i] = "Rm: " + roomData.getName();
             }
-            listRooms.setItems(roomIdList);
+            listRooms.setItems(roomList);
+        } else {
+            listRooms.clearItems();
         }
+    }
+}
+
+class RoomSelUpdateThread extends Thread{
+
+    WarpClient warpClient;
+    RoomSelectionScreen roomSelectionScreen;
+
+    public RoomSelUpdateThread(WarpClient warpClient, RoomSelectionScreen roomSelectionScreen) {
+        this.warpClient = warpClient;
+        this.roomSelectionScreen = roomSelectionScreen;
+    }
+
+    @Override
+    public void run() {
+        while (!isInterrupted()){
+            // look for rooms with 1 to 3 players already
+            warpClient.getRoomInRange(0, 3);
+            while (!WarpController.isWaitRoomFlag()){
+                // busy wait
+            }
+            WarpController.setWaitRoomFlag(false);
+        }
+        System.out.println("thread interrupted");
     }
 }

@@ -6,12 +6,18 @@ import java.util.Hashtable;
 
 import org.json.JSONObject;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Json;
+import com.mygdx.Screens.AvatarScreen;
 import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
+import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
+import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
+import com.mygdx.Screens.AvatarScreen;
 
 public class WarpController {
 
@@ -23,16 +29,23 @@ public class WarpController {
 	private final String secretKey = "10fca0a440aa2412530f11c3343d224291d5fece843d2bb566819f7957fd0b19";
 	
 	private WarpClient warpClient;
-	
+
 	private static String localUser;
 	private static String roomId;
-	
+	private static String[] liveUsers;
+
+	private static HashMap<String,String> statusMap = new HashMap<String,String>();
+	private static HashMap<String,String> avatarMap = new HashMap<String,String>();
+
+
 	private boolean isConnected = false;
 	boolean isUDPEnabled = false;
 
 	private static RoomData[] roomDatas = null;
-	
+	private static RoomData room;
+
 	private WarpListener warpListener ;
+	private static Label labelChat;
 	
 	private int STATE;
 	
@@ -46,6 +59,10 @@ public class WarpController {
 	public static final int GAME_WIN = 5;
 	public static final int GAME_LOOSE = 6;
 	public static final int ENEMY_LEFT = 7;
+
+	private static volatile boolean waitflag = false;
+	private static volatile boolean waitRoomFlag = false;
+	private static volatile boolean statusflag = false;
 	
 	public WarpController() {
 		initAppwarp();
@@ -110,13 +127,8 @@ public class WarpController {
 	
 	public void onConnectDone(boolean status){
 		log("onConnectDone: "+status);
-//		if(status){
-//			warpClient.initUDP();
-//			warpClient.joinRoomInRange(1, 3, false);
-//		}else{
-//			isConnected = false;
-//			handleError();
-//		}
+		statusflag = status;
+		setWaitflag(true);
 	}
 	
 	public void onDisconnectDone(boolean status){
@@ -134,21 +146,6 @@ public class WarpController {
 			handleError();
 		}
 	}
-	
-//	public void onJoinRoomDone(RoomEvent event){
-//		log("onJoinRoomDone: "+event.getResult());
-//		if(event.getResult()==WarpResponseResultCode.SUCCESS){// success case
-//			this.roomId = event.getData().getId();
-//			warpClient.subscribeRoom(roomId);
-//		}else if(event.getResult()==WarpResponseResultCode.RESOURCE_NOT_FOUND){// no such room found
-//			HashMap<String, Object> data = new HashMap<String, Object>();
-//			data.put("result", "");
-//			warpClient.createRoom("superjumper", "shephertz", 2, data);
-//		}else{
-//			warpClient.disconnect();
-//			handleError();
-//		}
-//	}
 
 	public void onJoinRoomDone(String roomId){
 		log("onJoinRoomDone: "+roomId);
@@ -160,22 +157,14 @@ public class WarpController {
 			handleError();
 		}
 	}
-	
-//	public void onRoomSubscribed(String roomId){
-//		log("onSubscribeRoomDone: "+roomId);
-//		if(roomId!=null){
-//			isConnected = true;
-//			warpClient.getLiveRoomInfo(roomId);
-//		}else{
-//			warpClient.disconnect();
-//			handleError();
-//		}
-//	}
 
 	public void onRoomSubscribed(RoomEvent event){
-		log("onSubscribeRoomDone: "+event.getResult());
+		log("onSubscribeRoomDone: "+event.getData().getId());
 		if(event.getResult()==WarpResponseResultCode.SUCCESS) {// success case
-			this.roomId = event.getData().getId();
+			room = event.getData();
+			System.out.println("roomName is " + room.getName());
+			this.roomId = room.getId();
+			System.out.println("id is " + roomId);
 			warpClient.joinRoom(roomId);
 		} else {
 			warpClient.disconnect();
@@ -183,8 +172,16 @@ public class WarpController {
 		}
 	}
 	
-	public void onGetLiveRoomInfo(String[] liveUsers){
-		log("onGetLiveRoomInfo: "+liveUsers.length);
+	public void onGetLiveRoomInfo(LiveRoomInfoEvent event){
+		String[] liveUsers = event.getJoinedUsers();
+		if (liveUsers!=null){
+			log("onGetLiveRoomInfo: "+liveUsers.length);
+		} else {
+			log("onGetLiveRoomInfo: No users");
+//			warpClient.deleteRoom(roomId);
+		}
+		WarpController.liveUsers = liveUsers;
+		setWaitflag(true);
 //		if(liveUsers!=null){
 //			if(liveUsers.length==2){
 //				startGame();
@@ -198,12 +195,10 @@ public class WarpController {
 	}
 	
 	public void onUserJoinedRoom(String roomId, String userName){
-		/*
-		 * if room id is same and username is different then start the game
-		 */
-		if(localUser.equals(userName)==false){
-			startGame();
-		}
+		log("onUserJoinRoom "+userName+" joined room "+roomId);
+//		if(localUser.equals(userName)==false){
+//			startGame();
+//		}
 	}
 
 	public void onSendChatDone(boolean status){
@@ -229,10 +224,37 @@ public class WarpController {
 	}
 	
 	public void onUserLeftRoom(String roomId, String userName){
-		log("onUserLeftRoom "+userName+" in room "+roomId);
-		if(STATE==STARTED && !localUser.equals(userName)){// Game Started and other user left the room
-			warpListener.onGameFinished(ENEMY_LEFT, true);
+		log("onUserLeftRoom "+userName+" left room "+roomId);
+//		if(STATE==STARTED && !localUser.equals(userName)){// Game Started and other user left the room
+//			warpListener.onGameFinished(ENEMY_LEFT, true);
+//		}
+	}
+
+	public void onGetUserInfo(LiveUserInfoEvent event){
+		String[] customData = event.getCustomData().split(",");
+		String status = event.getCustomData();
+		String avatar = "none";
+		try {
+			status = customData[0];
+			avatar = customData[1];
 		}
+		catch(ArrayIndexOutOfBoundsException e){
+
+		}
+		String user = event.getName();
+		if (!statusMap.containsKey(user)){
+			statusMap.put(user,status);
+		} else if (!statusMap.get(user).equals(status)) {
+			statusMap.put(user,status);
+		}
+
+		if (!avatarMap.containsKey(user)){
+			avatarMap.put(user,"none");
+		} else if (!avatarMap.get(user).equals(avatar)) {
+			avatarMap.put(user,avatar);
+		}
+
+		setWaitflag(true);
 	}
 	
 	public int getState(){
@@ -259,18 +281,26 @@ public class WarpController {
 		if(roomId!=null && roomId.length()>0){
 			warpClient.deleteRoom(roomId);
 		}
+		System.out.println("Disconnect");
 		disconnect();
 	}
 	
 	public void handleLeave(){
-		if(isConnected){
-			warpClient.unsubscribeRoom(roomId);
-			warpClient.leaveRoom(roomId);
-			if(STATE!=STARTED){
-				warpClient.deleteRoom(roomId);
-			}
-			warpClient.disconnect();
-		}
+		warpClient.getLiveRoomInfo(roomId);
+		while (!waitflag){};
+		setWaitflag(false);
+		System.out.println("wait done in handle leave");
+//		roomId = null;
+//		room = null;
+
+//		if(isConnected){
+//			warpClient.unsubscribeRoom(roomId);
+//			warpClient.leaveRoom(roomId);
+//			if(STATE!=STARTED){
+//				warpClient.deleteRoom(roomId);
+//			}
+//			warpClient.disconnect();
+//		}
 	}
 	
 	private void disconnect(){
@@ -284,6 +314,7 @@ public class WarpController {
 
 	public static void setRoomDatas(RoomData[] roomDatas) {
 		WarpController.roomDatas = roomDatas;
+		WarpController.setWaitRoomFlag(true);
 	}
 
 	public static RoomData[] getRoomDatas() {
@@ -294,9 +325,9 @@ public class WarpController {
 		WarpController.instance = instance;
 	}
 
-//	public WarpClient getWarpClient() {
-//		return warpClient;
-//	}
+	public static RoomData getRoom() {
+		return room;
+	}
 
 	public static String getRoomId() {
 		return roomId;
@@ -304,5 +335,58 @@ public class WarpController {
 
 	public static String getLocalUser() {
 		return localUser;
+	}
+
+	public static String[] getLiveUsers() {
+		return liveUsers;
+	}
+
+	public static void clearLiveUsers() {
+		System.out.println("Clear LiveUsers");
+		liveUsers = null;
+	}
+
+	public static boolean isWaitflag() {
+		return waitflag;
+	}
+
+	public static boolean isStatusflag() {
+		return statusflag;
+	}
+
+	public static boolean isWaitRoomFlag() {
+		return waitRoomFlag;
+	}
+
+	public static void setWaitflag(boolean waitflag) {
+		WarpController.waitflag = waitflag;
+	}
+
+	public static void setStatusflag(boolean statusflag) {
+		WarpController.statusflag = statusflag;
+	}
+
+	public static void setWaitRoomFlag(boolean waitRoomFlag) {
+		WarpController.waitRoomFlag = waitRoomFlag;
+	}
+
+	public static HashMap<String, String> getStatusMap() {
+		return statusMap;
+	}
+
+	public static void clearStatusMap() { statusMap.clear(); }
+
+	public static HashMap<String, String> getAvatarMap() {
+		return avatarMap;
+	}
+
+	public static void setLabelChat(Label labelChat) {
+		WarpController.labelChat = labelChat;
+	}
+
+	public static void addChat(String message) {
+
+		String textHistory = labelChat.getText().toString();
+		labelChat.setText(textHistory + message + "\n");
 	}
 }

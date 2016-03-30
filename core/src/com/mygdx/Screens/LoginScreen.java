@@ -9,11 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.mygdx.appwarp.WarpController;
+import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
 /**
  * Created by user on 11/3/2016.
  */
 public class LoginScreen extends AbstractScreen{
+
+    private WarpClient warpClient;
 
     private final TextButton buttonConnect;
     private final TextField textUser;
@@ -23,6 +26,7 @@ public class LoginScreen extends AbstractScreen{
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     public LoginScreen() {
+
         buttonConnect = new TextButton("Connect",skin);
         buttonConnect.addListener(new InputListener(){
             @Override
@@ -31,8 +35,23 @@ public class LoginScreen extends AbstractScreen{
                 if (text.length()>0){
                     // pass in text as localuser
                     WarpController.getInstance().startApp(text);
-                    // can consider removing text from showscreen()
-                    ScreenManager.getInstance().showScreen( ScreenEnum.ROOMSELECTION , text);
+                    System.out.println("Connecting to Appwarp...");
+                    while(!WarpController.isWaitflag()){}
+                    WarpController.setWaitflag(false);
+                    getWarpClient();
+                    System.out.println("Status: " + WarpController.isStatusflag());
+                    if (WarpController.isStatusflag()){
+                        WarpController.setStatusflag(false);
+                        // wait for setRoomData
+                        warpClient.getRoomInRange(0, 3);
+                        while (!WarpController.isWaitRoomFlag()){
+                            // busy waiting
+                        }
+                        WarpController.setWaitRoomFlag(false);
+                        ScreenManager.getInstance().showScreen( ScreenEnum.ROOMSELECTION);
+                    } else {
+                        System.out.println("Unable to connect Appwarp, try a different ID and check your connections");
+                    }
                 }
                 return false;
             }
@@ -41,6 +60,14 @@ public class LoginScreen extends AbstractScreen{
         labelGame = new Label("Jumpy",skin);
         labelUser = new Label("Username:",skin);
         buildStage();
+    }
+
+    private void getWarpClient(){
+        try {
+            warpClient = WarpClient.getInstance();
+        } catch (Exception ex) {
+            System.out.println("Fail to get warpClient");
+        }
     }
 
     @Override

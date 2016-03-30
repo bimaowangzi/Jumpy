@@ -12,8 +12,9 @@ public enum ScreenEnum {
     },
     ROOMSELECTION {
         public AbstractScreen getScreen(Object... params) {
-            // pass username
-            return new RoomSelectionScreen((String) params[0]);
+            // pass warpcontroller
+//            return new RoomSelectionScreen((WarpController) params[0]);
+            return new RoomSelectionScreen();
         }
     },
     LOBBY {
@@ -31,10 +32,10 @@ public enum ScreenEnum {
             return new WinScreen();
         }
     },
-    GAME {
+    PLAY {
         public AbstractScreen getScreen(Object... params) {
-//            return new GameScreen((Integer) params[0]);
-            return new GameScreen();
+//            return new PlayScreen((Integer) params[0]);
+            return new PlayScreen();
         }
     };
 
