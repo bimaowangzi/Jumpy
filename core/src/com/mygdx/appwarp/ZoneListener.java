@@ -66,7 +66,6 @@ public class ZoneListener implements ZoneRequestListener{
 
 	@Override
 	public void onSetCustomUserDataDone (LiveUserInfoEvent arg0) {
-		System.out.println("here");
 	}
 	
 

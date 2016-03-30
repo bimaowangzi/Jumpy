@@ -84,6 +84,7 @@ public class LobbyScreen extends AbstractScreen {
                 System.out.println("Leaving Room " + roomId + ".");
                 warpClient.unsubscribeRoom(roomId);
                 warpClient.leaveRoom(roomId);
+                WarpController.clearLiveUsers();
                 ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
                 return false;
             }
@@ -131,14 +132,18 @@ public class LobbyScreen extends AbstractScreen {
 
         textInput = new TextField("",skin);
         labelChat = new Label("",skin);
-        labelChat.setFillParent(true);
+//        labelChat.setWidth(300);
+//        labelChat.setBounds(0,0,300,400);
+//        labelChat.setWrap(true);
+        // This is a bug that if u set fill parent, Spaces will be created at the top and bottom is unreadable.
+//        labelChat.setFillParent(true);
+
+
         WarpController.setLabelChat(labelChat);
-//        chatTable = new Table();
-//        chatTable.add(labelChat).expandX().expandY();
-//        chatTable.setFillParent(true);
-//        chatTable.left();
-        scrollChat = new ScrollPane(labelChat);
-        scrollChat.setSize();
+        Table chatTable = new Table();
+        chatTable.add(labelChat).expand();
+        scrollChat = new ScrollPane(chatTable);
+        scrollChat.setScrollingDisabled(true,false);
         labelRoom = new Label(roomName,skin);
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();
@@ -149,7 +154,12 @@ public class LobbyScreen extends AbstractScreen {
         }
         labelPlayers = new Label("Players", skin);
         listPlayers = new List(skin);
-        listPlayers.setItems(liveUsers);
+
+        // sometimes crash due to liveusers being null
+        if (liveUsers!=null) {
+            listPlayers.setItems(liveUsers);
+        }
+
         labelStatus = new Label("Status", skin);
         listStatus = new List(skin);
         labelAvatar = new Label("Avatar", skin);
@@ -203,7 +213,8 @@ public class LobbyScreen extends AbstractScreen {
         tableMid.add(listAvatar);
         tableMid.row();
 
-        tableMid.add(scrollChat).colspan(3);
+        tableMid.add(scrollChat).colspan(3).maxHeight(400);
+        scrollChat.setSize(tableMid.getWidth(),50);
         tableMid.row();
         tableMid.add(textInput).colspan(2);
         tableMid.add(buttonSend);
@@ -267,17 +278,20 @@ class LobbyUpdateThread extends Thread{
                 break;
             }
 
-            for (String user : WarpController.getLiveUsers()){
-                warpClient.getLiveUserInfo(user);
-                while (!WarpController.isWaitflag()){
-                    // busy wait
+            String[] liveUsers = WarpController.getLiveUsers();
+            if (liveUsers != null){
+                for (String user : liveUsers){
+                    warpClient.getLiveUserInfo(user);
+                    while (!WarpController.isWaitflag()){
+                        // busy wait
+                        if (isInterrupted()){
+                            break;
+                        }
+                    }
+                    WarpController.setWaitflag(false);
                     if (isInterrupted()){
                         break;
                     }
-                }
-                WarpController.setWaitflag(false);
-                if (isInterrupted()){
-                    break;
                 }
             }
         }
