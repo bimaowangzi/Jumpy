@@ -16,7 +16,10 @@ import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by user on 11/3/2016.
@@ -27,11 +30,12 @@ public class LobbyScreen extends AbstractScreen {
 
     private Game game;
 
-
     private RoomData room;
     private String roomId;
     private String roomName;
     private String[] liveUsers;
+
+    public static volatile boolean startGame = false;
 
     private final TextButton buttonSend;
     private final TextButton buttonExit;
@@ -50,6 +54,9 @@ public class LobbyScreen extends AbstractScreen {
     private final Label labelAvatar;
     private final List listAvatar;
 
+    final LobbyUpdateThread lobbyUpdateThread;
+    final CheckStartThread checkStartThread;
+
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     public LobbyScreen() {
@@ -60,8 +67,12 @@ public class LobbyScreen extends AbstractScreen {
         roomName = room.getName();
 
         // start thread to update in-lobby players
-        final LobbyUpdateThread lobbyUpdateThread = new LobbyUpdateThread(warpClient,this,roomId);
+        lobbyUpdateThread = new LobbyUpdateThread(warpClient,this,roomId);
         lobbyUpdateThread.start();
+
+        // start thread to check for start
+        checkStartThread = new CheckStartThread();
+        checkStartThread.start();
 
         buttonSend = new TextButton("Send",skin);
         buttonSend.addListener(new InputListener() {
@@ -86,10 +97,12 @@ public class LobbyScreen extends AbstractScreen {
                 // unsubscribe, leave room, done
                 // delete room if empty, to be done
                 lobbyUpdateThread.interrupt();
+                checkStartThread.interrupt();
                 System.out.println("Leaving Room " + roomId + ".");
                 warpClient.unsubscribeRoom(roomId);
                 warpClient.leaveRoom(roomId);
                 WarpController.clearLiveUsers();
+                WarpController.clearStatusMap();
                 ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
                 return false;
             }
@@ -98,6 +111,8 @@ public class LobbyScreen extends AbstractScreen {
         buttonChangeAvatar.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                lobbyUpdateThread.interrupt();
+                checkStartThread.interrupt();
                 ScreenManager.getInstance().showScreen(ScreenEnum.AVATAR);
                 return false;
             }
@@ -190,6 +205,12 @@ public class LobbyScreen extends AbstractScreen {
             addStatusToList();
             addImageToList();
         }
+
+        if (startGame){
+            lobbyUpdateThread.interrupt();
+            checkStartThread.interrupt();
+            ScreenManager.getInstance().showScreen(ScreenEnum.PLAY);
+        }
     }
 
     @Override
@@ -279,6 +300,48 @@ public class LobbyScreen extends AbstractScreen {
 //        if (statuses[0]!=null){
 //            listStatus.setItems(statuses);
 //        }
+    }
+}
+
+class CheckStartThread extends Thread{
+
+    private static HashMap<String,String> statusMap = new HashMap<String,String>();
+    private boolean allReady;
+
+    public CheckStartThread() {
+        allReady = false;
+    }
+
+    @Override
+    public void run() {
+        while (!allReady){
+            statusMap = WarpController.getStatusMap();
+
+            if (isInterrupted()){
+                break;
+            }
+            // check if there is at least 2 players in the room
+            if (statusMap.size() <= 2){
+                continue;
+            }
+
+            Iterator it = statusMap.entrySet().iterator();
+            allReady = true;
+            while (it.hasNext()){
+                Map.Entry pair = (Map.Entry) it.next();
+                String status = (String) pair.getValue();
+                if (!status.equals("Ready")){
+                    allReady = false;
+                    break;
+                }
+            }
+            if (isInterrupted()){
+                break;
+            }
+        }
+        if (!isInterrupted()){
+            LobbyScreen.startGame = true;
+        }
     }
 }
 

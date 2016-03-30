@@ -365,10 +365,11 @@ public class WarpController {
 		return statusMap;
 	}
 
+	public static void clearStatusMap() { statusMap.clear(); }
+
 	public static HashMap<String, String> getAvatarMap() {
 		return avatarMap;
 	}
-
 
 	public static void setLabelChat(Label labelChat) {
 		WarpController.labelChat = labelChat;
@@ -378,10 +379,5 @@ public class WarpController {
 
 		String textHistory = labelChat.getText().toString();
 		labelChat.setText(textHistory + message + "\n");
-//		if (textHistory != null){
-//			labelChat.setText(textHistory + "\n" + message);
-//		} else {
-//			labelChat.setText(message);
-//		}
 	}
 }

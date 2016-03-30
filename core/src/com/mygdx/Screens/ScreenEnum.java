@@ -1,7 +1,5 @@
 package com.mygdx.Screens;
 
-import com.mygdx.appwarp.WarpController;
-
 /**
  * Created by user on 11/3/2016.
  */
@@ -34,10 +32,10 @@ public enum ScreenEnum {
             return new WinScreen();
         }
     },
-    GAME {
+    PLAY {
         public AbstractScreen getScreen(Object... params) {
-//            return new GameScreen((Integer) params[0]);
-            return new GameScreen();
+//            return new PlayScreen((Integer) params[0]);
+            return new PlayScreen();
         }
     };
 
