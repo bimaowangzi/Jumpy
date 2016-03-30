@@ -12,7 +12,7 @@ public class PowerUp {
     private Vector2 velocity = new Vector2();
     private final float radius = 3f;
 
-    private int type;  //0 - high jump, 1 - low jump, 2 - umbrella, 3 - extra life
+    private int type;  //0 - high jump, 1 - low jump, 2 - umbrella, 3 - extra life, 4 - giant
     private boolean isActive;
     private float timer;
     private float nextRespawningTime;
@@ -102,11 +102,12 @@ public class PowerUp {
     }
 
     private int typeGenerator() {
-        int num = randomNumberGen.nextInt(10);
+        int num = randomNumberGen.nextInt(12);
         if (num < 3) return 0;
         if (num < 7) return 1;
         if (num < 9) return 2;
-        return 3;
+        if (num < 11) return 3;
+        return 4;
     }
 
     private boolean isGone() {

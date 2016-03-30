@@ -26,8 +26,8 @@ import com.mygdx.PowerUp;
 public class Player implements ContactFilter, ContactListener {
     private Vector2 position;
 
-    private final float width = 5;
-    private final float height = 5;
+    private float width = 5;
+    private float height = 5;
     private float gameWidth;
     private float gameHeight;
 
@@ -45,6 +45,8 @@ public class Player implements ContactFilter, ContactListener {
     private PowerUp powerUp;
     private PlatformHandler platformHandler;
     private float timer;
+
+    private float radius = 2.5f;
 
     private OrthographicCamera cam;
 
@@ -76,7 +78,7 @@ public class Player implements ContactFilter, ContactListener {
         body = world.createBody(bodyDef);
 
         shape = new CircleShape();
-        shape.setRadius(2.5f);
+        shape.setRadius(radius);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape=shape;
@@ -111,7 +113,7 @@ public class Player implements ContactFilter, ContactListener {
         // Map position on screen with world position
         position.x = body.getPosition().x;
         position.y = body.getPosition().y - (cam.position.y - gameHeight/2);
-        boundingCircle.set(position, 2.5f);
+        boundingCircle.set(position, radius);
 
         // Handling death
         if (isDead()) {
@@ -147,6 +149,9 @@ public class Player implements ContactFilter, ContactListener {
         // Set jump speed based on power ups
         if (powerUpState == -1) {
             jumpSpeed = baseJumpSpeed;
+            radius = 2.5f;
+            height = 5;
+            width = 5;
         } else if (powerUpState == 0) {
             jumpSpeed = baseJumpSpeed * 2;
         } else if (powerUpState == 1) {
@@ -156,6 +161,10 @@ public class Player implements ContactFilter, ContactListener {
         } else if (powerUpState == 3 && timer != 0) {
             if (lives < 3) lives++;
             powerUpState = -1;
+        } else if (powerUpState == 4) {
+            radius = 3.5f;
+            height = 7;
+            width = 7;
         }
 
         if (timer > 5f) // power up effective for 5s
@@ -177,7 +186,7 @@ public class Player implements ContactFilter, ContactListener {
         }
 
         if (platformType==1) {
-            body.setLinearVelocity(body.getLinearVelocity().x*50, 0);
+            body.setLinearVelocity(body.getLinearVelocity().x*20, 0);
         } else if (platformType==2) {
             body.setLinearVelocity(body.getLinearVelocity().x, baseJumpSpeed*1.5f);
         }

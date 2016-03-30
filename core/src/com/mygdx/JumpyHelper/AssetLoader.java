@@ -43,6 +43,7 @@ public class AssetLoader {
         powerupTextures.add(new TextureRegion(texture, 381, 104, 16, 16)); // low jump
         powerupTextures.add(new TextureRegion(texture, 42, 18, 16, 16)); // flyer
         powerupTextures.add(new TextureRegion(texture, 362, 51, 18, 19)); // life
+        powerupTextures.add(new TextureRegion(texture, 362, 19, 16, 16)); // grow
 
         for (TextureRegion t:powerupTextures)
             t.flip(false, true);
@@ -52,6 +53,7 @@ public class AssetLoader {
         playerTextures.add(new TextureRegion(texture, 24, 107, 16, 16)); // low jump
         playerTextures.add(new TextureRegion(texture, 42, 39, 16, 20)); // flyer
         playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal
+        playerTextures.add(new TextureRegion(texture, 3, 345, 40, 32)); // giant
 
         for (TextureRegion t:playerTextures)
             t.flip(false, true);
