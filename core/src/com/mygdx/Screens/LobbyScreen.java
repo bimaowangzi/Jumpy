@@ -140,18 +140,14 @@ public class LobbyScreen extends AbstractScreen {
 
 
         WarpController.setLabelChat(labelChat);
-<<<<<<< HEAD
         Table chatTable = new Table();
         chatTable.add(labelChat).expand();
         scrollChat = new ScrollPane(chatTable);
         scrollChat.setScrollingDisabled(true,false);
-=======
 //        chatTable = new Table();
 //        chatTable.add(labelChat).expandX().expandY();
 //        chatTable.setFillParent(true);
 //        chatTable.left();
-        scrollChat = new ScrollPane(labelChat);
->>>>>>> origin/master
         labelRoom = new Label(roomName,skin);
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();
