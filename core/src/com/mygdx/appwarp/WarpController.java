@@ -6,8 +6,10 @@ import java.util.Hashtable;
 
 import org.json.JSONObject;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Json;
+import com.mygdx.Screens.AvatarScreen;
 import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
@@ -15,6 +17,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
+import com.mygdx.Screens.AvatarScreen;
 
 public class WarpController {
 
@@ -32,6 +35,8 @@ public class WarpController {
 	private static String[] liveUsers;
 
 	private static HashMap<String,String> statusMap = new HashMap<String,String>();
+	private static HashMap<String,String> avatarMap = new HashMap<String,String>();
+
 
 	private boolean isConnected = false;
 	boolean isUDPEnabled = false;
@@ -233,6 +238,13 @@ public class WarpController {
 		} else if (!statusMap.get(user).equals(status)) {
 			statusMap.put(user,status);
 		}
+
+		avatarMap = AvatarScreen.getAvatarMap();
+
+		if (!avatarMap.containsKey(user)){
+			avatarMap.put(user,"none");
+		}
+
 		setWaitflag(true);
 	}
 	
@@ -347,6 +359,11 @@ public class WarpController {
 	public static HashMap<String, String> getStatusMap() {
 		return statusMap;
 	}
+
+	public static HashMap<String, String> getAvatarMap() {
+		return avatarMap;
+	}
+
 
 	public static void setLabelChat(Label labelChat) {
 		WarpController.labelChat = labelChat;
