@@ -1,23 +1,15 @@
 package com.mygdx.appwarp;
 
 
-import java.util.HashMap;
-import java.util.Hashtable;
-
-import org.json.JSONObject;
-
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Json;
-import com.mygdx.Screens.AvatarScreen;
-import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
-import com.mygdx.Screens.AvatarScreen;
+
+import java.util.HashMap;
 
 public class WarpController {
 

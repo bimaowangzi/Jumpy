@@ -1,7 +1,6 @@
 package com.mygdx.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.mygdx.GameWorld.GameRenderer;
 import com.mygdx.GameWorld.GameWorld;
@@ -10,7 +9,7 @@ import com.mygdx.JumpyHelper.InputHandler;
 /**
  * Created by acer on 16/2/2016.
  */
-public class PlayScreen implements Screen {
+public class PlayScreen extends AbstractScreen {
 
     private GameWorld world;
     private GameRenderer renderer;
@@ -31,6 +30,11 @@ public class PlayScreen implements Screen {
         renderer = new GameRenderer(cam, world, gameWidth, gameHeight); // initialize renderer
 
         Gdx.input.setInputProcessor(new InputHandler(world));
+    }
+
+    @Override
+    public void buildStage() {
+
     }
 
     @Override
