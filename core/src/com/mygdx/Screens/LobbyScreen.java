@@ -1,8 +1,10 @@
 package com.mygdx.Screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -22,6 +24,9 @@ import java.util.HashMap;
 public class LobbyScreen extends AbstractScreen {
 
     private WarpClient warpClient;
+
+    private Game game;
+
 
     private RoomData room;
     private String roomId;
@@ -92,12 +97,7 @@ public class LobbyScreen extends AbstractScreen {
         buttonChangeAvatar.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // Switch to Avatar Screen
-//                if (text.length() > 0) {
-//                    System.out.println("New Room " + text + " is created.");
-//                    warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
-//                    ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
-//                }
+                ScreenManager.getInstance().showScreen(ScreenEnum.AVATAR);
                 return false;
             }
         });
@@ -138,7 +138,6 @@ public class LobbyScreen extends AbstractScreen {
 //        chatTable.setFillParent(true);
 //        chatTable.left();
         scrollChat = new ScrollPane(labelChat);
-        scrollChat.setSize();
         labelRoom = new Label(roomName,skin);
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();
@@ -174,6 +173,7 @@ public class LobbyScreen extends AbstractScreen {
             labelNumOfPlayers.setText(liveUsers.length + "/" + room.getMaxUsers());
             listPlayers.setItems(liveUsers);
             addStatusToList();
+            addImageToList();
         }
     }
 
@@ -240,6 +240,30 @@ public class LobbyScreen extends AbstractScreen {
 //        }
     }
 
+
+    public void addImageToList(){
+        liveUsers = WarpController.getLiveUsers();
+        String[] avatars = new String[liveUsers.length];
+        HashMap avatarMap = WarpController.getAvatarMap();
+        for (int i = 0;i<liveUsers.length;i++){
+            String user = liveUsers[i];
+            avatars[i] = (String) avatarMap.get(user);
+//            System.out.println(user + " is " + statuses[i]);
+        }
+        boolean nullCheck = false;
+        for (String avatar : avatars){
+            if (avatar==null){
+                nullCheck = true;
+                break;
+            }
+        }
+        if (!nullCheck){
+            listAvatar.setItems(avatars);
+        }
+//        if (statuses[0]!=null){
+//            listStatus.setItems(statuses);
+//        }
+    }
 }
 
 class LobbyUpdateThread extends Thread{
