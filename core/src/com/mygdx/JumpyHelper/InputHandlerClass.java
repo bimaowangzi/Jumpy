@@ -1,4 +1,4 @@
-package com.mygdx;
+package com.mygdx.JumpyHelper;
 
 import com.badlogic.gdx.InputProcessor;
 import com.mygdx.Screens.PlayScreen;
@@ -35,16 +35,16 @@ public class InputHandlerClass {
 
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                if (playScreen.isAccelMode()){
-                    try{
-                        int state = (Integer) playScreen.getPlayer().b2body.getUserData();
-
-                        if(state==0) {
-                            playScreen.getPlayer().b2body.setLinearVelocity(playScreen.getPlayer().b2body.getLinearVelocity().x, 35*PlayScreen.velocityScale);
-                        }
-                    }
-                    catch(NullPointerException e){}
-                }
+//                if (playScreen.isAccelMode()){
+//                    try{
+//                        int state = (Integer) playScreen.getPlayer().b2body.getUserData();
+//
+//                        if(state==0) {
+//                            playScreen.getPlayer().b2body.setLinearVelocity(playScreen.getPlayer().b2body.getLinearVelocity().x, 35*PlayScreen.velocityScale);
+//                        }
+//                    }
+//                    catch(NullPointerException e){}
+//                }
                 return true;
             }
 
