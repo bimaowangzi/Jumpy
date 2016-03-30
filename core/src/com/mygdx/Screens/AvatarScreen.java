@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.appwarp.WarpController;
+import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
 import java.util.HashMap;
 
@@ -30,6 +31,8 @@ public class AvatarScreen extends AbstractScreen{
     private Game game;
 
     private final TextButton buttonSelect;
+    private WarpClient warpClient;
+
     private Label labelAvatar;
 
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -43,7 +46,7 @@ public class AvatarScreen extends AbstractScreen{
     private Image displayAvatar = new Image(avatar1);
 
     private static String avatarName = "none";
-    private static HashMap<String,String> avatarMap = new HashMap<String, String>();
+    private static HashMap<String,String> avatarMap = WarpController.getAvatarMap();
 
 
     public static String getAvatarName() {
@@ -55,6 +58,7 @@ public class AvatarScreen extends AbstractScreen{
     }
 
     public AvatarScreen() {
+        getWarpClient();
 
 
         if(avatarMap.containsValue("avatar1")){
@@ -83,6 +87,7 @@ public class AvatarScreen extends AbstractScreen{
                 table.remove();
                 table = new Table();
                 buildStage();
+
 
                 return false;
             }
@@ -134,11 +139,8 @@ public class AvatarScreen extends AbstractScreen{
                 String user = WarpController.getLocalUser();
 
                 String avatar = avatarName;
-                if (!avatarMap.containsKey(user)){
-                    avatarMap.put(user,avatar);
-                } else if (!avatarMap.get(user).equals(avatar)) {
-                    avatarMap.put(user,avatar);
-                }
+                warpClient.setCustomUserData(WarpController.getLocalUser(),WarpController.getStatusMap()+","+avatarName);
+
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
@@ -174,5 +176,12 @@ public class AvatarScreen extends AbstractScreen{
         return displayAvatar;
     }
 
+    private void getWarpClient(){
+        try {
+            warpClient = WarpClient.getInstance();
+        } catch (Exception ex) {
+            System.out.println("Fail to get warpClient");
+        }
+    }
 
 }

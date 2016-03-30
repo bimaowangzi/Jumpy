@@ -231,7 +231,16 @@ public class WarpController {
 	}
 
 	public void onGetUserInfo(LiveUserInfoEvent event){
+		String[] customData = event.getCustomData().split(",");
 		String status = event.getCustomData();
+		String avatar = "none";
+		try {
+			status = customData[0];
+			avatar = customData[1];
+		}
+		catch(ArrayIndexOutOfBoundsException e){
+
+		}
 		String user = event.getName();
 		if (!statusMap.containsKey(user)){
 			statusMap.put(user,status);
@@ -239,10 +248,10 @@ public class WarpController {
 			statusMap.put(user,status);
 		}
 
-		avatarMap = AvatarScreen.getAvatarMap();
-
 		if (!avatarMap.containsKey(user)){
 			avatarMap.put(user,"none");
+		} else if (!avatarMap.get(user).equals(avatar)) {
+			avatarMap.put(user,avatar);
 		}
 
 		setWaitflag(true);

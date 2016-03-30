@@ -49,10 +49,11 @@ public class LobbyScreen extends AbstractScreen {
     private final List listStatus;
     private final Label labelAvatar;
     private final List listAvatar;
-
+    HashMap avatarMap = WarpController.getAvatarMap();
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     public LobbyScreen() {
+
         getWarpClient();
 
         room = WarpController.getRoom();
@@ -116,14 +117,15 @@ public class LobbyScreen extends AbstractScreen {
 
                     System.out.println("Sets Selecting");
 
-                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting");
+
+                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting,"+avatarMap.get(WarpController.getLocalUser()));
                 } else {
 
                     buttonStatusToggle.setText("Ready");
 //                    buttonStatusToggle.setChecked(true);
 
                     System.out.println("Sets Ready");
-                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready");
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready,"+avatarMap.get(WarpController.getLocalUser()));
                 }
                 System.out.println("After:" + buttonStatusToggle.isChecked());
                 return false;
@@ -260,7 +262,6 @@ public class LobbyScreen extends AbstractScreen {
     public void addImageToList(){
         liveUsers = WarpController.getLiveUsers();
         String[] avatars = new String[liveUsers.length];
-        HashMap avatarMap = WarpController.getAvatarMap();
         for (int i = 0;i<liveUsers.length;i++){
             String user = liveUsers[i];
             avatars[i] = (String) avatarMap.get(user);
