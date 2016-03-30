@@ -107,13 +107,24 @@ public class LobbyScreen extends AbstractScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 // Toggle between Selecting and Ready
+                System.out.println("Before:" + buttonStatusToggle.isChecked());
                 if (buttonStatusToggle.isChecked()) {
+
                     buttonStatusToggle.setText("Selecting");
+//                    buttonStatusToggle.setChecked(false);
+
+                    System.out.println("Sets Selecting");
+
                     warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting");
                 } else {
+
                     buttonStatusToggle.setText("Ready");
+//                    buttonStatusToggle.setChecked(true);
+
+                    System.out.println("Sets Ready");
                     warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready");
                 }
+                System.out.println("After:" + buttonStatusToggle.isChecked());
                 return false;
             }
         });
@@ -127,6 +138,7 @@ public class LobbyScreen extends AbstractScreen {
 //        chatTable.setFillParent(true);
 //        chatTable.left();
         scrollChat = new ScrollPane(labelChat);
+        scrollChat.setSize();
         labelRoom = new Label(roomName,skin);
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();

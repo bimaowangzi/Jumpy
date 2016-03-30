@@ -170,7 +170,7 @@ public class WarpController {
 	public void onGetLiveRoomInfo(LiveRoomInfoEvent event){
 		String[] liveUsers = event.getJoinedUsers();
 		if (liveUsers!=null){
-			log("onGetLiveRoomInfo: "+liveUsers.length);
+//			log("onGetLiveRoomInfo: "+liveUsers.length);
 		} else {
 			log("onGetLiveRoomInfo: No users");
 //			warpClient.deleteRoom(roomId);
@@ -230,8 +230,8 @@ public class WarpController {
 		String user = event.getName();
 		if (!statusMap.containsKey(user)){
 			statusMap.put(user,status);
-		} else if (!statusMap.get(user).equals(status)){
-			statusMap.replace(user,status);
+		} else if (!statusMap.get(user).equals(status)) {
+			statusMap.put(user,status);
 		}
 		setWaitflag(true);
 	}
