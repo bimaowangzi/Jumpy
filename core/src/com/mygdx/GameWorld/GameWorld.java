@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
+import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.Sprites.Player;
 
 /**
@@ -12,10 +13,13 @@ import com.mygdx.Sprites.Player;
  */
 public class GameWorld {
     private Player player;
+    private OtherPlayer otherPlayer;
     private PlatformHandler platformHandler;
     private World world;
     private PowerUp powerUp;
     private float scrollSpeed;
+
+    //private static GameWorld instance = null;
 
     private OrthographicCamera cam;
     private float gameWidth;
@@ -29,6 +33,7 @@ public class GameWorld {
 
 
     public GameWorld(OrthographicCamera cam, float gameWidth, float gameHeight) {
+        System.out.println("World initiated");
         this.cam = cam;
         this.gameHeight = gameHeight;
         this.gameWidth = gameWidth;
@@ -39,6 +44,7 @@ public class GameWorld {
         powerUp = new PowerUp(gameWidth, gameHeight);
 
         player = new Player(cam, world, powerUp, gameWidth, gameHeight);
+        otherPlayer = new OtherPlayer(cam, world, gameWidth, gameHeight);
         world.setContactFilter(player);
         world.setContactListener(player);
         scrollSpeed = -10f;
@@ -46,6 +52,17 @@ public class GameWorld {
 
         player.setPlatformHandler(platformHandler);
     }
+
+//    public static GameWorld getInstance(OrthographicCamera cam, float gameWidth, float gameHeight) {
+//        if(instance == null) {
+//            instance = new GameWorld(cam, gameWidth, gameHeight);
+//        }
+//        return instance;
+//    }
+//
+//    public static GameWorld getInstance() {
+//        return instance;
+//    }
 
     public void update(float delta) {
         switch (currentState) {
@@ -102,6 +119,10 @@ public class GameWorld {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public OtherPlayer getOtherPlayer() {
+        return otherPlayer;
     }
 
     public PlatformHandler getPlatformHandler() {

@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.mygdx.GameWorld.GameRenderer;
 import com.mygdx.GameWorld.GameWorld;
 import com.mygdx.JumpyHelper.InputHandler;
+import com.mygdx.appwarp.WarpController;
+
+import org.json.JSONObject;
 
 /**
  * Created by acer on 16/2/2016.
@@ -30,6 +33,9 @@ public class PlayScreen extends AbstractScreen {
         renderer = new GameRenderer(cam, world, gameWidth, gameHeight); // initialize renderer
 
         Gdx.input.setInputProcessor(new InputHandler(world));
+
+        Thread fetchDataThread = new FetchDataThread(world);
+        fetchDataThread.start();
     }
 
     @Override
@@ -39,7 +45,6 @@ public class PlayScreen extends AbstractScreen {
 
     @Override
     public void show() {
-
 
     }
 
@@ -72,6 +77,35 @@ public class PlayScreen extends AbstractScreen {
     @Override
     public void dispose() {
 
+    }
+}
+
+class FetchDataThread extends Thread {
+    private GameWorld world;
+    public FetchDataThread(GameWorld world) {
+        this.world = world;
+    }
+    public void run() {
+        while (true) {
+            try {
+                JSONObject data = new JSONObject(WarpController.getData());
+                System.out.println(WarpController.getData());
+                float x = (float) data.getDouble("worldX");
+                float y = (float) data.getDouble("worldY");
+                float vx = (float) data.getDouble("velocityX");
+                float vy = (float) data.getDouble("velocityY");
+                float width = (float) data.getDouble("width");
+                float height = (float) data.getDouble("height");
+                int powerUpState = data.getInt("powerUpState");
+                int score = data.getInt("score");
+                int lives = data.getInt("lives");
+
+                world.getOtherPlayer().update(x, y, vx, vy, width, height, powerUpState, score, lives);
+            } catch (Exception e) {
+                // exception
+                // e.printStackTrace();
+            }
+        }
     }
 }
 

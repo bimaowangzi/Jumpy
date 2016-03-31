@@ -18,6 +18,7 @@ public class AssetLoader {
     public static ArrayList<TextureRegion> platformTextures = new ArrayList<TextureRegion>();
     public static ArrayList<TextureRegion> powerupTextures = new ArrayList<TextureRegion>();
     public static ArrayList<TextureRegion> playerTextures = new ArrayList<TextureRegion>();
+    public static TextureRegion otherPlayerTexture;
     public static TextureRegion groundTexture;
     public static TextureRegion life;
     public static BitmapFont font, shadow;
@@ -54,6 +55,9 @@ public class AssetLoader {
         playerTextures.add(new TextureRegion(texture, 42, 39, 16, 20)); // flyer
         playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal
         playerTextures.add(new TextureRegion(texture, 3, 345, 40, 32)); // giant
+
+        otherPlayerTexture = new TextureRegion(texture, 24, 90, 16, 16);
+        otherPlayerTexture.flip(false, true);
 
         for (TextureRegion t:playerTextures)
             t.flip(false, true);

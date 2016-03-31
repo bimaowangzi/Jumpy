@@ -10,6 +10,7 @@ import com.mygdx.JumpyHelper.AssetLoader;
 import com.mygdx.Platform;
 import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
+import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.Sprites.Player;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class GameRenderer {
 
     // Game Objects
     private Player player;
+    private OtherPlayer otherPlayer;
     private PlatformHandler platformHandler;
     private ArrayList<Platform> platforms;
     private PowerUp powerUp;
@@ -36,6 +38,7 @@ public class GameRenderer {
     private ArrayList<TextureRegion> platformTextures;
     private ArrayList<TextureRegion> powerupTextures;
     private ArrayList<TextureRegion> playerTextures;
+    private TextureRegion otherPlayerTexture;
     private TextureRegion life;
     private TextureRegion groundTexture;
 
@@ -65,6 +68,7 @@ public class GameRenderer {
 
     private void initGameObjects() {
         player = myWorld.getPlayer();
+        otherPlayer = myWorld.getOtherPlayer();
         platformHandler = myWorld.getPlatformHandler();
         platforms = platformHandler.getPlatforms();
         powerUp = myWorld.getPowerUp();
@@ -73,6 +77,7 @@ public class GameRenderer {
     private void initAssets() {
         bg = AssetLoader.bg;
         playerTextures = AssetLoader.playerTextures;
+        otherPlayerTexture = AssetLoader.otherPlayerTexture;
         platformTextures = AssetLoader.platformTextures;
         powerupTextures = AssetLoader.powerupTextures;
         life = AssetLoader.life;
@@ -88,9 +93,11 @@ public class GameRenderer {
     }
 
     public void render(float delta) {
-        // Move cam only if player is alive
-        if (myWorld.isRunning())
+        // Move cam only if player is aliveo
+        if (myWorld.isRunning()) {
             cam.position.y+=myWorld.getScrollSpeed()*delta;
+        }
+
 
         // Fill the entire screen with black, to prevent potential flickering.
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -121,6 +128,9 @@ public class GameRenderer {
         if (powerUp.isActive())
             batcher.draw(powerupTextures.get(powerUp.getType()), powerUp.getX(), powerUp.getY(),
                     powerUp.getRadius()*2, powerUp.getRadius()*2);
+        // Draw other player
+        batcher.draw(otherPlayerTexture, otherPlayer.getX(), otherPlayer.getY(),
+                otherPlayer.getWidth(), otherPlayer.getHeight());
         // Draw player
         batcher.draw(playerTextures.get(player.getPowerUpState()), player.getX(), player.getY(),
                 player.getWidth(), player.getHeight());
