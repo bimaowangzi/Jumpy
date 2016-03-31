@@ -29,6 +29,8 @@ public class WarpController {
 	private static HashMap<String,String> statusMap = new HashMap<String,String>();
 	private static HashMap<String,String> avatarMap = new HashMap<String,String>();
 
+	private static String data;
+
 
 	private boolean isConnected = false;
 	boolean isUDPEnabled = false;
@@ -200,10 +202,15 @@ public class WarpController {
 	public void onGameUpdateReceived(String message){
 //		log("onMoveUpdateReceived: message"+ message );
 		String userName = message.substring(0, message.indexOf("#@"));
-		String data = message.substring(message.indexOf("#@")+2, message.length());
-		if(!localUser.equals(userName)){
-			warpListener.onGameUpdateReceived(data);
-		}
+		if (userName.equals(getLocalUser()))
+			return;
+		//String data = message.substring(message.indexOf("#@")+2, message.length());
+		//if(!localUser.equals(userName)){
+		//	warpListener.onGameUpdateReceived(data);
+		//}
+
+		data = message.substring(message.indexOf("#@")+2);
+		System.out.println(data);
 	}
 	
 	public void onResultUpdateReceived(String userName, int code){
@@ -380,5 +387,9 @@ public class WarpController {
 
 		String textHistory = labelChat.getText().toString();
 		labelChat.setText(textHistory + message + "\n");
+	}
+
+	public static String getData() {
+		return data;
 	}
 }

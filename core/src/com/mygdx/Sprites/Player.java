@@ -18,6 +18,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.Platform;
 import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
+import com.mygdx.appwarp.WarpController;
+
+import org.json.JSONObject;
 
 
 /**
@@ -121,6 +124,8 @@ public class Player implements ContactFilter, ContactListener {
             alive = false;
             respawn();
         }
+
+        sendPlayerUpdate();
     }
 
     public void respawn() {
@@ -203,6 +208,25 @@ public class Player implements ContactFilter, ContactListener {
 
         body.setTransform(position, 0);
     }
+
+    private void sendPlayerUpdate() {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("worldX", body.getPosition().x);
+            data.put("worldY", body.getPosition().y);
+            data.put("velocityX", body.getLinearVelocity().x);
+            data.put("velocityY", body.getLinearVelocity().y);
+            data.put("width", width);
+            data.put("height", height);
+            data.put("powerUpState", powerUpState);
+            data.put("score", score);
+            data.put("lives", lives);
+            WarpController.getInstance().sendGameUpdate(data.toString());
+        } catch (Exception e) {
+            // exception in sendLocation
+        }
+    }
+
 
     public void setPlatformHandler(PlatformHandler p) {
         platformHandler = p;
