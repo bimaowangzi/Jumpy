@@ -89,11 +89,10 @@ public class GameRenderer {
         for (Platform p:platforms) {
             batcher.draw(platformTextures.get(p.getType()), p.getX(), p.getY(), p.getWidth(), p.getHeight());
         }
-
     }
 
     public void render(float delta) {
-        // Move cam only if player is aliveo
+        // Move cam only if player is alive
         if (myWorld.isRunning()) {
             cam.position.y+=myWorld.getScrollSpeed()*delta;
         }
@@ -115,29 +114,38 @@ public class GameRenderer {
 
         // Begin SpriteBatch
         batcher.begin();
+
         // Disable transparency
         batcher.disableBlending();
+
         // Draw background
-        batcher.draw(bg, 0, 0, gameWidth, gameHeight);;
+        batcher.draw(bg, 0, 0, gameWidth, gameHeight);
 
         // The platforms and player needs transparency, so we enable that again.
         batcher.enableBlending();
+
         // Draw platforms
         drawPlatforms();
+
         // Draw power up
         if (powerUp.isActive())
             batcher.draw(powerupTextures.get(powerUp.getType()), powerUp.getX(), powerUp.getY(),
                     powerUp.getRadius()*2, powerUp.getRadius()*2);
+
         // Draw other player
         batcher.draw(otherPlayerTexture, otherPlayer.getX(), otherPlayer.getY(),
                 otherPlayer.getWidth(), otherPlayer.getHeight());
+
         // Draw player
+        batcher.draw(AssetLoader.indicator, player.getX()+1, player.getY() - 3.5f, 3, 3);
         batcher.draw(playerTextures.get(player.getPowerUpState()), player.getX(), player.getY(),
                 player.getWidth(), player.getHeight());
+
         // Draw ground
         Platform ground = platformHandler.getGround();
         if (!ground.isScrolledDown())
             batcher.draw(groundTexture, ground.getX(), ground.getY(), ground.getWidth(), ground.getHeight());
+
         // Show lives
         for (int i=0; i<player.getLives(); i++) {
             batcher.draw(life, 2+i*5, 2, 4, 3);
@@ -151,6 +159,11 @@ public class GameRenderer {
         if (myWorld.isGameOver()) {
             AssetLoader.shadow.draw(batcher, "Game Over", 18, gameHeight/3);
             AssetLoader.font.draw(batcher, "Game Over", 18, gameHeight/3);
+        }
+
+        if (myWorld.isCompleted()) {
+            AssetLoader.shadow.draw(batcher, "Finished", 18, gameHeight/3);
+            AssetLoader.font.draw(batcher, "Finished", 18, gameHeight/3);
         }
 
         // End SpriteBatch

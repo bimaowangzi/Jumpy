@@ -35,7 +35,7 @@ public class Player implements ContactFilter, ContactListener {
     private float gameHeight;
 
     private float jumpSpeed;
-    private final float baseJumpSpeed = -50;
+    private final float baseJumpSpeed = -55;
     private float accelX;
     private boolean canJump; //determine whether to respond to the touch, to avoid multiple jumps
     private int score = 0;
@@ -191,7 +191,7 @@ public class Player implements ContactFilter, ContactListener {
         }
 
         if (platformType==1) {
-            body.setLinearVelocity(body.getLinearVelocity().x*20, 0);
+            body.setLinearVelocity(body.getLinearVelocity().x*10, 0);
         } else if (platformType==2) {
             body.setLinearVelocity(body.getLinearVelocity().x, baseJumpSpeed*1.5f);
         }
@@ -242,6 +242,10 @@ public class Player implements ContactFilter, ContactListener {
         return position.y - height/2;
     }
 
+    public float getWorldHeight() {
+        return body.getPosition().y;
+    }
+
 
     public float getWidth() {
         return this.width;
@@ -273,7 +277,6 @@ public class Player implements ContactFilter, ContactListener {
             score = (initialHeight - (int) body.getPosition().y)/10;
         return score;
     }
-
 
     @Override
     public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) {

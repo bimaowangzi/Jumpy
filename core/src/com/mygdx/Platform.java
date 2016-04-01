@@ -17,7 +17,7 @@ public class Platform {
     private Vector2 position;
     private float width;
     private float height;
-    private int type; //0-normal; 1-slippery; 2-bouncy; 3-moving
+    private int type; //0-normal; 1-slippery; 2-bouncy; 3-moving; 4-finishing line
     private boolean isScrolledDown;
     private float gameWidth, gameHeight;
 
@@ -66,11 +66,18 @@ public class Platform {
 
     public void update(float delta) {
         if (type==3) {
-            if (body.getPosition().x > gameWidth-width/2 || body.getPosition().x < width/2)
-                horizontalV*=-1;
-            body.setTransform(body.getPosition().x+horizontalV*delta, body.getPosition().y, 0);
+            if (body.getPosition().x > gameWidth - width / 2) {
+                horizontalV *= -1;
+                body.setTransform(gameWidth - width / 2, body.getPosition().y, 0);
+            }
+            if (body.getPosition().x < width / 2) {
+                horizontalV *= -1;
+                body.setTransform(width / 2, body.getPosition().y, 0);
+            }
+            body.setTransform(body.getPosition().x + horizontalV * delta, body.getPosition().y, 0);
         }
 
+        // match world position with game position
         position.x = body.getPosition().x - width/2;
         position.y = body.getPosition().y - (cam.position.y - gameHeight/2) - height/2;
 
@@ -90,7 +97,7 @@ public class Platform {
         this.height = height;
         this.type = type;
 
-        body.setTransform(x+width/2, worldHeight - gameHeight / 2 + height/2, 0);
+        body.setTransform(x+width/2, worldHeight + height/2, 0);
 
         isScrolledDown = false;
     }
@@ -106,6 +113,10 @@ public class Platform {
 
     public float getY() {
         return position.y;
+    }
+
+    public float getWorldHeight() {
+        return body.getPosition().y;
     }
 
     public float getWidth() {

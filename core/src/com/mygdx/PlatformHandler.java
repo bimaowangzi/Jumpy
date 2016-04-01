@@ -2,6 +2,7 @@ package com.mygdx;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.JumpyHelper.AssetLoader;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,11 +14,14 @@ public class PlatformHandler {
     // PlatformHandler will create all platform objects we need
     private ArrayList<Platform> platforms = new ArrayList<Platform>();
     private Platform ground;
+    private Platform finishlineLine;
     private Random random;
     private float gap;
     private World world;
     private OrthographicCamera cam;
     private float gameWidth, gameHeight;
+    private int index;
+    private float currentHeight;
 
     // Constructor receives a float that tells us where we need to create our platforms
     public PlatformHandler(OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
@@ -30,15 +34,19 @@ public class PlatformHandler {
         random = new Random();
 
         ground = new Platform(cam, world, 0, 0.8f*gameHeight, gameWidth, 0.2f*gameHeight, 0, gameWidth, gameHeight);
+        finishlineLine = null;
 
-        float y = 0.8f*gameHeight;
+        currentHeight = 0.8f*gameHeight;
+        index = 0;
         for (int i=0; i<5; i++) {
-            y -= gap;
-            platforms.add(new Platform(cam, world, random.nextInt(10), y-random.nextFloat()*gap,
-                    random.nextInt(5)+10, 2, generateType(), gameWidth, gameHeight));
-            y-=gap;
-            platforms.add(new Platform(cam, world, 25+random.nextInt(10), y-random.nextFloat()*gap,
-                    random.nextInt(5)+10, 2, generateType(), gameWidth, gameHeight));
+            currentHeight -= gap;
+            platforms.add(new Platform(cam, world, AssetLoader.platformLeft[index], currentHeight-AssetLoader.platformGap[index]*gap,
+                    AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
+            index++;
+            currentHeight-=gap;
+            platforms.add(new Platform(cam, world, 25+AssetLoader.platformLeft[index], currentHeight-AssetLoader.platformGap[index]*gap,
+                    AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
+            index++;
         }
     }
 
@@ -46,37 +54,50 @@ public class PlatformHandler {
         ground.update(delta);
         for (int i=0; i<10; i++) {
             platforms.get(i).update(delta);
+
             if (platforms.get(i).isScrolledDown()) {
-                if (i%2==0) //left platform
-                    platforms.get(i).reset(random.nextInt(10), 0,
-                            random.nextInt(5)+10, 2, generateType(), cam.position.y);
+                if (index==1000) {
+                    currentHeight -= gap;
+                    platforms.get(i).reset(0, 0, (int) gameWidth, 5, 4, currentHeight - AssetLoader.platformGap[index] * gap);
+                    finishlineLine = platforms.get(i);
+                    index++;
+                }
+                if (index > 1000) {
+                    continue;
+                }
+
+                currentHeight -= gap;
+                if (i % 2 == 0) //left platform
+                    platforms.get(i).reset(AssetLoader.platformLeft[index], 0,
+                            AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], currentHeight - AssetLoader.platformGap[index] * gap);
                 else
-                    platforms.get(i).reset(25+random.nextInt(10), 0,
-                            random.nextInt(5)+10, 2, generateType(), cam.position.y);
+                    platforms.get(i).reset(25 + AssetLoader.platformLeft[index], 0,
+                            AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], currentHeight - AssetLoader.platformGap[index] * gap);
+                index++;
             }
-
-
         }
     }
 
-    private int generateType() {
+/*    private int generateType() {
         int num = random.nextInt(8);
         if (num<5) return 0;
         else if (num==5) return 1;
         else if (num==6) return 2;
         else return 3;
-    }
+    }*/
 
     public void reset() {
-        float y = 0;
-        platforms.clear();
+        currentHeight = 0.8f*gameHeight;
+        index = 0;
         for (int i=0; i<5; i++) {
-            y += gap;
-            platforms.add(new Platform(cam, world, random.nextInt(10), y + random.nextFloat()*gap,
-                    random.nextInt(5) + 10, 2, generateType(), gameWidth, gameHeight));
-            y+=gap;
-            platforms.add(new Platform(cam, world, 25 + random.nextInt(10), y + random.nextFloat()*gap,
-                    random.nextInt(5) + 10, 2, generateType(), gameWidth,  gameHeight));
+            currentHeight -= gap;
+            platforms.add(new Platform(cam, world, AssetLoader.platformLeft[index], currentHeight-AssetLoader.platformGap[index]*gap,
+                    AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
+            index++;
+            currentHeight-=gap;
+            platforms.add(new Platform(cam, world, 25+AssetLoader.platformLeft[index], currentHeight-AssetLoader.platformGap[index]*gap,
+                    AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
+            index++;
         }
     }
 
@@ -87,5 +108,9 @@ public class PlatformHandler {
 
     public Platform getGround() {
         return ground;
+    }
+
+    public Platform getFinishlineLine() {
+        return finishlineLine;
     }
 }

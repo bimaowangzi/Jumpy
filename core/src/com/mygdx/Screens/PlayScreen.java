@@ -89,7 +89,6 @@ class FetchDataThread extends Thread {
         while (true) {
             try {
                 JSONObject data = new JSONObject(WarpController.getData());
-                System.out.println(WarpController.getData());
                 float x = (float) data.getDouble("worldX");
                 float y = (float) data.getDouble("worldY");
                 float vx = (float) data.getDouble("velocityX");
