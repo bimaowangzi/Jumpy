@@ -33,7 +33,7 @@ public class LoginScreen extends AbstractScreen{
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 String text = textUser.getText();
                 if (text.length()>0){
-                    // pass in text as localuser
+                    // pass in text as local user
                     WarpController.getInstance().startApp(text);
                     System.out.println("Connecting to Appwarp...");
                     while(!WarpController.isWaitflag()){}

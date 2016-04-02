@@ -3,6 +3,7 @@ package com.mygdx.GameWorld;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.Platform;
 import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
 import com.mygdx.Sprites.OtherPlayer;
@@ -28,7 +29,7 @@ public class GameWorld {
     private GameState currentState;
 
     public enum GameState {
-        READY, RUNNING, GAMEOVER
+        READY, RUNNING, GAMEOVER, COMPLETED
     }
 
 
@@ -39,7 +40,7 @@ public class GameWorld {
         this.gameWidth = gameWidth;
 
         currentState = GameState.READY;
-        world = new World(new Vector2(0, 65), true);
+        world = new World(new Vector2(0, 70), true);
 
         powerUp = new PowerUp(gameWidth, gameHeight);
 
@@ -92,15 +93,20 @@ public class GameWorld {
             world.step(delta, 1, 1);
         } else currentState = GameState.READY;
 
-        scrollSpeed += -0.0005;
+        scrollSpeed += -0.0003;
 
         player.update(delta);
+        otherPlayer.update();
         platformHandler.update(delta);
         powerUp.update(delta);
 
         if (player.getLives()<=0) {
             currentState = GameState.GAMEOVER;
         }
+        Platform finishingLine = platformHandler.getFinishlineLine();
+        if (finishingLine!=null)
+            if (player.getWorldHeight() < finishingLine.getWorldHeight())
+                currentState = GameState.COMPLETED;
     }
 
     public void restart() {
@@ -135,6 +141,10 @@ public class GameWorld {
 
     public boolean isGameOver() {
         return currentState == GameState.GAMEOVER;
+    }
+
+    public boolean isCompleted() {
+        return currentState == GameState.COMPLETED;
     }
 
     public boolean isRunning() {

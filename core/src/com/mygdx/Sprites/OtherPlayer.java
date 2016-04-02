@@ -68,6 +68,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
         body.createFixture(fixtureDef);
     }
 
+    // This update method is called when a new data set is received
     public void update(float x, float y, float vx, float vy, float width, float height, int powerUpState, int score, int lives) {
         this.body.setTransform(x, y, 0);
         this.body.setLinearVelocity(vx, vy);
@@ -76,11 +77,16 @@ public class OtherPlayer implements ContactFilter, ContactListener {
         this.powerUpState = powerUpState;
         this.score = score;
         this.lives = lives;
+    }
 
+    // This update method is called by the GameWorld
+    public void update() {
         // Map position on screen with world position
+
         position.x = body.getPosition().x;
         position.y = body.getPosition().y - (cam.position.y - gameHeight/2);
         boundingCircle.set(position, radius);
+        System.out.println(position.x + "/" + position.y);
     }
 
 
@@ -94,7 +100,6 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     public float getY() {
         return position.y - height/2;
     }
-
 
     public float getWidth() {
         return this.width;
