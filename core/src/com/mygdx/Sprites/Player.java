@@ -91,6 +91,29 @@ public class Player implements ContactFilter, ContactListener {
 
         initialHeight = (int) body.getPosition().y;
 
+        Thread sendDataThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject data = new JSONObject();
+                    data.put("worldX", body.getPosition().x);
+                    data.put("worldY", body.getPosition().y);
+                    data.put("velocityX", body.getLinearVelocity().x);
+                    data.put("velocityY", body.getLinearVelocity().y);
+                    data.put("width", width);
+                    data.put("height", height);
+                    data.put("powerUpState", powerUpState);
+                    data.put("score", score);
+                    data.put("worldHeight", getWorldHeight());
+                    data.put("lives", lives);
+                    data.put("lightning", powerUpState==5);
+                    WarpController.getInstance().sendGameUpdate(data.toString());
+                } catch (Exception e) {
+                    // exception in sendLocation
+                }
+            }
+        });
+        sendDataThread.start();
     }
 
     public void update(float delta) {
@@ -125,7 +148,7 @@ public class Player implements ContactFilter, ContactListener {
             respawn();
         }
 
-        sendPlayerUpdate();
+        //sendPlayerUpdate();
     }
 
     public void respawn() {
@@ -154,9 +177,23 @@ public class Player implements ContactFilter, ContactListener {
         // Set jump speed based on power ups
         if (powerUpState == -1) {
             jumpSpeed = baseJumpSpeed;
-            radius = 2.5f;
-            height = 5;
-            width = 5;
+            if (radius!=2.5f) {
+                body.destroyFixture(body.getFixtureList().first());
+
+                radius = 2.5f;
+                height = 5;
+                width = 5;
+
+                shape = new CircleShape();
+                shape.setRadius(radius);
+
+                FixtureDef fixtureDef = new FixtureDef();
+                fixtureDef.shape = shape;
+                fixtureDef.density = 1;
+                fixtureDef.friction = 0.5f;
+                body.createFixture(fixtureDef);
+            }
+
         } else if (powerUpState == 0) {
             jumpSpeed = baseJumpSpeed * 2;
         } else if (powerUpState == 1) {
@@ -167,9 +204,28 @@ public class Player implements ContactFilter, ContactListener {
             if (lives < 3) lives++;
             powerUpState = -1;
         } else if (powerUpState == 4) {
-            radius = 3.5f;
-            height = 7;
-            width = 7;
+            if (radius!=3.5f) {
+                body.destroyFixture(body.getFixtureList().first());
+
+                radius = 3.5f;
+                height = 7;
+                width = 7;
+
+                shape = new CircleShape();
+                shape.setRadius(radius);
+
+                FixtureDef fixtureDef = new FixtureDef();
+                fixtureDef.shape = shape;
+                fixtureDef.density = 1;
+                fixtureDef.friction = 0.5f;
+                body.createFixture(fixtureDef);
+            }
+        } else if (powerUpState == -5) {
+            body.setLinearVelocity(0, 0);
+        }
+
+        if ((powerUpState==5 || powerUpState==-5) && timer > 1f) {
+            powerUpState = -1;
         }
 
         if (timer > 5f) // power up effective for 5s
@@ -197,6 +253,11 @@ public class Player implements ContactFilter, ContactListener {
         }
     }
 
+    public void lightningStrike() {
+        powerUpState = -5; // struck by lightning
+        timer = 0;
+    }
+
     public void reset() {
         position = new Vector2(gameWidth/2, gameHeight*3/2);
         jumpSpeed = baseJumpSpeed;
@@ -209,23 +270,9 @@ public class Player implements ContactFilter, ContactListener {
         body.setTransform(position, 0);
     }
 
-    private void sendPlayerUpdate() {
-        try {
-            JSONObject data = new JSONObject();
-            data.put("worldX", body.getPosition().x);
-            data.put("worldY", body.getPosition().y);
-            data.put("velocityX", body.getLinearVelocity().x);
-            data.put("velocityY", body.getLinearVelocity().y);
-            data.put("width", width);
-            data.put("height", height);
-            data.put("powerUpState", powerUpState);
-            data.put("score", score);
-            data.put("lives", lives);
-            WarpController.getInstance().sendGameUpdate(data.toString());
-        } catch (Exception e) {
-            // exception in sendLocation
-        }
-    }
+//    private void sendPlayerUpdate() {
+//
+//    }
 
 
     public void setPlatformHandler(PlatformHandler p) {
@@ -319,5 +366,3 @@ public class Player implements ContactFilter, ContactListener {
 
     }
 }
-
-

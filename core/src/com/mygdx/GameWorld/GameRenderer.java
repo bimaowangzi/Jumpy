@@ -32,6 +32,7 @@ public class GameRenderer {
     private OtherPlayer otherPlayer;
     private PlatformHandler platformHandler;
     private ArrayList<Platform> platforms;
+    private Platform finishingline;
     private PowerUp powerUp;
 
     // Game Assets
@@ -77,6 +78,7 @@ public class GameRenderer {
         otherPlayer = myWorld.getOtherPlayer();
         platformHandler = myWorld.getPlatformHandler();
         platforms = platformHandler.getPlatforms();
+        finishingline = platformHandler.getFinishlineLine();
         powerUp = myWorld.getPowerUp();
     }
 
@@ -97,6 +99,7 @@ public class GameRenderer {
         for (Platform p:platforms) {
             batcher.draw(platformTextures.get(p.getType()), p.getX(), p.getY(), p.getWidth(), p.getHeight());
         }
+        batcher.draw(AssetLoader.finishingLineTexure, finishingline.getX(), finishingline.getY(), finishingline.getWidth(), finishingline.getHeight());
     }
 
     public void render(float delta) {
@@ -164,9 +167,10 @@ public class GameRenderer {
             System.out.println("moving left");
             batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
         }
+
+        batcher.draw(AssetLoader.indicator, player.getX()+1, player.getY() - 3.5f, 3, 3);
 //
 //        }
-//        batcher.draw(AssetLoader.indicator, player.getX()+1, player.getY() - 3.5f, 3, 3);
 //        batcher.draw(playerTextures.get(player.getPowerUpState()), player.getX(), player.getY(),
 //                player.getWidth(), player.getHeight());
 
@@ -179,6 +183,13 @@ public class GameRenderer {
         for (int i=0; i<player.getLives(); i++) {
             batcher.draw(life, 2+i*5, 2, 4, 3);
         }
+
+        // Show height bar
+        batcher.draw(AssetLoader.heightBarTexture, 2, 8, 2, 25);
+        float height = player.getWorldHeight()/platformHandler.getDistance() * 25 + 2f;
+        batcher.draw(playerTextures.get(0), 5, 33-height, 3, 3);
+        height = otherPlayer.getWorldHeight()/platformHandler.getDistance() * 25 + 2f;
+        batcher.draw(otherPlayerTexture, 5, 33-height, 3, 3);
 
         // Show height (score)
         AssetLoader.shadow.draw(batcher, "Height: " + player.getScore() + " m", 20, 2);

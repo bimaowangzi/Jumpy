@@ -24,6 +24,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
 
     private float width = 5;
     private float height = 5;
+    private float worldHeight;
     private float gameWidth;
     private float gameHeight;
 
@@ -69,7 +70,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     }
 
     // This update method is called when a new data set is received
-    public void update(float x, float y, float vx, float vy, float width, float height, int powerUpState, int score, int lives) {
+    public void update(float x, float y, float vx, float vy, float width, float height, int powerUpState, int score, float worldHeight, int lives) {
         this.body.setTransform(x, y, 0);
         this.body.setLinearVelocity(vx, vy);
         this.width = width;
@@ -77,6 +78,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
         this.powerUpState = powerUpState;
         this.score = score;
         this.lives = lives;
+        this.worldHeight = worldHeight;
     }
 
     // This update method is called by the GameWorld
@@ -107,6 +109,10 @@ public class OtherPlayer implements ContactFilter, ContactListener {
 
     public float getHeight() {
         return this.height;
+    }
+
+    public float getWorldHeight() {
+        return this.worldHeight;
     }
 
     public int getPowerUpState() {

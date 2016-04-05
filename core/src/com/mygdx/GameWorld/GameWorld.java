@@ -104,9 +104,9 @@ public class GameWorld {
             currentState = GameState.GAMEOVER;
         }
         Platform finishingLine = platformHandler.getFinishlineLine();
-        if (finishingLine!=null)
-            if (player.getWorldHeight() < finishingLine.getWorldHeight())
-                currentState = GameState.COMPLETED;
+
+        if (player.getWorldHeight() < finishingLine.getWorldHeight())
+            currentState = GameState.COMPLETED;
     }
 
     public void restart() {

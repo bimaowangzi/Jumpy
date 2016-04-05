@@ -88,6 +88,7 @@ class FetchDataThread extends Thread {
     public void run() {
         while (true) {
             try {
+
                 JSONObject data = new JSONObject(WarpController.getData());
                 float x = (float) data.getDouble("worldX");
                 float y = (float) data.getDouble("worldY");
@@ -97,9 +98,14 @@ class FetchDataThread extends Thread {
                 float height = (float) data.getDouble("height");
                 int powerUpState = data.getInt("powerUpState");
                 int score = data.getInt("score");
+                float worldHeight = (float) data.getDouble("worldHeight");
                 int lives = data.getInt("lives");
 
-                world.getOtherPlayer().update(x, y, vx, vy, width, height, powerUpState, score, lives);
+                world.getOtherPlayer().update(x, y, vx, vy, width, height, powerUpState, score, worldHeight, lives);
+
+                boolean lightningStruck = data.getBoolean("lightning");
+                if (lightningStruck)
+                    world.getPlayer().lightningStrike();
             } catch (Exception e) {
                 // exception
                 // e.printStackTrace();

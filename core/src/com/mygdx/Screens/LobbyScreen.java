@@ -321,7 +321,7 @@ class CheckStartThread extends Thread{
                 break;
             }
             // check if there is at least 2 players in the room
-            if (statusMap.size() < 2){
+            if (statusMap.size() < 1){
                 continue;
             }
 
