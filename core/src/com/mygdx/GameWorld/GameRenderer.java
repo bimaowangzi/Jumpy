@@ -3,6 +3,7 @@ package com.mygdx.GameWorld;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -45,6 +46,11 @@ public class GameRenderer {
     private float gameWidth;
     private float gameHeight;
 
+    private Animation playerMoveR;
+    private Animation playerMoveL;
+    private TextureRegion currentFrame;
+    private float stateTime;
+
     public GameRenderer (OrthographicCamera cam, GameWorld world, float gameWidth, float gameHeight) {
         myWorld = world;
 
@@ -82,6 +88,8 @@ public class GameRenderer {
         powerupTextures = AssetLoader.powerupTextures;
         life = AssetLoader.life;
         groundTexture = AssetLoader.groundTexture;
+        playerMoveR = AssetLoader.playerMoveR;
+        playerMoveL = AssetLoader.playerMoveL;
 
     }
 
@@ -137,9 +145,30 @@ public class GameRenderer {
                 otherPlayer.getWidth(), otherPlayer.getHeight());
 
         // Draw player
-        batcher.draw(AssetLoader.indicator, player.getX()+1, player.getY() - 3.5f, 3, 3);
-        batcher.draw(playerTextures.get(player.getPowerUpState()), player.getX(), player.getY(),
-                player.getWidth(), player.getHeight());
+//        if (player.inAir())
+//            batcher.draw(playerTextures.get(player.getPowerUpState()), player.getX(), player.getY(),
+//                    player.getWidth(), player.getHeight());
+//        else {
+
+
+        //ANIMATION
+        stateTime += delta;
+        if(player.MovingRight()){
+            currentFrame = playerMoveR.getKeyFrame(stateTime,true);
+            System.out.println("moving right");
+            batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
+        }
+
+        if(player.MovingLeft()){
+            currentFrame = playerMoveL.getKeyFrame(stateTime,true);
+            System.out.println("moving left");
+            batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
+        }
+//
+//        }
+//        batcher.draw(AssetLoader.indicator, player.getX()+1, player.getY() - 3.5f, 3, 3);
+//        batcher.draw(playerTextures.get(player.getPowerUpState()), player.getX(), player.getY(),
+//                player.getWidth(), player.getHeight());
 
         // Draw ground
         Platform ground = platformHandler.getGround();

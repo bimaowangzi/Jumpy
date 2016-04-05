@@ -278,6 +278,22 @@ public class Player implements ContactFilter, ContactListener {
         return score;
     }
 
+    public boolean MovingLeft(){
+        if(body.getLinearVelocity().x < 0){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean MovingRight(){
+        if(body.getLinearVelocity().x > 0){
+            return true;
+        }
+        else
+            return false;
+    }
+
     @Override
     public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) {
         return (body.getLinearVelocity().y > 0 && body.getPosition().y+height/2 < fixtureB.getBody().getPosition().y+0.1);
