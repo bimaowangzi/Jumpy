@@ -20,20 +20,20 @@ import com.badlogic.gdx.physics.box2d.World;
  * Created by acer on 16/2/2016.
  */
 public class OtherPlayer implements ContactFilter, ContactListener {
-    private Vector2 position;
+    private volatile Vector2 position;
 
-    private float width = 5;
-    private float height = 5;
-    private float worldHeight;
-    private float gameWidth;
-    private float gameHeight;
+    private volatile float width = 5;
+    private volatile float height = 5;
+    private volatile float worldHeight;
+    private volatile float gameWidth;
+    private volatile float gameHeight;
 
-    private int score = 0;
+    private volatile int score = 0;
 
-    private int lives = 3;
-    private int powerUpState; //(-1)-nothing; 0-high jump; 1-weight; 2-balloon; 3-swap Position;
+    private volatile int lives = 3;
+    private volatile int powerUpState; //(-1)-nothing; 0-high jump; 1-weight; 2-balloon; 3-swap Position;
 
-    private float radius = 2.5f;
+    private volatile float radius = 2.5f;
 
     private OrthographicCamera cam;
 
@@ -70,7 +70,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     }
 
     // This update method is called when a new data set is received
-    public void update(float x, float y, float vx, float vy, float width, float height, int powerUpState, int score, float worldHeight, int lives) {
+    public synchronized void update(float x, float y, float vx, float vy, float width, float height, int powerUpState, int score, float worldHeight, int lives) {
         this.body.setTransform(x, y, 0);
         this.body.setLinearVelocity(vx, vy);
         this.width = width;
@@ -82,9 +82,8 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     }
 
     // This update method is called by the GameWorld
-    public void update() {
+    public synchronized void update() {
         // Map position on screen with world position
-
         position.x = body.getPosition().x;
         position.y = body.getPosition().y - (cam.position.y - gameHeight/2);
         boundingCircle.set(position, radius);

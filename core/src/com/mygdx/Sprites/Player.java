@@ -90,30 +90,6 @@ public class Player implements ContactFilter, ContactListener {
         body.createFixture(fixtureDef);
 
         initialHeight = (int) body.getPosition().y;
-
-        Thread sendDataThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject data = new JSONObject();
-                    data.put("worldX", body.getPosition().x);
-                    data.put("worldY", body.getPosition().y);
-                    data.put("velocityX", body.getLinearVelocity().x);
-                    data.put("velocityY", body.getLinearVelocity().y);
-                    data.put("width", width);
-                    data.put("height", height);
-                    data.put("powerUpState", powerUpState);
-                    data.put("score", score);
-                    data.put("worldHeight", getWorldHeight());
-                    data.put("lives", lives);
-                    data.put("lightning", powerUpState==5);
-                    WarpController.getInstance().sendGameUpdate(data.toString());
-                } catch (Exception e) {
-                    // exception in sendLocation
-                }
-            }
-        });
-        sendDataThread.start();
     }
 
     public void update(float delta) {
@@ -148,7 +124,7 @@ public class Player implements ContactFilter, ContactListener {
             respawn();
         }
 
-        //sendPlayerUpdate();
+        sendPlayerUpdate();
     }
 
     public void respawn() {
@@ -220,11 +196,11 @@ public class Player implements ContactFilter, ContactListener {
                 fixtureDef.friction = 0.5f;
                 body.createFixture(fixtureDef);
             }
-        } else if (powerUpState == -5) {
+        } else if (powerUpState == 6) {
             body.setLinearVelocity(0, 0);
         }
 
-        if ((powerUpState==5 || powerUpState==-5) && timer > 1f) {
+        if ((powerUpState==5 || powerUpState==6) && timer > 1f) {
             powerUpState = -1;
         }
 
@@ -254,7 +230,7 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     public void lightningStrike() {
-        powerUpState = -5; // struck by lightning
+        powerUpState = 6; // struck by lightning
         timer = 0;
     }
 
@@ -270,9 +246,25 @@ public class Player implements ContactFilter, ContactListener {
         body.setTransform(position, 0);
     }
 
-//    private void sendPlayerUpdate() {
-//
-//    }
+    private void sendPlayerUpdate() {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("worldX", body.getPosition().x);
+            data.put("worldY", body.getPosition().y);
+            data.put("velocityX", body.getLinearVelocity().x);
+            data.put("velocityY", body.getLinearVelocity().y);
+            data.put("width", width);
+            data.put("height", height);
+            data.put("powerUpState", powerUpState);
+            data.put("score", score);
+            data.put("worldHeight", getWorldHeight());
+            data.put("lives", lives);
+            data.put("lightning", powerUpState==5);
+            WarpController.getInstance().sendGameUpdate(data.toString());
+        } catch (Exception e) {
+            // exception in sendLocation
+        }
+    }
 
 
     public void setPlatformHandler(PlatformHandler p) {

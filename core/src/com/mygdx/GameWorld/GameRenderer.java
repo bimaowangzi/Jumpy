@@ -160,9 +160,7 @@ public class GameRenderer {
             currentFrame = playerMoveR.getKeyFrame(stateTime,true);
             System.out.println("moving right");
             batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
-        }
-
-        if(player.MovingLeft()){
+        } else {
             currentFrame = playerMoveL.getKeyFrame(stateTime,true);
             System.out.println("moving left");
             batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
