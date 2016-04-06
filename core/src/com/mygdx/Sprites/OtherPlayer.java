@@ -121,7 +121,6 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     @Override
     public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) {
         return false;
-        //return (body.getLinearVelocity().y > 0 && body.getPosition().y+height/2 < fixtureB.getBody().getPosition().y+0.1);
     }
 
     @Override
