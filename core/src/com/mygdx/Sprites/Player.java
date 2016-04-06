@@ -125,6 +125,8 @@ public class Player implements ContactFilter, ContactListener {
         }
 
         sendPlayerUpdate();
+
+
     }
 
     public void respawn() {
@@ -219,6 +221,7 @@ public class Player implements ContactFilter, ContactListener {
             }
         }
         if (platform!=null) {
+            canJump = true;
             platformType = platform.getType();
         }
 

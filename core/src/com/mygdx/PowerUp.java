@@ -103,11 +103,11 @@ public class PowerUp {
 
     private int typeGenerator() {
         int num = randomNumberGen.nextInt(15);
-//        if (num < 3) return 0;
-//        if (num < 7) return 1;
-//        if (num < 9) return 2;
-//        if (num < 11) return 3;
-//        if (num < 13) return 4;
+        if (num < 3) return 0;
+        if (num < 7) return 1;
+        if (num < 9) return 2;
+        if (num < 11) return 3;
+        if (num < 13) return 4;
         return 5;
     }
 
