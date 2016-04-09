@@ -13,6 +13,9 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
  */
 public abstract class AbstractScreen extends Stage implements Screen{
 
+    protected float width;
+    protected float height;
+
     public AbstractScreen() {
         super( new FitViewport(380.0f, 640.0f, new OrthographicCamera()) );
     }
@@ -38,6 +41,9 @@ public abstract class AbstractScreen extends Stage implements Screen{
 
     @Override
     public void resize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        System.out.println("resize with width " + width + " and height" + height);
         getViewport().update(width, height, true);
     }
 

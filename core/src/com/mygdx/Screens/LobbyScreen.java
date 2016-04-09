@@ -123,7 +123,7 @@ public class LobbyScreen extends AbstractScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 // Toggle between Selecting and Ready
-                System.out.println("Before:" + buttonStatusToggle.isChecked());
+//                System.out.println("Before:" + buttonStatusToggle.isChecked());
                 if (buttonStatusToggle.isChecked()) {
 
                     buttonStatusToggle.setText("Selecting");
@@ -141,7 +141,7 @@ public class LobbyScreen extends AbstractScreen {
                     System.out.println("Sets Ready");
                     warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready,"+avatarMap.get(WarpController.getLocalUser()));
                 }
-                System.out.println("After:" + buttonStatusToggle.isChecked());
+//                System.out.println("After:" + buttonStatusToggle.isChecked());
                 return false;
             }
         });
