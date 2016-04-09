@@ -303,13 +303,14 @@ public class WarpController {
 //		}
 	}
 	
-	private void disconnect(){
+	public void disconnect(){
 		warpClient.removeConnectionRequestListener(new ConnectionListener(this));
 		warpClient.removeChatRequestListener(new ChatListener(this));
 		warpClient.removeZoneRequestListener(new ZoneListener(this));
 		warpClient.removeRoomRequestListener(new RoomListener(this));
 		warpClient.removeNotificationListener(new NotificationListener(this));
 		warpClient.disconnect();
+		setWaitflag(true);
 	}
 
 	public static void setRoomDatas(RoomData[] roomDatas) {

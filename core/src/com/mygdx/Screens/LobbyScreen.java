@@ -132,14 +132,14 @@ public class LobbyScreen extends AbstractScreen {
                     System.out.println("Sets Selecting");
 
 
-                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting,"+avatarMap.get(WarpController.getLocalUser()));
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + avatarMap.get(WarpController.getLocalUser()));
                 } else {
 
                     buttonStatusToggle.setText("Ready");
 //                    buttonStatusToggle.setChecked(true);
 
                     System.out.println("Sets Ready");
-                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready,"+avatarMap.get(WarpController.getLocalUser()));
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready," + avatarMap.get(WarpController.getLocalUser()));
                 }
 //                System.out.println("After:" + buttonStatusToggle.isChecked());
                 return false;

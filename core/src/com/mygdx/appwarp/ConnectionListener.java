@@ -22,7 +22,6 @@ public class ConnectionListener implements ConnectionRequestListener {
 	}
 
 	public void onDisconnectDone(ConnectEvent e) {
-		
 	}
 
 	@Override

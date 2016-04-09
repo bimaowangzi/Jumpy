@@ -24,6 +24,7 @@ public class RoomSelectionScreen extends AbstractScreen{
 
     private final TextButton buttonCreateRoom;
     private final TextButton buttonConnectRoom;
+    private final TextButton buttonLogout;
     private final TextField textNewRoom;
     private final Label labelWelcome;
     private final Label labelNewRoom;
@@ -51,10 +52,10 @@ public class RoomSelectionScreen extends AbstractScreen{
                 if (text.length() > 0) {
                     roomSelUpdateThread.interrupt();
 
-                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting");
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting");
                     warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
                     System.out.println("Creating Room...");
-                    while(!WarpController.isWaitflag()){
+                    while (!WarpController.isWaitflag()) {
                     }
                     System.out.println("New Room " + text + " is created.");
                     WarpController.setWaitflag(false);
@@ -83,6 +84,20 @@ public class RoomSelectionScreen extends AbstractScreen{
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
 
                 }
+                return false;
+            }
+        });
+        buttonLogout = new TextButton("Logout",skin);
+        buttonLogout.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                roomSelUpdateThread.interrupt();
+
+                System.out.println("Logging Out.");
+                WarpController.getInstance().disconnect();
+                while (!WarpController.isWaitflag()){}
+                WarpController.setWaitflag(false);
+                ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN);
                 return false;
             }
         });
@@ -123,6 +138,8 @@ public class RoomSelectionScreen extends AbstractScreen{
         table.add(listRooms).colspan(2);
         table.row();
         table.add(buttonConnectRoom).colspan(2).space(10);
+        table.row();
+        table.add(buttonLogout).colspan(2).space(10);
         addActor(table);
     }
 
