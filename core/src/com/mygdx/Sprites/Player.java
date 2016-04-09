@@ -90,7 +90,6 @@ public class Player implements ContactFilter, ContactListener {
         body.createFixture(fixtureDef);
 
         initialHeight = (int) body.getPosition().y;
-
     }
 
     public void update(float delta) {
@@ -126,6 +125,8 @@ public class Player implements ContactFilter, ContactListener {
         }
 
         sendPlayerUpdate();
+
+
     }
 
     public void respawn() {
@@ -154,9 +155,23 @@ public class Player implements ContactFilter, ContactListener {
         // Set jump speed based on power ups
         if (powerUpState == -1) {
             jumpSpeed = baseJumpSpeed;
-            radius = 2.5f;
-            height = 5;
-            width = 5;
+            if (radius!=2.5f) {
+                body.destroyFixture(body.getFixtureList().first());
+
+                radius = 2.5f;
+                height = 5;
+                width = 5;
+
+                shape = new CircleShape();
+                shape.setRadius(radius);
+
+                FixtureDef fixtureDef = new FixtureDef();
+                fixtureDef.shape = shape;
+                fixtureDef.density = 1;
+                fixtureDef.friction = 0.5f;
+                body.createFixture(fixtureDef);
+            }
+
         } else if (powerUpState == 0) {
             jumpSpeed = baseJumpSpeed * 2;
         } else if (powerUpState == 1) {
@@ -167,9 +182,28 @@ public class Player implements ContactFilter, ContactListener {
             if (lives < 3) lives++;
             powerUpState = -1;
         } else if (powerUpState == 4) {
-            radius = 3.5f;
-            height = 7;
-            width = 7;
+            if (radius!=3.5f) {
+                body.destroyFixture(body.getFixtureList().first());
+
+                radius = 3.5f;
+                height = 7;
+                width = 7;
+
+                shape = new CircleShape();
+                shape.setRadius(radius);
+
+                FixtureDef fixtureDef = new FixtureDef();
+                fixtureDef.shape = shape;
+                fixtureDef.density = 1;
+                fixtureDef.friction = 0.5f;
+                body.createFixture(fixtureDef);
+            }
+        } else if (powerUpState == 6) {
+            body.setLinearVelocity(0, 0);
+        }
+
+        if ((powerUpState==5 || powerUpState==6) && timer > 1f) {
+            powerUpState = -1;
         }
 
         if (timer > 5f) // power up effective for 5s
@@ -187,6 +221,7 @@ public class Player implements ContactFilter, ContactListener {
             }
         }
         if (platform!=null) {
+            canJump = true;
             platformType = platform.getType();
         }
 
@@ -195,6 +230,11 @@ public class Player implements ContactFilter, ContactListener {
         } else if (platformType==2) {
             body.setLinearVelocity(body.getLinearVelocity().x, baseJumpSpeed*1.5f);
         }
+    }
+
+    public void lightningStrike() {
+        powerUpState = 6; // struck by lightning
+        timer = 0;
     }
 
     public void reset() {
@@ -220,7 +260,9 @@ public class Player implements ContactFilter, ContactListener {
             data.put("height", height);
             data.put("powerUpState", powerUpState);
             data.put("score", score);
+            data.put("worldHeight", getWorldHeight());
             data.put("lives", lives);
+            data.put("lightning", powerUpState==5);
             WarpController.getInstance().sendGameUpdate(data.toString());
         } catch (Exception e) {
             // exception in sendLocation
@@ -278,6 +320,22 @@ public class Player implements ContactFilter, ContactListener {
         return score;
     }
 
+    public boolean MovingLeft(){
+        if(body.getLinearVelocity().x < 0){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean MovingRight(){
+        if(body.getLinearVelocity().x > 0){
+            return true;
+        }
+        else
+            return false;
+    }
+
     @Override
     public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) {
         return (body.getLinearVelocity().y > 0 && body.getPosition().y+height/2 < fixtureB.getBody().getPosition().y+0.1);
@@ -303,5 +361,3 @@ public class Player implements ContactFilter, ContactListener {
 
     }
 }
-
-

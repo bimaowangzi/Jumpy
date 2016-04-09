@@ -30,6 +30,7 @@ public class WarpController {
 	private static HashMap<String,String> avatarMap = new HashMap<String,String>();
 
 	private static String data;
+	public static volatile boolean dataAvailable = false;
 
 
 	private boolean isConnected = false;
@@ -210,7 +211,7 @@ public class WarpController {
 		//}
 
 		data = message.substring(message.indexOf("#@")+2);
-		System.out.println(data);
+		dataAvailable = true;
 	}
 	
 	public void onResultUpdateReceived(String userName, int code){

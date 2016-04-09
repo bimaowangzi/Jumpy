@@ -22,6 +22,7 @@ public class PlatformHandler {
     private float gameWidth, gameHeight;
     private int index;
     private float currentHeight;
+    private final float distance = -1000f;
 
     // Constructor receives a float that tells us where we need to create our platforms
     public PlatformHandler(OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
@@ -34,7 +35,6 @@ public class PlatformHandler {
         random = new Random();
 
         ground = new Platform(cam, world, 0, 0.8f*gameHeight, gameWidth, 0.2f*gameHeight, 0, gameWidth, gameHeight);
-        finishlineLine = null;
 
         currentHeight = 0.8f*gameHeight;
         index = 0;
@@ -48,21 +48,18 @@ public class PlatformHandler {
                     AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
             index++;
         }
+
+        finishlineLine = new Platform(cam, world, 0, distance, gameWidth, 5, 4, gameWidth, gameHeight);
     }
 
     public void update(float delta) {
         ground.update(delta);
+        finishlineLine.update(delta);
         for (int i=0; i<10; i++) {
             platforms.get(i).update(delta);
 
             if (platforms.get(i).isScrolledDown()) {
-                if (index==1000) {
-                    currentHeight -= gap;
-                    platforms.get(i).reset(0, 0, (int) gameWidth, 5, 4, currentHeight - AssetLoader.platformGap[index] * gap);
-                    finishlineLine = platforms.get(i);
-                    index++;
-                }
-                if (index > 1000) {
+                if (finishlineLine.getY() > 0) {
                     continue;
                 }
 
@@ -112,5 +109,9 @@ public class PlatformHandler {
 
     public Platform getFinishlineLine() {
         return finishlineLine;
+    }
+
+    public float getDistance() {
+        return distance;
     }
 }
