@@ -39,8 +39,8 @@ public class LoginScreen extends AbstractScreen{
 
         final Label labelError = new Label("Unable to connect Appwarp, try a different ID and check your connections",skin);
         labelError.setWrap(true);
-        final Label labelConnecting = new Label("Connecting to the Server",skin);
-        labelConnecting.setWrap(true);
+//        final Label labelConnecting = new Label("Connecting to the Server",skin);
+//        labelConnecting.setWrap(true);
 
         buttonConnect = new TextButton("Connect",skin);
         buttonConnect.addListener(new InputListener(){
@@ -49,20 +49,20 @@ public class LoginScreen extends AbstractScreen{
                 String text = textUser.getText();
                 if (text.length()>0){
 
-                    table.setVisible(false);
-                    Dialog connectDia = new Dialog("Connecting",skin){
-
-                        {
-                            this.getContentTable().add(labelConnecting).prefWidth(table.getWidth());
-                        }
-
-                        @Override
-                        protected void result(Object object) {
-                            super.result(object);
-//                            table.setVisible(true);
-                        }
-
-                    }.show(stage);
+//                    table.setVisible(false);
+//                    Dialog connectDia = new Dialog("Connecting",skin){
+//
+//                        {
+//                            this.getContentTable().add(labelConnecting).prefWidth(table.getWidth());
+//                        }
+//
+//                        @Override
+//                        protected void result(Object object) {
+//                            super.result(object);
+////                            table.setVisible(true);
+//                        }
+//
+//                    }.show(stage);
 
                     // pass in text as local user
                     WarpController.getInstance().startApp(text);
@@ -71,7 +71,7 @@ public class LoginScreen extends AbstractScreen{
                     WarpController.setWaitflag(false);
                     getWarpClient();
                     System.out.println("Status: " + WarpController.isStatusflag());
-                    connectDia.remove();
+//                    connectDia.remove();
                     if (WarpController.isStatusflag()){
                         WarpController.setStatusflag(false);
                         // wait for setRoomData
