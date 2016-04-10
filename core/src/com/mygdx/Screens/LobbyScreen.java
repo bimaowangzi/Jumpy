@@ -149,6 +149,7 @@ public class LobbyScreen extends AbstractScreen {
         });
 
         textInput = new TextField("",skin);
+//        textInput.setBounds(textInput.getX(), textInput.getY(), Gdx.graphics.getWidth()/2,textInput.getHeight());
         labelChat = new Label("",skin);
 //        labelChat.setWidth(300);
 //        labelChat.setBounds(0,0,300,400);
@@ -166,7 +167,7 @@ public class LobbyScreen extends AbstractScreen {
 //        chatTable.add(labelChat).expandX().expandY();
 //        chatTable.setFillParent(true);
 //        chatTable.left();
-        labelRoom = new Label(roomName,skin);
+        labelRoom = new Label(roomName,skin,"title");
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();
         if (liveUsers != null){
@@ -174,18 +175,18 @@ public class LobbyScreen extends AbstractScreen {
         } else {
             labelNumOfPlayers = new Label(0 + "/" + room.getMaxUsers(),skin);
         }
-        labelPlayers = new Label("Players", skin);
-        listPlayers = new List(skin);
+        labelPlayers = new Label("Players", skin,"title");
+        listPlayers = new List(skin,"noHighlight");
 
         // sometimes crash due to liveusers being null
         if (liveUsers!=null) {
             listPlayers.setItems(liveUsers);
         }
 
-        labelStatus = new Label("Status", skin);
-        listStatus = new List(skin);
-        labelAvatar = new Label("Avatar", skin);
-        listAvatar = new List(skin);
+        labelStatus = new Label("Status", skin,"title");
+        listStatus = new List(skin,"noHighlight");
+        labelAvatar = new Label("Avatar", skin,"title");
+        listAvatar = new List(skin,"noHighlight");
 
     }
 
@@ -221,6 +222,12 @@ public class LobbyScreen extends AbstractScreen {
     public void buildStage() {
         Table tableBig = new Table();
         tableBig.setFillParent(true);
+        if (phoneDisplay){
+            tableBig.pad(75,0,450,0);
+        }else {
+            tableBig.pad(50,0,200,0);
+        }
+//        tableBig.setBounds(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/3,Gdx.graphics.getWidth(),Gdx.graphics.getHeight()*0.6f);
         tableBig.top();
         tableBig.setDebug(true);
 
@@ -246,7 +253,7 @@ public class LobbyScreen extends AbstractScreen {
         tableMid.add(scrollChat).colspan(3).maxHeight(400);
         scrollChat.setSize(tableMid.getWidth(),50);
         tableMid.row();
-        tableMid.add(textInput).colspan(2);
+        tableMid.add(textInput).colspan(2).expandX();
         tableMid.add(buttonSend);
         tableMid.row();
         tableMid.add(buttonExit);
@@ -324,7 +331,7 @@ class CheckStartThread extends Thread{
                 break;
             }
             // check if there is at least 2 players in the room
-            if (statusMap.size() < 1){
+            if (statusMap.size() <= 1){
                 continue;
             }
 

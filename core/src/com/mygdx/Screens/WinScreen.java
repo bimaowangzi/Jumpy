@@ -36,13 +36,13 @@ public class WinScreen extends AbstractScreen {
 
 //        getWarpClient();
 
-        labelWinner = new Label(liveUsers[0] + " Wins!",skin);
-        labelPlayers = new Label("Players",skin);
-        labelRanking = new Label("Ranking",skin);
-        labelTime = new Label("Timing",skin);
-        listPlayers = new List(skin);
-        listRanking = new List(skin);
-        listTime = new List(skin);
+        labelWinner = new Label(liveUsers[0] + " Wins!",skin,"title");
+        labelPlayers = new Label("Players",skin,"title");
+        labelRanking = new Label("Ranking",skin,"title");
+        labelTime = new Label("Timing",skin,"title");
+        listPlayers = new List(skin,"noHighlight");
+        listRanking = new List(skin,"noHighlight");
+        listTime = new List(skin,"noHighlight");
         buttonReturnToLobby = new TextButton("Back to Lobby",skin);
         buttonReturnToLobby.addListener(new InputListener(){
             @Override
@@ -75,6 +75,11 @@ public class WinScreen extends AbstractScreen {
     @Override
     public void buildStage() {
         Table table = new Table();
+        if (phoneDisplay){
+            table.pad(100,0,400,0);
+        } else {
+            table.pad(50,0,0,0);
+        }
         table.setFillParent(true);
         table.top();
         table.setDebug(true);

@@ -104,7 +104,7 @@ public class LoginScreen extends AbstractScreen{
             }
         });
         textUser = new TextField("",skin);
-        labelGame = new Label("Jumpy",skin);
+        labelGame = new Label("Jumpy",skin,"title");
         labelUser = new Label("Username:",skin);
         buildStage();
     }
@@ -140,6 +140,7 @@ public class LoginScreen extends AbstractScreen{
     @Override
     public void render(float delta) {
         super.render(delta);
+
 //        if (progress < 1){
 //            progress+=0.01f;
 //        }
@@ -162,5 +163,6 @@ public class LoginScreen extends AbstractScreen{
 ////        shapeRenderer.rect(width/4, buttonConnect.getY() - (buttonConnect.getHeight() * 4f), width / 2 * progress, buttonConnect.getHeight());
 //        shapeRenderer.rect(width/4, buttonConnect.getY(), width / 2 * progress, buttonConnect.getHeight());
 //        shapeRenderer.end();
+
     }
 }

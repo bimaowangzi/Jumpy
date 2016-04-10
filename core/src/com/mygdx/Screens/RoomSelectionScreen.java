@@ -107,7 +107,7 @@ public class RoomSelectionScreen extends AbstractScreen{
         textNewRoom = new TextField("",skin);
         labelNewRoom = new Label("New Room:",skin);
         labelWelcome = new Label("Welcome, " + WarpController.getLocalUser(),skin);
-        labelRoomList = new Label("Room List", skin);
+        labelRoomList = new Label("Room List", skin,"title");
         listRooms = new List(skin);
         addRoomToList(roomDataList);
         buildStage();
@@ -125,7 +125,7 @@ public class RoomSelectionScreen extends AbstractScreen{
     public void buildStage() {
         Table table = new Table();
         table.setFillParent(true);
-        table.top();
+        table.center();
         table.setDebug(true);
 
         table.add(labelWelcome).colspan(2).pad(1);
