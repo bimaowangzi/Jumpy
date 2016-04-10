@@ -103,6 +103,7 @@ public class LobbyScreen extends AbstractScreen {
                 warpClient.leaveRoom(roomId);
                 WarpController.clearLiveUsers();
                 WarpController.clearStatusMap();
+                Gdx.input.setOnscreenKeyboardVisible(false);
                 ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
                 return false;
             }
@@ -113,6 +114,7 @@ public class LobbyScreen extends AbstractScreen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 lobbyUpdateThread.interrupt();
                 checkStartThread.interrupt();
+                Gdx.input.setOnscreenKeyboardVisible(false);
                 ScreenManager.getInstance().showScreen(ScreenEnum.AVATAR);
                 return false;
             }
@@ -210,6 +212,7 @@ public class LobbyScreen extends AbstractScreen {
         if (startGame){
             lobbyUpdateThread.interrupt();
             checkStartThread.interrupt();
+            Gdx.input.setOnscreenKeyboardVisible(false);
             ScreenManager.getInstance().showScreen(ScreenEnum.PLAY);
         }
     }

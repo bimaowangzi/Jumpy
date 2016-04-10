@@ -59,6 +59,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                     }
                     System.out.println("New Room " + text + " is created.");
                     WarpController.setWaitflag(false);
+                    Gdx.input.setOnscreenKeyboardVisible(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 }
                 return false;
@@ -81,6 +82,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                     while(!WarpController.isWaitflag()){
                     }
                     WarpController.setWaitflag(false);
+                    Gdx.input.setOnscreenKeyboardVisible(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
 
                 }
@@ -97,6 +99,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                 WarpController.getInstance().disconnect();
                 while (!WarpController.isWaitflag()){}
                 WarpController.setWaitflag(false);
+                Gdx.input.setOnscreenKeyboardVisible(false);
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN);
                 return false;
             }

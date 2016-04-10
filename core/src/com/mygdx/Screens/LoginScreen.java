@@ -80,6 +80,7 @@ public class LoginScreen extends AbstractScreen{
                             // busy waiting
                         }
                         WarpController.setWaitRoomFlag(false);
+                        Gdx.input.setOnscreenKeyboardVisible(false);
                         ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
                     } else {
                         table.setVisible(false);
