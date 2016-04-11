@@ -121,8 +121,8 @@ com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 	noHighlight: {
 		font: font_pala_30pt,
 		fontColorSelected: { a: 1, g: 0.6, r: 1 },
-		fontColorUnselected: { a: 1, b: 1, g: 1, r: 1 },
-		selection: light_blue,
+		fontColorUnselected: { a: 1, g: 0.6, r: 1 },
+		selection: transparent,
 		background: light_blue
 	}
 },

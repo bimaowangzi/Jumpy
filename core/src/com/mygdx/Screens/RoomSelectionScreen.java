@@ -157,6 +157,9 @@ public class RoomSelectionScreen extends AbstractScreen{
     public void addRoomToList(RoomData[] roomDatas){
         roomMap = new HashMap<String, String>();
         if (roomDatas != null){
+            if (!listRooms.isVisible()){
+                listRooms.setVisible(true);
+            }
             String[] roomList = new String[roomDatas.length];
             for (int i = 0;i<roomDatas.length;i++){
                 RoomData roomData = roomDatas[i];
@@ -165,6 +168,9 @@ public class RoomSelectionScreen extends AbstractScreen{
             }
             listRooms.setItems(roomList);
         } else {
+            if (listRooms.isVisible()){
+                listRooms.setVisible(false);
+            }
             listRooms.clearItems();
         }
     }
