@@ -127,7 +127,7 @@ public class LoginScreen extends AbstractScreen{
         table.add(labelGame).colspan(2).pad(1);
         table.row();
         table.add(labelUser).pad(2);
-        table.add(textUser).pad(2);
+        table.add(textUser).pad(2).fill();
         table.row();
         table.add(buttonConnect).colspan(2).pad(1);
 

@@ -210,7 +210,7 @@ public class WarpController {
 		//	warpListener.onGameUpdateReceived(data);
 		//}
 
-		data = message.substring(message.indexOf("#@")+2);
+		data = message;
 		dataAvailable = true;
 	}
 	

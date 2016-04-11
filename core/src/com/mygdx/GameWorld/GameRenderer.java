@@ -158,11 +158,11 @@ public class GameRenderer {
         stateTime += delta;
         if(player.MovingRight()){
             currentFrame = playerMoveR.getKeyFrame(stateTime,true);
-            System.out.println("moving right");
+//            System.out.println("moving right");
             batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
         } else {
             currentFrame = playerMoveL.getKeyFrame(stateTime,true);
-            System.out.println("moving left");
+//            System.out.println("moving left");
             batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
         }
 
@@ -197,11 +197,6 @@ public class GameRenderer {
         if (myWorld.isGameOver()) {
             AssetLoader.shadow.draw(batcher, "Game Over", 18, gameHeight/3);
             AssetLoader.font.draw(batcher, "Game Over", 18, gameHeight/3);
-        }
-
-        if (myWorld.isCompleted()) {
-            AssetLoader.shadow.draw(batcher, "Finished", 18, gameHeight/3);
-            AssetLoader.font.draw(batcher, "Finished", 18, gameHeight/3);
         }
 
         // End SpriteBatch

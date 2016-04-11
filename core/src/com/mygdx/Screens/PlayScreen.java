@@ -2,9 +2,12 @@ package com.mygdx.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygdx.GameWorld.GameRenderer;
 import com.mygdx.GameWorld.GameWorld;
 import com.mygdx.JumpyHelper.InputHandler;
+import com.mygdx.JumpyHelper.PlayerResult;
 import com.mygdx.appwarp.WarpController;
 
 import org.json.JSONObject;
@@ -18,7 +21,14 @@ public class PlayScreen extends AbstractScreen {
     private GameRenderer renderer;
     private OrthographicCamera cam;
 
+    private Thread fetchDataThread;
+
     private float runTime = 0;
+
+//    // testing on screen
+//    private Label labelState;
+//
+//    Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     public PlayScreen (){
         float screenWidth = Gdx.graphics.getWidth();
@@ -34,8 +44,14 @@ public class PlayScreen extends AbstractScreen {
 
         Gdx.input.setInputProcessor(new InputHandler(world));
 
-        Thread fetchDataThread = new FetchDataThread(world);
+        fetchDataThread = new FetchDataThread(world);
         fetchDataThread.start();
+
+//        if (world.sent){
+//            labelState = new Label("Ended",skin);
+//        } else if (world.isGameOver()){
+//            labelState = new G
+//        }
     }
 
     @Override
@@ -53,6 +69,11 @@ public class PlayScreen extends AbstractScreen {
         runTime += delta;
         world.update(delta); // GameWorld updates
         renderer.render(delta); // GameRenderer renders
+        if (world.isEnded()) {
+            fetchDataThread.interrupt();
+            System.out.println("Game Ended");
+            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer(), world.getOtherPlayer());
+        }
     }
 
     @Override
@@ -87,26 +108,47 @@ class FetchDataThread extends Thread {
     }
     public void run() {
         while (true) {
+            if (isInterrupted()){
+                System.out.println("interrupted1");
+                break;
+            }
             try {
-                while (!WarpController.dataAvailable);
+                while (!WarpController.dataAvailable) {
+                    if (isInterrupted()){
+                        System.out.println("interrupted2");
+                        break;
+                    }
+                };
 
-                JSONObject data = new JSONObject(WarpController.getData());
-                float x = (float) data.getDouble("worldX");
-                float y = (float) data.getDouble("worldY");
-                float vx = (float) data.getDouble("velocityX");
-                float vy = (float) data.getDouble("velocityY");
-                float width = (float) data.getDouble("width");
-                float height = (float) data.getDouble("height");
-                int powerUpState = data.getInt("powerUpState");
-                int score = data.getInt("score");
-                float worldHeight = (float) data.getDouble("worldHeight");
-                int lives = data.getInt("lives");
+                String message = WarpController.getData();
+                String userName = message.substring(0, message.indexOf("#@"));
 
-                world.getOtherPlayer().update(x, y, vx, vy, width, height, powerUpState, score, worldHeight, lives);
-                WarpController.dataAvailable = false;
-                boolean lightningStruck = data.getBoolean("lightning");
-                if (lightningStruck)
-                    world.getPlayer().lightningStrike();
+                JSONObject data = new JSONObject(message.substring(message.indexOf("#@") + 2));
+                String type = data.getString("type");
+                if (type.equals("update")) {
+                    float x = (float) data.getDouble("worldX");
+                    float y = (float) data.getDouble("worldY");
+                    float vx = (float) data.getDouble("velocityX");
+                    float vy = (float) data.getDouble("velocityY");
+                    float width = (float) data.getDouble("width");
+                    float height = (float) data.getDouble("height");
+                    int powerUpState = data.getInt("powerUpState");
+                    int score = data.getInt("score");
+                    float worldHeight = (float) data.getDouble("worldHeight");
+                    int lives = data.getInt("lives");
+
+                    world.getOtherPlayer().update(x, y, vx, vy, width, height, powerUpState, score, worldHeight, lives);
+                    WarpController.dataAvailable = false;
+                    boolean lightningStruck = data.getBoolean("lightning");
+                    if (lightningStruck)
+                        world.getPlayer().lightningStrike();
+                } else if (type.equals("GameEnd")) {
+                    boolean dead = data.getBoolean("dead");
+                    float time = (float) data.getDouble("time");
+                    int height = data.getInt("height");
+                    world.setResult(new PlayerResult(dead, time, height, userName));
+//                    System.out.println("Received");
+                }
             } catch (Exception e) {
                 // exception
                 // e.printStackTrace();

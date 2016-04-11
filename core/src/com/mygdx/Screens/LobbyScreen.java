@@ -253,7 +253,7 @@ public class LobbyScreen extends AbstractScreen {
         tableMid.add(scrollChat).colspan(3).maxHeight(400);
         scrollChat.setSize(tableMid.getWidth(),50);
         tableMid.row();
-        tableMid.add(textInput).colspan(2).expandX();
+        tableMid.add(textInput).colspan(2).fill();
         tableMid.add(buttonSend);
         tableMid.row();
         tableMid.add(buttonExit);

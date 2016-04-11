@@ -1,5 +1,8 @@
 package com.mygdx.Screens;
 
+import com.mygdx.Sprites.OtherPlayer;
+import com.mygdx.Sprites.Player;
+
 /**
  * Created by user on 11/3/2016.
  */
@@ -29,7 +32,8 @@ public enum ScreenEnum {
     },
     WIN {
         public AbstractScreen getScreen(Object... params) {
-            return new WinScreen();
+            return new WinScreen((Player) params[0],(OtherPlayer) params[1]);
+//            return new WinScreen();
         }
     },
     PLAY {

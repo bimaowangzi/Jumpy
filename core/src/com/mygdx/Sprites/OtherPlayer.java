@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.JumpyHelper.PlayerResult;
 
 
 /**
@@ -42,6 +43,8 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     private Body body;
     private CircleShape shape;
 
+    private PlayerResult result;
+
     public OtherPlayer(OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
         position = new Vector2(gameWidth/2, gameHeight*0.8f);
         this.cam = cam;
@@ -67,6 +70,8 @@ public class OtherPlayer implements ContactFilter, ContactListener {
         fixtureDef.density=1;
         fixtureDef.friction=0.5f;
         body.createFixture(fixtureDef);
+
+        result = null;
     }
 
     // This update method is called when a new data set is received
@@ -90,7 +95,13 @@ public class OtherPlayer implements ContactFilter, ContactListener {
         System.out.println(position.x + "/" + position.y);
     }
 
+    public void setResult(PlayerResult result) {
+        this.result = result;
+    }
 
+    public PlayerResult getResult() {
+        return result;
+    }
 
     //upper left corner
     public float getX() {

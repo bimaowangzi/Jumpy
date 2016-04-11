@@ -1,6 +1,6 @@
 
 uiskin.png
-size: 1008,1022
+size: 998,1022
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -15,14 +15,14 @@ brown
   index: -1
 check-off
   rotate: false
-  xy: 442, 35
+  xy: 491, 35
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 textfield
   rotate: false
-  xy: 442, 35
+  xy: 491, 35
   size: 14, 14
   split: 3, 3, 3, 3
   orig: 14, 14
@@ -37,7 +37,7 @@ check-on
   index: -1
 cursor
   rotate: false
-  xy: 992, 998
+  xy: 726, 920
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -52,7 +52,7 @@ default
   index: -1
 default-pane
   rotate: false
-  xy: 866, 970
+  xy: 903, 970
   size: 5, 3
   split: 1, 1, 1, 1
   orig: 5, 3
@@ -60,7 +60,7 @@ default-pane
   index: -1
 default-rect-pad
   rotate: false
-  xy: 866, 970
+  xy: 903, 970
   size: 5, 3
   split: 1, 1, 1, 1
   orig: 5, 3
@@ -76,7 +76,7 @@ default-pane-noborder
   index: -1
 default-rect
   rotate: false
-  xy: 442, 31
+  xy: 491, 31
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -84,7 +84,7 @@ default-rect
   index: -1
 default-rect-down
   rotate: false
-  xy: 1005, 1019
+  xy: 739, 941
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -92,7 +92,7 @@ default-rect-down
   index: -1
 default-round
   rotate: false
-  xy: 992, 1002
+  xy: 726, 924
   size: 12, 20
   split: 5, 5, 5, 4
   pad: 4, 4, 1, 1
@@ -101,7 +101,7 @@ default-round
   index: -1
 default-round-down
   rotate: false
-  xy: 726, 924
+  xy: 980, 1002
   size: 12, 20
   split: 5, 5, 5, 4
   orig: 12, 20
@@ -117,7 +117,7 @@ default-round-large
   index: -1
 default-scroll
   rotate: false
-  xy: 845, 953
+  xy: 882, 953
   size: 20, 20
   split: 2, 2, 2, 2
   orig: 20, 20
@@ -133,7 +133,7 @@ default-select
   index: -1
 default-select-selection
   rotate: false
-  xy: 457, 46
+  xy: 506, 46
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -156,7 +156,7 @@ default-slider-knob
   index: -1
 default-splitpane
   rotate: false
-  xy: 739, 941
+  xy: 993, 1019
   size: 5, 3
   split: 0, 5, 0, 0
   orig: 5, 3
@@ -164,7 +164,7 @@ default-splitpane
   index: -1
 default-splitpane-vertical
   rotate: false
-  xy: 726, 918
+  xy: 980, 996
   size: 3, 5
   split: 0, 0, 0, 5
   orig: 3, 5
@@ -222,9 +222,18 @@ selection
   orig: 1, 1
   offset: 0, 0
   index: -1
-solid_blue
+silver
   rotate: false
   xy: 514, 734
+  size: 36, 72
+  split: 18, 17, 34, 37
+  pad: 16, 17, 10, 17
+  orig: 36, 72
+  offset: 0, 0
+  index: -1
+solid_blue
+  rotate: false
+  xy: 845, 950
   size: 36, 72
   split: 18, 17, 34, 37
   pad: 16, 17, 10, 17
@@ -254,7 +263,7 @@ tree-plus
   index: -1
 white
   rotate: false
-  xy: 845, 951
+  xy: 882, 951
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
@@ -275,7 +284,7 @@ widgets/CheckBox
   index: -1
 widgets/ImageButton
   rotate: false
-  xy: 845, 974
+  xy: 882, 974
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -296,7 +305,7 @@ widgets/List
   index: -1
 widgets/ProgressBar
   rotate: false
-  xy: 894, 974
+  xy: 931, 974
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -317,49 +326,49 @@ widgets/SelectBox
   index: -1
 widgets/Slider
   rotate: false
-  xy: 943, 974
+  xy: 148, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 widgets/SplitPane
   rotate: false
-  xy: 148, 1
+  xy: 197, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 widgets/TextButton
   rotate: false
-  xy: 197, 1
+  xy: 246, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 widgets/TextField
   rotate: false
-  xy: 246, 1
+  xy: 295, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 widgets/Touchpad
   rotate: false
-  xy: 295, 1
+  xy: 344, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 widgets/Tree
   rotate: false
-  xy: 344, 1
+  xy: 393, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 widgets/Window
   rotate: false
-  xy: 393, 1
+  xy: 442, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0

@@ -5,8 +5,8 @@ com.badlogic.gdx.graphics.Color: {
 	white: { r: 1, g: 1, b: 1, a: 1 },
 	Orange: { r: 1, g: 0.6, a: 1 },
 	red: { r: 1, a: 1 },
-	black: { a: 1 },
-	grey: { r: 0.7, g: 0.7, b: 0.7, a: 1 }
+	grey: { r: 0.7, g: 0.7, b: 0.7, a: 1 },
+	black: { a: 1 }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	font_pala_30pt: { file: font_pala_30pt.fnt },
@@ -117,6 +117,20 @@ com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 		fontColorUnselected: { a: 1, b: 1, g: 1, r: 1 },
 		selection: selection,
 		background: dialogDim
+	},
+	Dead: {
+		font: font_pala_30pt,
+		fontColorSelected: { a: 1, r: 1 },
+		fontColorUnselected: { a: 1, r: 1 },
+		selection: transparent,
+		background: silver
+	},
+	Alive: {
+		font: font_pala_30pt,
+		fontColorSelected: { a: 1, g: 1 },
+		fontColorUnselected: { a: 1, g: 1 },
+		selection: transparent,
+		background: silver
 	},
 	noHighlight: {
 		font: font_pala_30pt,

@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.JumpyHelper.PlayerResult;
 import com.mygdx.Platform;
 import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
@@ -58,6 +59,8 @@ public class Player implements ContactFilter, ContactListener {
     private Body body;
     private CircleShape shape;
 
+    private PlayerResult result;
+
     public Player(OrthographicCamera cam, World world, PowerUp powerUp, float gameWidth, float gameHeight) {
         position = new Vector2(gameWidth/2, gameHeight*0.8f);
         this.cam = cam;
@@ -90,6 +93,8 @@ public class Player implements ContactFilter, ContactListener {
         body.createFixture(fixtureDef);
 
         initialHeight = (int) body.getPosition().y;
+
+        result = null;
     }
 
     public void update(float delta) {
@@ -252,6 +257,7 @@ public class Player implements ContactFilter, ContactListener {
     private void sendPlayerUpdate() {
         try {
             JSONObject data = new JSONObject();
+            data.put("type", "update");
             data.put("worldX", body.getPosition().x);
             data.put("worldY", body.getPosition().y);
             data.put("velocityX", body.getLinearVelocity().x);
@@ -334,6 +340,14 @@ public class Player implements ContactFilter, ContactListener {
         }
         else
             return false;
+    }
+
+    public void setResult(PlayerResult result) {
+        this.result = result;
+    }
+
+    public PlayerResult getResult() {
+        return result;
     }
 
     @Override

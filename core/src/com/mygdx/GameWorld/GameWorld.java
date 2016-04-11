@@ -3,11 +3,15 @@ package com.mygdx.GameWorld;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.JumpyHelper.PlayerResult;
 import com.mygdx.Platform;
 import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
 import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.Sprites.Player;
+import com.mygdx.appwarp.WarpController;
+
+import org.json.JSONObject;
 
 /**
  * Created by Admin on 3/21/2016.
@@ -19,6 +23,7 @@ public class GameWorld {
     private World world;
     private PowerUp powerUp;
     private float scrollSpeed;
+    private float timer;
 
     //private static GameWorld instance = null;
 
@@ -29,7 +34,7 @@ public class GameWorld {
     private GameState currentState;
 
     public enum GameState {
-        READY, RUNNING, GAMEOVER, COMPLETED
+        READY, RUNNING, GAMEOVER, ENDED
     }
 
 
@@ -49,6 +54,7 @@ public class GameWorld {
         world.setContactFilter(player);
         world.setContactListener(player);
         scrollSpeed = -10f;
+        timer = 0;
         platformHandler = new PlatformHandler(cam, world, gameWidth, gameHeight);
 
         player.setPlatformHandler(platformHandler);
@@ -76,6 +82,23 @@ public class GameWorld {
                 break;
 
             case GAMEOVER:
+                player.setResult(new PlayerResult(player.getLives() == 0, timer, player.getScore(), WarpController.getLocalUser()));
+
+                try {
+                    JSONObject data = new JSONObject();
+                    data.put("type", "GameEnd");
+                    data.put("dead", player.getLives()==0);
+                    data.put("time", timer);
+                    data.put("height", player.getScore());
+                    WarpController.getInstance().sendGameUpdate(data.toString());
+//                    System.out.println("sent");
+                } catch (Exception e) {
+//                    System.out.println("exception caught");
+                    // exception in sendLocation
+                }
+
+                updateEnd();
+
 
             default:
 
@@ -91,6 +114,7 @@ public class GameWorld {
     public void updateRunning(float delta) {
         if (player.isAlive()) { // if player not alive, stop the world
             world.step(delta, 1, 1);
+            timer += delta;
         } else currentState = GameState.READY;
 
         scrollSpeed += -0.0003;
@@ -106,8 +130,30 @@ public class GameWorld {
         Platform finishingLine = platformHandler.getFinishlineLine();
 
         if (player.getWorldHeight() < finishingLine.getWorldHeight())
-            currentState = GameState.COMPLETED;
+            currentState = GameState.GAMEOVER;
     }
+
+    public void updateEnd() {
+        if (otherPlayer.getResult()!=null && player.getResult()!=null) {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    JSONObject data = new JSONObject();
+                    data.put("type", "GameEnd");
+                    data.put("dead", player.getLives() == 0);
+                    data.put("time", timer);
+                    data.put("height", player.getScore());
+                    WarpController.getInstance().sendGameUpdate(data.toString());
+                    //                    System.out.println("sent");
+                } catch (Exception e) {
+                    //                    System.out.println("exception caught");
+                    // exception in sendLocation
+                }
+                currentState = GameState.ENDED;
+            }
+        }
+    }
+
+
 
     public void restart() {
         currentState = GameState.READY;
@@ -117,6 +163,10 @@ public class GameWorld {
         scrollSpeed = -10f;
         currentState = GameState.RUNNING;
 
+    }
+
+    public void setResult(PlayerResult result) {
+        otherPlayer.setResult(result);
     }
 
     public float getScrollSpeed() {
@@ -143,8 +193,8 @@ public class GameWorld {
         return currentState == GameState.GAMEOVER;
     }
 
-    public boolean isCompleted() {
-        return currentState == GameState.COMPLETED;
+    public boolean isEnded() {
+        return currentState == GameState.ENDED;
     }
 
     public boolean isRunning() {

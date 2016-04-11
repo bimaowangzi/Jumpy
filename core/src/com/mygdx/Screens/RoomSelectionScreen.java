@@ -131,7 +131,7 @@ public class RoomSelectionScreen extends AbstractScreen{
         table.add(labelWelcome).colspan(2).pad(1);
         table.row();
         table.add(labelNewRoom).pad(5);
-        table.add(textNewRoom).pad(5);
+        table.add(textNewRoom).pad(5).fill();
         table.row();
         table.add(buttonCreateRoom).colspan(2).pad(5);
 
