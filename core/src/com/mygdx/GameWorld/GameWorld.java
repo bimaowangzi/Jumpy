@@ -24,6 +24,7 @@ public class GameWorld {
     private PowerUp powerUp;
     private float scrollSpeed;
     private float timer;
+    private float powerUpTimer;
 
     //private static GameWorld instance = null;
 
@@ -43,6 +44,7 @@ public class GameWorld {
         this.cam = cam;
         this.gameHeight = gameHeight;
         this.gameWidth = gameWidth;
+        powerUpTimer = 0;
 
         currentState = GameState.READY;
         world = new World(new Vector2(0, 70), true);
@@ -111,16 +113,27 @@ public class GameWorld {
         }
     }
 
+
     public void updateRunning(float delta) {
         if (player.isAlive()) { // if player not alive, stop the world
             world.step(delta, 1, 1);
             timer += delta;
         } else currentState = GameState.READY;
 
-        scrollSpeed += -0.0003;
+        scrollSpeed += -0.002;
+        if (player.getPowerUpState()==6) {
+            if (powerUpTimer==0) {
+                scrollSpeed += -5;
+            }
+            powerUpTimer += delta;
+        } else if (powerUpTimer>0) {
+            powerUpTimer = 0;
+            scrollSpeed -= -5;
+        }
 
         player.update(delta);
-        otherPlayer.update();
+        if (otherPlayer.getResult()==null)
+            otherPlayer.update();
         platformHandler.update(delta);
         powerUp.update(delta);
 

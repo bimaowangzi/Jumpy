@@ -69,6 +69,10 @@ public class AssetLoader {
         powerupTextures.add(new TextureRegion(texture, 42, 18, 16, 16)); // flyer
         powerupTextures.add(new TextureRegion(texture, 362, 51, 18, 19)); // life
         powerupTextures.add(new TextureRegion(texture, 362, 19, 16, 16)); // grow
+        powerupTextures.add(new TextureRegion(texture, 362, 35, 16, 16)); // random
+
+        texture = new Texture(Gdx.files.internal("speedUp.png"));
+        powerupTextures.add(new TextureRegion(texture, 37, 14, 225, 260)); // speedUp
 
         texture = new Texture(Gdx.files.internal("lightning.png"));
         powerupTextures.add(new TextureRegion(texture, 0, 0, 256, 256)); // lightning

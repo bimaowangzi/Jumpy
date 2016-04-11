@@ -203,11 +203,16 @@ public class Player implements ContactFilter, ContactListener {
                 fixtureDef.friction = 0.5f;
                 body.createFixture(fixtureDef);
             }
+        } else if (powerUpState == 5) {
+            while (powerUpState == 5)
+                powerUpState = powerUp.typeGenerator();
         } else if (powerUpState == 6) {
+            // increase world scroll speed
+        } else if (powerUpState == 8) {
             body.setLinearVelocity(0, 0);
         }
 
-        if ((powerUpState==5 || powerUpState==6) && timer > 1f) {
+        if ((powerUpState==7 || powerUpState==8) && timer > 1f) {
             powerUpState = -1;
         }
 
@@ -238,8 +243,9 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     public void lightningStrike() {
-        powerUpState = 6; // struck by lightning
+        powerUpState = 7; // struck by lightning
         timer = 0;
+        lives--;
     }
 
     public void reset() {
@@ -313,7 +319,7 @@ public class Player implements ContactFilter, ContactListener {
 
 
     public int getPowerUpState() {
-        return powerUpState + 1;
+        return powerUpState;
     }
 
     public int getLives() {

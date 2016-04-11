@@ -92,7 +92,6 @@ public class OtherPlayer implements ContactFilter, ContactListener {
         position.x = body.getPosition().x;
         position.y = body.getPosition().y - (cam.position.y - gameHeight/2);
         boundingCircle.set(position, radius);
-        System.out.println(position.x + "/" + position.y);
     }
 
     public void setResult(PlayerResult result) {
