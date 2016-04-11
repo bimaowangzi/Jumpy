@@ -79,7 +79,7 @@ public class WinScreen extends AbstractScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Returning to lobby.");
-                ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
+                ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
         });
