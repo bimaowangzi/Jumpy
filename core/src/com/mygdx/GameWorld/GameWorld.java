@@ -171,6 +171,8 @@ public class GameWorld {
     }
 
     public void updateEnd() {
+        for (OtherPlayer other:otherPlayers)
+            other.update();
         for (OtherPlayer other:otherPlayers) {
             if (other.getResult()==null)
                 return;

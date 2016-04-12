@@ -80,6 +80,16 @@ public class AssetLoader {
         texture = new Texture(Gdx.files.internal("speedUp.png"));
         powerupTextures.add(new TextureRegion(texture, 37, 14, 225, 260)); // speedUp
 
+        texture = new Texture(Gdx.files.internal("lightning.png"));
+        powerupTextures.add(new TextureRegion(texture, 0, 0, 256, 256)); // lightning
+
+        texture = new Texture(Gdx.files.internal("reverse-sync.png"));
+        powerupTextures.add(new TextureRegion(texture, 0, 0, 128, 128)); // reverse world
+
+        for (TextureRegion t:powerupTextures)
+            t.flip(false, true);
+
+
         texture = new Texture(Gdx.files.internal("Avatar.png"));
         avatarTextures.add(new TextureRegion(texture, 0, 0, 142, 142)); // high jump
         avatarTextures.add(new TextureRegion(texture, 144, 0, 142, 142)); // low jump
@@ -92,20 +102,11 @@ public class AssetLoader {
         for (TextureRegion t:avatarTextures)
             t.flip(false, false);
 
-
-        playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal
+/*        playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal
         playerTextures.add(new TextureRegion(texture, 6, 107, 16, 16)); // high jump
         playerTextures.add(new TextureRegion(texture, 24, 107, 16, 16)); // low jump
-        playerTextures.add(new TextureRegion(texture, 42, 39, 16, 20)); // flyer
-        playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal
-        texture = new Texture(Gdx.files.internal("lightning.png"));
-        powerupTextures.add(new TextureRegion(texture, 0, 0, 256, 256)); // lightning
-
-        texture = new Texture(Gdx.files.internal("reverse-sync.png"));
-        powerupTextures.add(new TextureRegion(texture, 0, 0, 128, 128)); // reverse world
-
-        for (TextureRegion t:powerupTextures)
-            t.flip(false, true);
+        playerTextures.add(new TextureRegion(texture, 42, 39, 16, 20)); // wings
+        playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal*/
 
         font = new BitmapFont(Gdx.files.internal("text.fnt"));
         font.getData().setScale(.05f, -.05f);
@@ -121,7 +122,7 @@ public class AssetLoader {
         playerTextures.add(new TextureRegion(texture, 56, 0, 31, 49)); // normal
         playerTextures.add(new TextureRegion(texture, 196, 0, 31, 49)); // high jump
         playerTextures.add(new TextureRegion(texture, 340, 0, 31, 49)); // low jump
-        playerTextures.add(new TextureRegion(texture, 52, 171, 45, 47)); // flyer
+        playerTextures.add(new TextureRegion(texture, 52, 171, 45, 47)); // wings
         playerTextures.add(new TextureRegion(texture, 56, 0, 31, 49)); // normal
         playerTextures.add(new TextureRegion(texture, 236, 161, 43, 67)); // giant
 
@@ -146,24 +147,6 @@ public class AssetLoader {
         frames.add(run);
         playerMoveL = (new Animation(0.1f,frames));
         frames.clear();
-
-//        run = new TextureRegion(texture,149,112,31,49);
-//        run.flip(false,true);
-//        frames.add(run);
-//        run = new TextureRegion(texture,105,111,31,49);
-//        run.flip(false,true);
-//        frames.add(run);
-//        playerMoveR.add(new Animation(0.1f,frames));
-//        frames.clear();
-//
-//        run = new TextureRegion(texture,9,54,31,48);
-//        run.flip(false,true);
-//        frames.add(run);
-//        run = new TextureRegion(texture,105,54,29,49);
-//        run.flip(false,true);
-//        frames.add(run);
-//        playerMoveL.add(new Animation(0.1f,frames));
-//        frames.clear();
 
         texture = new Texture(Gdx.files.internal("rainbowbar.png"));
         heightBarTexture = new TextureRegion(texture, 0, 0, 100, 1250);
