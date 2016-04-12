@@ -70,6 +70,8 @@ public class LobbyScreen extends AbstractScreen {
         roomId = WarpController.getRoomId();
         roomName = room.getName();
 
+        startGame = false;
+
         // start thread to update in-lobby players
         lobbyUpdateThread = new LobbyUpdateThread(warpClient,this,roomId);
         lobbyUpdateThread.start();
