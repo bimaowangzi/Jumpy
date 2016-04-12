@@ -1,5 +1,6 @@
 package com.mygdx.Screens;
 
+import com.mygdx.JumpyHelper.PlayerResult;
 import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.Sprites.Player;
 
@@ -32,7 +33,7 @@ public enum ScreenEnum {
     },
     WIN {
         public AbstractScreen getScreen(Object... params) {
-            return new WinScreen((Player) params[0],(OtherPlayer) params[1]);
+            return new WinScreen((PlayerResult) params[0],(PlayerResult) params[1]);
 //            return new WinScreen();
         }
     },
