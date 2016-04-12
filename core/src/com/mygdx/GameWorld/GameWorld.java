@@ -156,8 +156,7 @@ public class GameWorld {
 
         player.update(delta);
         for (OtherPlayer other:otherPlayers)
-            if (other.getResult()==null)
-                other.update();
+            other.update();
 
         platformHandler.update(delta);
         powerUp.update(delta);
