@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -16,7 +15,6 @@ import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -62,6 +60,8 @@ public class LobbyScreen extends AbstractScreen {
 
     public LobbyScreen() {
 
+        System.out.println("Lobby Constructed");
+
         getWarpClient();
 
         room = WarpController.getRoom();
@@ -105,6 +105,7 @@ public class LobbyScreen extends AbstractScreen {
                 warpClient.leaveRoom(roomId);
                 WarpController.clearLiveUsers();
                 WarpController.clearStatusMap();
+                Gdx.input.setOnscreenKeyboardVisible(false);
                 ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
                 return false;
             }
@@ -115,6 +116,7 @@ public class LobbyScreen extends AbstractScreen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 lobbyUpdateThread.interrupt();
                 checkStartThread.interrupt();
+                Gdx.input.setOnscreenKeyboardVisible(false);
                 ScreenManager.getInstance().showScreen(ScreenEnum.AVATAR);
                 return false;
             }
@@ -125,7 +127,7 @@ public class LobbyScreen extends AbstractScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 // Toggle between Selecting and Ready
-                System.out.println("Before:" + buttonStatusToggle.isChecked());
+//                System.out.println("Before:" + buttonStatusToggle.isChecked());
                 if (buttonStatusToggle.isChecked()) {
 
                     buttonStatusToggle.setText("Selecting");
@@ -134,21 +136,22 @@ public class LobbyScreen extends AbstractScreen {
                     System.out.println("Sets Selecting");
 
 
-                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting,"+avatarMap.get(WarpController.getLocalUser()));
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + avatarMap.get(WarpController.getLocalUser()));
                 } else {
 
                     buttonStatusToggle.setText("Ready");
 //                    buttonStatusToggle.setChecked(true);
 
                     System.out.println("Sets Ready");
-                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready,"+avatarMap.get(WarpController.getLocalUser()));
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Ready," + avatarMap.get(WarpController.getLocalUser()));
                 }
-                System.out.println("After:" + buttonStatusToggle.isChecked());
+//                System.out.println("After:" + buttonStatusToggle.isChecked());
                 return false;
             }
         });
 
         textInput = new TextField("",skin);
+//        textInput.setBounds(textInput.getX(), textInput.getY(), Gdx.graphics.getWidth()/2,textInput.getHeight());
         labelChat = new Label("",skin);
 //        labelChat.setWidth(300);
 //        labelChat.setBounds(0,0,300,400);
@@ -166,7 +169,7 @@ public class LobbyScreen extends AbstractScreen {
 //        chatTable.add(labelChat).expandX().expandY();
 //        chatTable.setFillParent(true);
 //        chatTable.left();
-        labelRoom = new Label(roomName,skin);
+        labelRoom = new Label(roomName,skin,"title");
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();
         if (liveUsers != null){
@@ -174,18 +177,18 @@ public class LobbyScreen extends AbstractScreen {
         } else {
             labelNumOfPlayers = new Label(0 + "/" + room.getMaxUsers(),skin);
         }
-        labelPlayers = new Label("Players", skin);
-        listPlayers = new List(skin);
+        labelPlayers = new Label("Players", skin,"title");
+        listPlayers = new List(skin,"noHighlight");
 
         // sometimes crash due to liveusers being null
         if (liveUsers!=null) {
             listPlayers.setItems(liveUsers);
         }
 
-        labelStatus = new Label("Status", skin);
-        listStatus = new List(skin);
-        labelAvatar = new Label("Avatar", skin);
-        listAvatar = new List(skin);
+        labelStatus = new Label("Status", skin,"title");
+        listStatus = new List(skin,"noHighlight");
+        labelAvatar = new Label("Avatar", skin,"title");
+        listAvatar = new List(skin,"noHighlight");
 
     }
 
@@ -212,6 +215,9 @@ public class LobbyScreen extends AbstractScreen {
         if (startGame){
             lobbyUpdateThread.interrupt();
             checkStartThread.interrupt();
+//            warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting" + avatarMap.get(WarpController.getLocalUser()));
+//            buttonStatusToggle.setChecked(true);
+            Gdx.input.setOnscreenKeyboardVisible(false);
             ScreenManager.getInstance().showScreen(ScreenEnum.PLAY);
         }
     }
@@ -220,6 +226,12 @@ public class LobbyScreen extends AbstractScreen {
     public void buildStage() {
         Table tableBig = new Table();
         tableBig.setFillParent(true);
+        if (phoneDisplay){
+            tableBig.pad(75,0,450,0);
+        }else {
+            tableBig.pad(50,0,200,0);
+        }
+//        tableBig.setBounds(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/3,Gdx.graphics.getWidth(),Gdx.graphics.getHeight()*0.6f);
         tableBig.top();
         tableBig.setDebug(true);
 
@@ -245,7 +257,7 @@ public class LobbyScreen extends AbstractScreen {
         tableMid.add(scrollChat).colspan(3).maxHeight(400);
         scrollChat.setSize(tableMid.getWidth(),50);
         tableMid.row();
-        tableMid.add(textInput).colspan(2);
+        tableMid.add(textInput).colspan(2).fill();
         tableMid.add(buttonSend);
         tableMid.row();
         tableMid.add(buttonExit);
@@ -323,7 +335,7 @@ class CheckStartThread extends Thread{
                 break;
             }
             // check if there is at least 2 players in the room
-            if (statusMap.size() <= 2){
+            if (statusMap.size() <= 1){
                 continue;
             }
 
@@ -344,6 +356,7 @@ class CheckStartThread extends Thread{
         if (!isInterrupted()){
             LobbyScreen.startGame = true;
         }
+        System.out.println("start thread ended");
     }
 }
 

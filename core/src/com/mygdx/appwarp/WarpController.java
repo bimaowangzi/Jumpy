@@ -1,23 +1,15 @@
 package com.mygdx.appwarp;
 
 
-import java.util.HashMap;
-import java.util.Hashtable;
-
-import org.json.JSONObject;
-
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Json;
-import com.mygdx.Screens.AvatarScreen;
-import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
-import com.mygdx.Screens.AvatarScreen;
+
+import java.util.HashMap;
 
 public class WarpController {
 
@@ -36,6 +28,9 @@ public class WarpController {
 
 	private static HashMap<String,String> statusMap = new HashMap<String,String>();
 	private static HashMap<String,String> avatarMap = new HashMap<String,String>();
+
+	private static String data;
+	public static volatile boolean dataAvailable = false;
 
 
 	private boolean isConnected = false;
@@ -208,10 +203,15 @@ public class WarpController {
 	public void onGameUpdateReceived(String message){
 //		log("onMoveUpdateReceived: message"+ message );
 		String userName = message.substring(0, message.indexOf("#@"));
-		String data = message.substring(message.indexOf("#@")+2, message.length());
-		if(!localUser.equals(userName)){
-			warpListener.onGameUpdateReceived(data);
-		}
+		if (userName.equals(getLocalUser()))
+			return;
+		//String data = message.substring(message.indexOf("#@")+2, message.length());
+		//if(!localUser.equals(userName)){
+		//	warpListener.onGameUpdateReceived(data);
+		//}
+
+		data = message;
+		dataAvailable = true;
 	}
 	
 	public void onResultUpdateReceived(String userName, int code){
@@ -303,13 +303,14 @@ public class WarpController {
 //		}
 	}
 	
-	private void disconnect(){
+	public void disconnect(){
 		warpClient.removeConnectionRequestListener(new ConnectionListener(this));
 		warpClient.removeChatRequestListener(new ChatListener(this));
 		warpClient.removeZoneRequestListener(new ZoneListener(this));
 		warpClient.removeRoomRequestListener(new RoomListener(this));
 		warpClient.removeNotificationListener(new NotificationListener(this));
 		warpClient.disconnect();
+		setWaitflag(true);
 	}
 
 	public static void setRoomDatas(RoomData[] roomDatas) {
@@ -388,5 +389,9 @@ public class WarpController {
 
 		String textHistory = labelChat.getText().toString();
 		labelChat.setText(textHistory + message + "\n");
+	}
+
+	public static String getData() {
+		return data;
 	}
 }

@@ -224,6 +224,11 @@ public class AvatarScreen extends AbstractScreen{
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
+                String user = WarpController.getLocalUser();
+
+                String avatar = avatarName;
+                warpClient.setCustomUserData(WarpController.getLocalUser(),WarpController.getStatusMap().get(WarpController.getLocalUser())+","+avatarName);
+
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
 
 

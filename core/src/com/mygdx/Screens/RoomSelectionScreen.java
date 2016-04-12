@@ -24,6 +24,7 @@ public class RoomSelectionScreen extends AbstractScreen{
 
     private final TextButton buttonCreateRoom;
     private final TextButton buttonConnectRoom;
+    private final TextButton buttonLogout;
     private final TextField textNewRoom;
     private final Label labelWelcome;
     private final Label labelNewRoom;
@@ -51,13 +52,14 @@ public class RoomSelectionScreen extends AbstractScreen{
                 if (text.length() > 0) {
                     roomSelUpdateThread.interrupt();
 
-                    warpClient.setCustomUserData(WarpController.getLocalUser(),"Selecting");
+                    warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting");
                     warpClient.createRoom(text, WarpController.getLocalUser(), 4, null);
                     System.out.println("Creating Room...");
-                    while(!WarpController.isWaitflag()){
+                    while (!WarpController.isWaitflag()) {
                     }
                     System.out.println("New Room " + text + " is created.");
                     WarpController.setWaitflag(false);
+                    Gdx.input.setOnscreenKeyboardVisible(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 }
                 return false;
@@ -80,16 +82,32 @@ public class RoomSelectionScreen extends AbstractScreen{
                     while(!WarpController.isWaitflag()){
                     }
                     WarpController.setWaitflag(false);
+                    Gdx.input.setOnscreenKeyboardVisible(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
 
                 }
                 return false;
             }
         });
+        buttonLogout = new TextButton("Logout",skin);
+        buttonLogout.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                roomSelUpdateThread.interrupt();
+
+                System.out.println("Logging Out.");
+                WarpController.getInstance().disconnect();
+                while (!WarpController.isWaitflag()){}
+                WarpController.setWaitflag(false);
+                Gdx.input.setOnscreenKeyboardVisible(false);
+                ScreenManager.getInstance().showScreen(ScreenEnum.LOGIN);
+                return false;
+            }
+        });
         textNewRoom = new TextField("",skin);
         labelNewRoom = new Label("New Room:",skin);
         labelWelcome = new Label("Welcome, " + WarpController.getLocalUser(),skin);
-        labelRoomList = new Label("Room List", skin);
+        labelRoomList = new Label("Room List", skin,"title");
         listRooms = new List(skin);
         addRoomToList(roomDataList);
         buildStage();
@@ -107,13 +125,13 @@ public class RoomSelectionScreen extends AbstractScreen{
     public void buildStage() {
         Table table = new Table();
         table.setFillParent(true);
-        table.top();
+        table.center();
         table.setDebug(true);
 
         table.add(labelWelcome).colspan(2).pad(1);
         table.row();
         table.add(labelNewRoom).pad(5);
-        table.add(textNewRoom).pad(5);
+        table.add(textNewRoom).pad(5).fill();
         table.row();
         table.add(buttonCreateRoom).colspan(2).pad(5);
 
@@ -123,6 +141,8 @@ public class RoomSelectionScreen extends AbstractScreen{
         table.add(listRooms).colspan(2);
         table.row();
         table.add(buttonConnectRoom).colspan(2).space(10);
+        table.row();
+        table.add(buttonLogout).colspan(2).space(10);
         addActor(table);
     }
 
@@ -137,6 +157,9 @@ public class RoomSelectionScreen extends AbstractScreen{
     public void addRoomToList(RoomData[] roomDatas){
         roomMap = new HashMap<String, String>();
         if (roomDatas != null){
+            if (!listRooms.isVisible()){
+                listRooms.setVisible(true);
+            }
             String[] roomList = new String[roomDatas.length];
             for (int i = 0;i<roomDatas.length;i++){
                 RoomData roomData = roomDatas[i];
@@ -145,6 +168,9 @@ public class RoomSelectionScreen extends AbstractScreen{
             }
             listRooms.setItems(roomList);
         } else {
+            if (listRooms.isVisible()){
+                listRooms.setVisible(false);
+            }
             listRooms.clearItems();
         }
     }
