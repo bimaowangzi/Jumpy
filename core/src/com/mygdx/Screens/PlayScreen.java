@@ -72,7 +72,7 @@ public class PlayScreen extends AbstractScreen {
         if (world.isEnded()) {
             fetchDataThread.interrupt();
             System.out.println("Game Ended");
-            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer(), world.getOtherPlayer());
+            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer().getResult(), world.getOtherPlayer().getResult());
         }
     }
 
