@@ -60,6 +60,8 @@ public class LobbyScreen extends AbstractScreen {
 
     public LobbyScreen() {
 
+        System.out.println("Lobby Constructed");
+
         getWarpClient();
 
         room = WarpController.getRoom();
@@ -213,6 +215,8 @@ public class LobbyScreen extends AbstractScreen {
         if (startGame){
             lobbyUpdateThread.interrupt();
             checkStartThread.interrupt();
+            warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting" + avatarMap.get(WarpController.getLocalUser()));
+            buttonStatusToggle.setChecked(true);
             Gdx.input.setOnscreenKeyboardVisible(false);
             ScreenManager.getInstance().showScreen(ScreenEnum.PLAY);
         }
@@ -331,7 +335,7 @@ class CheckStartThread extends Thread{
                 break;
             }
             // check if there is at least 2 players in the room
-            if (statusMap.size() < 1){
+            if (statusMap.size() <= 1){
                 continue;
             }
 

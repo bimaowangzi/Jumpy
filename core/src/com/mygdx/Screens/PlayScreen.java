@@ -2,8 +2,6 @@ package com.mygdx.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygdx.GameWorld.GameRenderer;
 import com.mygdx.GameWorld.GameWorld;
 import com.mygdx.JumpyHelper.InputHandler;
@@ -71,7 +69,6 @@ public class PlayScreen extends AbstractScreen {
         renderer.render(delta); // GameRenderer renders
         if (world.isEnded()) {
             fetchDataThread.interrupt();
-            System.out.println("Game Ended");
             ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer().getResult(), world.getOtherPlayer().getResult());
         }
     }
@@ -140,7 +137,7 @@ class FetchDataThread extends Thread {
                     world.getOtherPlayer().update(x, y, vx, vy, width, height, powerUpState, score, worldHeight, lives);
                     WarpController.dataAvailable = false;
                     boolean lightningStruck = data.getBoolean("lightning");
-                    if (lightningStruck)
+                    if (lightningStruck & world.isRunning())
                         world.getPlayer().lightningStrike();
                 } else if (type.equals("GameEnd")) {
                     boolean dead = data.getBoolean("dead");

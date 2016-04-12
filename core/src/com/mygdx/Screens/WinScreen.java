@@ -9,18 +9,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.mygdx.JumpyHelper.PlayerResult;
-import com.mygdx.Sprites.OtherPlayer;
-import com.mygdx.Sprites.Player;
+import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 
 /**
  * Created by user on 11/3/2016.
  */
 public class WinScreen extends AbstractScreen {
+
+    private WarpClient warpClient;
 
     private ArrayList<PlayerResult> playersResultArray = new ArrayList<PlayerResult>();
 
@@ -65,6 +65,8 @@ public class WinScreen extends AbstractScreen {
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     public WinScreen(PlayerResult playerResult,PlayerResult otherPlayerResult) {
+
+        getWarpClient();
 
         playersResultArray.add(playerResult);
         playersResultArray.add(otherPlayerResult);
@@ -131,6 +133,15 @@ public class WinScreen extends AbstractScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Returning to lobby.");
+                String[] liveUsers = WarpController.getLiveUsers();
+                for (String user : liveUsers){
+                    warpClient.getLiveUserInfo(user);
+                    while (!WarpController.isWaitflag()){
+                        // busy wait
+                    }
+                    WarpController.setWaitflag(false);
+                }
+
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
@@ -148,6 +159,14 @@ public class WinScreen extends AbstractScreen {
             listDeadRanking.setItems(deadRankings.toArray());
             listDeadTime.setItems(deadTimeings.toArray());
             listDeadHeight.setItems(deadHeight.toArray());
+        }
+    }
+
+    private void getWarpClient(){
+        try {
+            warpClient = WarpClient.getInstance();
+        } catch (Exception ex) {
+            System.out.println("Fail to get warpClient");
         }
     }
 

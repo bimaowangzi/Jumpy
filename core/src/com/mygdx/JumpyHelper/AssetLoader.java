@@ -94,7 +94,7 @@ public class AssetLoader {
         playerTextures.add(new TextureRegion(texture, 56, 0, 31, 49)); // normal
         playerTextures.add(new TextureRegion(texture, 196, 0, 31, 49)); // high jump
         playerTextures.add(new TextureRegion(texture, 340, 0, 31, 49)); // low jump
-        playerTextures.add(new TextureRegion(texture, 52, 67, 46, 53)); // flyer
+        playerTextures.add(new TextureRegion(texture, 52, 171, 45, 47)); // flyer
         playerTextures.add(new TextureRegion(texture, 56, 0, 31, 49)); // normal
         playerTextures.add(new TextureRegion(texture, 236, 161, 43, 67)); // giant
 

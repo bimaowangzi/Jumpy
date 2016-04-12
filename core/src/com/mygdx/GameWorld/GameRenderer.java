@@ -52,6 +52,8 @@ public class GameRenderer {
     private TextureRegion currentFrame;
     private float stateTime;
 
+    private int lightingCounter = 0;
+
     public GameRenderer (OrthographicCamera cam, GameWorld world, float gameWidth, float gameHeight) {
         myWorld = world;
 
@@ -113,6 +115,17 @@ public class GameRenderer {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if (player.getPowerUpState() == 8) {
+            if (lightingCounter%20 < 10)
+                Gdx.gl.glClearColor(1, 1, 1, 1);
+            else
+                Gdx.gl.glClearColor(1, 1, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            lightingCounter++;
+            return;
+        } else
+            lightingCounter = 0;
+
         // Begin ShapeRenderer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -148,22 +161,30 @@ public class GameRenderer {
                 otherPlayer.getWidth(), otherPlayer.getHeight());
 
         // Draw player
-//        if (player.inAir())
-//            batcher.draw(playerTextures.get(player.getPowerUpState()), player.getX(), player.getY(),
-//                    player.getWidth(), player.getHeight());
-//        else {
-
-
-        //ANIMATION
-        stateTime += delta;
-        if(player.MovingRight()){
-            currentFrame = playerMoveR.getKeyFrame(stateTime,true);
+        if (player.inAir()) {
+            if (player.getPowerUpState() == 0) {
+                batcher.draw(playerTextures.get(1), player.getX(), player.getY(),
+                        player.getWidth(), player.getHeight());
+            } else if (player.getPowerUpState() == 1) {
+                batcher.draw(playerTextures.get(2), player.getX(), player.getY(),
+                        player.getWidth(), player.getHeight());
+            } else if (player.getPowerUpState() == 2) {
+                batcher.draw(playerTextures.get(3), player.getX(), player.getY(),
+                        player.getWidth(), player.getHeight());
+            } else
+                batcher.draw(playerTextures.get(0), player.getX(), player.getY(),
+                        player.getWidth(), player.getHeight());
+        } else {        //ANIMATION
+            stateTime += delta;
+            if (player.MovingRight()) {
+                currentFrame = playerMoveR.getKeyFrame(stateTime, true);
 //            System.out.println("moving right");
-            batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
-        } else {
-            currentFrame = playerMoveL.getKeyFrame(stateTime,true);
+                batcher.draw(currentFrame, player.getX(), player.getY(), player.getWidth(), player.getHeight());
+            } else {
+                currentFrame = playerMoveL.getKeyFrame(stateTime, true);
 //            System.out.println("moving left");
-            batcher.draw(currentFrame, player.getX(), player.getY(),player.getWidth(), player.getHeight());
+                batcher.draw(currentFrame, player.getX(), player.getY(), player.getWidth(), player.getHeight());
+            }
         }
 
         batcher.draw(AssetLoader.indicator, player.getX()+1, player.getY() - 3.5f, 3, 3);

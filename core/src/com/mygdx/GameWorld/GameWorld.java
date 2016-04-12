@@ -120,7 +120,7 @@ public class GameWorld {
             timer += delta;
         } else currentState = GameState.READY;
 
-        scrollSpeed += -0.002;
+        scrollSpeed += -0.001;
         if (player.getPowerUpState()==6) {
             if (powerUpTimer==0) {
                 scrollSpeed += -5;
