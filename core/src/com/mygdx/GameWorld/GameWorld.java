@@ -168,15 +168,15 @@ public class GameWorld {
 
 
 
-    public void restart() {
-        currentState = GameState.READY;
-        cam.position.y = gameHeight/2;
-        player.reset();
-        platformHandler.reset();
-        scrollSpeed = -10f;
-        currentState = GameState.RUNNING;
-
-    }
+//    public void restart() {
+//        currentState = GameState.READY;
+//        cam.position.y = gameHeight/2;
+//        player.reset();
+//        platformHandler.reset();
+//        scrollSpeed = -10f;
+//        currentState = GameState.RUNNING;
+//
+//    }
 
     public void setResult(PlayerResult result) {
         otherPlayer.setResult(result);

@@ -34,8 +34,8 @@ public class InputHandler implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         myPlayer.onJump();
 
-        if (myWorld.isGameOver())
-            myWorld.restart();
+//        if (myWorld.isGameOver())
+//            myWorld.restart();
         return false;
     }
 
