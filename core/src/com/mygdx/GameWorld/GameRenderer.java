@@ -115,7 +115,7 @@ public class GameRenderer {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (player.getPowerUpState() == 8) {
+        if (player.getPowerUpState() == -8) {
             if (lightingCounter%20 < 10)
                 Gdx.gl.glClearColor(1, 1, 1, 1);
             else
@@ -153,7 +153,7 @@ public class GameRenderer {
 
         // Draw power up
         if (powerUp.isActive())
-            batcher.draw(powerupTextures.get(powerUp.getType()), powerUp.getX(), powerUp.getY(),
+            batcher.draw(powerupTextures.get(powerUp.getType()-1), powerUp.getX(), powerUp.getY(),
                     powerUp.getRadius()*2, powerUp.getRadius()*2);
 
         // Draw other players
@@ -163,13 +163,13 @@ public class GameRenderer {
 
         // Draw player
         if (player.inAir()) {
-            if (player.getPowerUpState() == 0) {
+            if (player.getPowerUpState() == 1) {
                 batcher.draw(playerTextures.get(1), player.getX(), player.getY(),
                         player.getWidth(), player.getHeight());
-            } else if (player.getPowerUpState() == 1) {
+            } else if (player.getPowerUpState() ==-2) {
                 batcher.draw(playerTextures.get(2), player.getX(), player.getY(),
                         player.getWidth(), player.getHeight());
-            } else if (player.getPowerUpState() == 2) {
+            } else if (player.getPowerUpState() == 3) {
                 batcher.draw(playerTextures.get(3), player.getX(), player.getY(),
                         player.getWidth(), player.getHeight());
             } else
@@ -216,6 +216,13 @@ public class GameRenderer {
         // Show height (score)
         AssetLoader.shadow.draw(batcher, "Height: " + player.getScore() + " m", 20, 2);
         AssetLoader.font.draw(batcher, "Height: " + player.getScore() + " m", 20, 2);
+
+        // Show power up state
+        if (player.getPowerUpState()!=0 && player.getPowerUpState()!=2 && player.getPowerUpState()!=7
+                && player.getPowerUpState()!=8 && player.getPowerUpState()!=9) {
+            batcher.draw(powerupTextures.get(Math.abs(player.getPowerUpState())-1), 40, gameHeight*0.1f, 7, 7);
+
+        }
 
         // Handling Game Over
         if (myWorld.isGameOver()) {

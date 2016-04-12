@@ -75,7 +75,7 @@ public class Player implements ContactFilter, ContactListener {
 
         canJump = true;
         alive = false;
-        powerUpState = -1;
+        powerUpState = 0;
 
         boundingCircle = new Circle();
 
@@ -116,7 +116,7 @@ public class Player implements ContactFilter, ContactListener {
             body.setTransform(0, body.getPosition().y, 0);
 
         // If a player is too far up the screen, the camera should follow him
-        if (body.getPosition().y < cam.position.y - gameHeight/4)
+        if (body.getPosition().y < cam.position.y - gameHeight/4 && powerUpState!=-9)
             cam.position.y = body.getPosition().y + gameHeight/4;
 
         // Map position on screen with world position
@@ -142,12 +142,17 @@ public class Player implements ContactFilter, ContactListener {
         for (Platform p : platformHandler.getPlatforms())
             if (p.getY() < gameHeight/2 && p.getY() > respawnPlatform.getY())
                 respawnPlatform = p;
+        if (respawnPlatform.getY() > gameHeight)
+            for (Platform p : platformHandler.getPlatforms())
+                if (p.getY() < respawnPlatform.getY())
+                    respawnPlatform = p;
+
 
         position = new Vector2(respawnPlatform.getX() + respawnPlatform.getWidth()/2,
                 respawnPlatform.getY() - 4);
         jumpSpeed = baseJumpSpeed;
         canJump = true;
-        powerUpState = -1;
+        powerUpState = 0;
 
         body.setTransform(respawnPlatform.getX() + respawnPlatform.getWidth()/2, respawnPlatform.getWorldHeight() - 4, 0);
     }
@@ -167,7 +172,7 @@ public class Player implements ContactFilter, ContactListener {
         }
 
         // Set jump speed based on power ups
-        if (powerUpState == -1) {
+        if (powerUpState == 0) {
             jumpSpeed = baseJumpSpeed;
             if (radius!=2.5f) {
                 body.destroyFixture(body.getFixtureList().first());
@@ -186,22 +191,22 @@ public class Player implements ContactFilter, ContactListener {
                 body.createFixture(fixtureDef);
             }
 
-        } else if (powerUpState == 0) {
-            jumpSpeed = baseJumpSpeed * 2;
         } else if (powerUpState == 1) {
-            jumpSpeed = baseJumpSpeed*0.8f;
-        } else if (powerUpState==2) { // umbrella
+            jumpSpeed = baseJumpSpeed * 2;
+        } else if (powerUpState == -2) {
+            jumpSpeed = baseJumpSpeed*0.7f;
+        } else if (powerUpState==3) { // umbrella
             body.setLinearVelocity(body.getLinearVelocity().x, -35);
-        } else if (powerUpState == 3 && timer != 0) {
-            if (lives < 3) lives++;
-            powerUpState = -1;
         } else if (powerUpState == 4) {
-            if (radius!=3.5f) {
+            if (lives < 3) lives++;
+            powerUpState = 0;
+        } else if (powerUpState == 5) {
+            if (radius!=4f) {
                 body.destroyFixture(body.getFixtureList().first());
 
                 radius = 4f;
-                height = 7;
-                width = 7;
+                height = 8;
+                width = 8;
 
                 shape = new CircleShape();
                 shape.setRadius(radius);
@@ -212,23 +217,30 @@ public class Player implements ContactFilter, ContactListener {
                 fixtureDef.friction = 0.5f;
                 body.createFixture(fixtureDef);
             }
-        } else if (powerUpState == 5) {
-            while (powerUpState == 5)
-                powerUpState = powerUp.typeGenerator();
         } else if (powerUpState == 6) {
+            while (powerUpState == 6)
+                powerUpState = powerUp.typeGenerator();
+        } else if (powerUpState == -7) {
             // increase world scroll speed
-        } else if (powerUpState == 8) {
+        } else if (powerUpState == -8) {
             body.setLinearVelocity(0, 0);
+        } else if (powerUpState == -9) {
+            jumpSpeed = -baseJumpSpeed;
         }
 
-        if ((powerUpState==7 || powerUpState==8) && timer > 0.5f) {
-            if (powerUpState==8)
+        if ((powerUpState==8 || powerUpState==-8) && timer > 0.7f) {
+            if (powerUpState==-7)
                 lives--;
-            powerUpState = -1;
+            powerUpState = 0;
+        }
+
+        if ((powerUpState==2 || powerUpState==-2 || powerUpState==7 || powerUpState==-7 ||
+                powerUpState==9 || powerUpState==-9) && timer > 2.5f) {
+            powerUpState = 0;
         }
 
         if (timer > 5f) // power up effective for 5s
-            powerUpState = -1;
+            powerUpState = 0;
     }
 
     private void detectPlatform() {
@@ -236,25 +248,43 @@ public class Player implements ContactFilter, ContactListener {
         Platform platform = null;
         int platformType = 0;
         for (Platform p: platformHandler.getPlatforms()) {
-            if (Math.abs(p.getY() - (getY()+height)) < 0.05f) {
+            if (Math.abs(p.getY() - (getY()+height)) < 0.1f) {
                 platform = p;
                 break;
             }
         }
         if (platform!=null) {
-            canJump = true;
             platformType = platform.getType();
         }
 
         if (platformType==1) {
             body.setLinearVelocity(body.getLinearVelocity().x*15, 0);
         } else if (platformType==2) {
+            canJump = false;
             body.setLinearVelocity(body.getLinearVelocity().x, baseJumpSpeed*1.5f);
         }
     }
 
-    public void lightningStrike() {
-        powerUpState = 8; // struck by lightning
+    public void getHit(int powerUp) {
+        jumpSpeed = baseJumpSpeed;
+        if (radius!=2.5f) {
+            body.destroyFixture(body.getFixtureList().first());
+
+            radius = 2.5f;
+            height = 5;
+            width = 5;
+
+            shape = new CircleShape();
+            shape.setRadius(radius);
+
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            fixtureDef.density = 1;
+            fixtureDef.friction = 0.5f;
+            body.createFixture(fixtureDef);
+        }
+
+        powerUpState = -powerUp;
         timer = 0;
     }
 
@@ -284,7 +314,6 @@ public class Player implements ContactFilter, ContactListener {
             data.put("score", score);
             data.put("worldHeight", getWorldHeight());
             data.put("lives", lives);
-            data.put("lightning", powerUpState==7);
             WarpController.getInstance().sendGameUpdate(data.toString());
         } catch (Exception e) {
             // exception in sendLocation
@@ -324,7 +353,7 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     public boolean isDead() {
-        return position.y > gameHeight;
+        return (position.y > gameHeight || position.y < 0);
     }
 
     public boolean isAlive(){
@@ -372,17 +401,20 @@ public class Player implements ContactFilter, ContactListener {
 
     @Override
     public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) {
-        return (body.getLinearVelocity().y > 0 && body.getPosition().y+height/2 < fixtureB.getBody().getPosition().y+0.1);
+        if (powerUpState!=-9)
+            return (body.getLinearVelocity().y > 0 && body.getPosition().y+height/2 < fixtureB.getBody().getPosition().y+0.1);
+        else
+            return (body.getLinearVelocity().y < 0 && body.getPosition().y-height/2 < fixtureB.getBody().getPosition().y+2);
     }
 
     @Override
     public void beginContact(Contact contact) {
-        for (Platform p: platformHandler.getPlatforms()) {
-            if (Math.abs(p.getY() - (getY() + height)) < 0.05f && p.getType() == 2) {
-                canJump = false;
-                return;
-            }
-        }
+//        for (Platform p: platformHandler.getPlatforms()) {
+//            if (Math.abs(p.getY() - (getY() + height)) < 0.05f && p.getType() == 2) {
+//                canJump = false;
+//                return;
+//            }
+//        }
         canJump = true;
     }
 
@@ -393,7 +425,7 @@ public class Player implements ContactFilter, ContactListener {
     @Override
     public void endContact(Contact contact) {
         for (Platform p: platformHandler.getPlatforms()) {
-            if (Math.abs(p.getY() - (getY() + height)) < 0.05f) {
+            if (Math.abs(p.getY() - (getY() + height)) < 0.1f) {
                 canJump = true;
                 return;
             }

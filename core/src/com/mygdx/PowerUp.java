@@ -13,8 +13,8 @@ public class PowerUp {
     private final float radius = 3f;
 
     private int type;
-    // 0 - high jump, 1 - low jump, 2 - umbrella, 3 - extra life, 4 - giant, 5 - random,
-    // 6 - speed up world, 7 - lightning, 8 - struck by lightning
+    // 0 - normal, 1 - high jump, 2 - low jump, 3 - wings, 4 - extra life, 5 - giant, 6 - random,
+    // 7 - speed up world, 8 - lightning, 9 - reverse world
     private boolean isActive;
     private float timer;
     private float nextRespawningTime;
@@ -42,7 +42,7 @@ public class PowerUp {
         boundingCircle = new Circle();
 
         timer = 0;
-        nextRespawningTime = 5 + randomNumberGen.nextFloat()*5;
+        nextRespawningTime = 7 + randomNumberGen.nextFloat()*7;
     }
 
     private void respawn() {
@@ -104,15 +104,16 @@ public class PowerUp {
     }
 
     public int typeGenerator() {
-        int num = randomNumberGen.nextInt(19);
-        if (num < 3) return 0;
-        if (num < 7) return 1;
-        if (num < 9) return 2;
-        if (num < 11) return 3;
-        if (num < 13) return 4;
-        if (num < 15) return 5;
-        if (num < 17) return 6;
-        return 7;
+        int num = randomNumberGen.nextInt(21);
+        if (num < 3) return 1;
+        if (num < 7) return 2;
+        if (num < 9) return 3;
+        if (num < 11) return 4;
+        if (num < 13) return 5;
+        if (num < 15) return 6;
+        if (num < 17) return 7;
+        if (num < 19) return 8;
+        return 9;
     }
 
     private boolean isGone() {

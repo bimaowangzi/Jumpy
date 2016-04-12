@@ -136,9 +136,9 @@ class FetchDataThread extends Thread {
 
                     world.getOtherPlayer(userName).update(x, y, vx, vy, width, height, powerUpState, score, worldHeight, lives);
                     WarpController.dataAvailable = false;
-                    boolean lightningStruck = data.getBoolean("lightning");
-                    if (lightningStruck & world.isRunning())
-                        world.getPlayer().lightningStrike();
+
+                    if ((powerUpState==2 || powerUpState==7 || powerUpState==8 || powerUpState==9) & world.isRunning())
+                        world.getPlayer().getHit(powerUpState);
                 } else if (type.equals("GameEnd")) {
                     boolean dead = data.getBoolean("dead");
                     float time = (float) data.getDouble("time");

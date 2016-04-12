@@ -33,7 +33,7 @@ public class LobbyScreen extends AbstractScreen {
     private String roomName;
     private String[] liveUsers;
 
-    public static volatile boolean startGame = false;
+    public static volatile boolean startGame;
 
     private final TextButton buttonSend;
     private final TextButton buttonExit;
@@ -63,6 +63,8 @@ public class LobbyScreen extends AbstractScreen {
         System.out.println("Lobby Constructed");
 
         getWarpClient();
+
+        startGame = false;
 
         room = WarpController.getRoom();
         roomId = WarpController.getRoomId();
@@ -215,8 +217,7 @@ public class LobbyScreen extends AbstractScreen {
         if (startGame){
             lobbyUpdateThread.interrupt();
             checkStartThread.interrupt();
-//            warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting" + avatarMap.get(WarpController.getLocalUser()));
-//            buttonStatusToggle.setChecked(true);
+            warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + avatarMap.get(WarpController.getLocalUser()));
             Gdx.input.setOnscreenKeyboardVisible(false);
             ScreenManager.getInstance().showScreen(ScreenEnum.PLAY);
         }

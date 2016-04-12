@@ -22,7 +22,7 @@ public class PlatformHandler {
     private float gameWidth, gameHeight;
     private int index;
     private float currentHeight;
-    private final float distance = -1000f;
+    private final float distance = -940f;
 
     // Constructor receives a float that tells us where we need to create our platforms
     public PlatformHandler(OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
@@ -62,7 +62,6 @@ public class PlatformHandler {
                 if (finishlineLine.getY() > 0) {
                     continue;
                 }
-
                 currentHeight -= gap;
                 if (i % 2 == 0) //left platform
                     platforms.get(i).reset(AssetLoader.platformLeft[index], 0,

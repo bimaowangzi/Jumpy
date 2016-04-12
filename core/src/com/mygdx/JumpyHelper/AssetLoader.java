@@ -66,7 +66,7 @@ public class AssetLoader {
 
         powerupTextures.add(new TextureRegion(texture, 417, 19, 16, 16)); // high jump
         powerupTextures.add(new TextureRegion(texture, 381, 104, 16, 16)); // low jump
-        powerupTextures.add(new TextureRegion(texture, 42, 18, 16, 16)); // flyer
+        powerupTextures.add(new TextureRegion(texture, 143, 243, 28, 17)); // flyer
         powerupTextures.add(new TextureRegion(texture, 362, 51, 18, 19)); // life
         powerupTextures.add(new TextureRegion(texture, 362, 19, 16, 16)); // grow
         powerupTextures.add(new TextureRegion(texture, 362, 35, 16, 16)); // random
@@ -76,6 +76,9 @@ public class AssetLoader {
 
         texture = new Texture(Gdx.files.internal("lightning.png"));
         powerupTextures.add(new TextureRegion(texture, 0, 0, 256, 256)); // lightning
+
+        texture = new Texture(Gdx.files.internal("reverse-sync.png"));
+        powerupTextures.add(new TextureRegion(texture, 0, 0, 128, 128)); // reverse world
 
         for (TextureRegion t:powerupTextures)
             t.flip(false, true);
@@ -141,6 +144,18 @@ public class AssetLoader {
         texture = new Texture(Gdx.files.internal("rainbowbar.png"));
         heightBarTexture = new TextureRegion(texture, 0, 0, 100, 1250);
 
+    }
+
+    public static void reverseWorld() {
+        bg.flip(false, true);
+        for (TextureRegion p:platformTextures)
+            p.flip(false, true);
+        for (TextureRegion p:playerTextures)
+            p.flip(false, true);
+        for (TextureRegion frame:playerMoveL.getKeyFrames())
+            frame.flip(false, true);
+        for (TextureRegion frame:playerMoveR.getKeyFrames())
+            frame.flip(false, true);
     }
 
     public static void dispose() {

@@ -3,6 +3,7 @@ package com.mygdx.GameWorld;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.JumpyHelper.AssetLoader;
 import com.mygdx.JumpyHelper.PlayerResult;
 import com.mygdx.Platform;
 import com.mygdx.PlatformHandler;
@@ -26,7 +27,7 @@ public class GameWorld {
     private PowerUp powerUp;
     private float scrollSpeed;
     private float timer;
-    private float powerUpTimer;
+    private float speedUpPowerUpTimer, reversePowerupTimer;
 
     //private static GameWorld instance = null;
 
@@ -45,7 +46,8 @@ public class GameWorld {
         this.cam = cam;
         this.gameHeight = gameHeight;
         this.gameWidth = gameWidth;
-        powerUpTimer = 0;
+        speedUpPowerUpTimer = 0;
+        reversePowerupTimer = 0;
 
         currentState = GameState.READY;
         world = new World(new Vector2(0, 70), true);
@@ -55,9 +57,12 @@ public class GameWorld {
         player = new Player(WarpController.getLocalUser(), cam, world, powerUp, gameWidth, gameHeight);
 
         String[] players = WarpController.getLiveUsers();
-        for (String name:players)
+        for (String name:players) {
+            System.out.println(name);
             if (!name.equals(player.getName()))
                 otherPlayers.add(new OtherPlayer(name, cam, world, gameWidth, gameHeight));
+        }
+
 
         world.setContactFilter(player);
         world.setContactListener(player);
@@ -127,14 +132,26 @@ public class GameWorld {
         } else currentState = GameState.READY;
 
         scrollSpeed += -0.001;
-        if (player.getPowerUpState()==6) {
-            if (powerUpTimer==0) {
+        if (player.getPowerUpState()==-7) {
+            if (speedUpPowerUpTimer==0) {
                 scrollSpeed += -5;
             }
-            powerUpTimer += delta;
-        } else if (powerUpTimer>0) {
-            powerUpTimer = 0;
+            speedUpPowerUpTimer += delta;
+        } else if (speedUpPowerUpTimer>0) {
+            speedUpPowerUpTimer = 0;
             scrollSpeed -= -5;
+        }
+
+        if (player.getPowerUpState()==-9) {
+            if (reversePowerupTimer==0) {
+                world.setGravity(new Vector2(0, -70));
+                AssetLoader.reverseWorld();
+            }
+            reversePowerupTimer += delta;
+        } else if (reversePowerupTimer>0) {
+            reversePowerupTimer = 0;
+            world.setGravity(new Vector2(0, 70));
+            AssetLoader.reverseWorld();
         }
 
         player.update(delta);
