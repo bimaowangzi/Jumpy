@@ -28,6 +28,7 @@ import org.json.JSONObject;
  * Created by acer on 16/2/2016.
  */
 public class Player implements ContactFilter, ContactListener {
+    private String name;
     private Vector2 position;
 
     private float width = 5;
@@ -61,7 +62,8 @@ public class Player implements ContactFilter, ContactListener {
 
     private PlayerResult result;
 
-    public Player(OrthographicCamera cam, World world, PowerUp powerUp, float gameWidth, float gameHeight) {
+    public Player(String name, OrthographicCamera cam, World world, PowerUp powerUp, float gameWidth, float gameHeight) {
+        this.name = name;
         position = new Vector2(gameWidth/2, gameHeight*0.8f);
         this.cam = cam;
         this.powerUp = powerUp;
@@ -126,7 +128,8 @@ public class Player implements ContactFilter, ContactListener {
         if (isDead()) {
             lives -= 1;
             alive = false;
-            respawn();
+            if (lives > 0)
+                respawn();
         }
 
         sendPlayerUpdate();
@@ -135,12 +138,18 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     public void respawn() {
-        position = new Vector2(gameWidth/2, gameHeight*3/2);
+        Platform respawnPlatform = platformHandler.getPlatforms().get(0);
+        for (Platform p : platformHandler.getPlatforms())
+            if (p.getY() < gameHeight/2 && p.getY() > respawnPlatform.getY())
+                respawnPlatform = p;
+
+        position = new Vector2(respawnPlatform.getX() + respawnPlatform.getWidth()/2,
+                respawnPlatform.getY() - 4);
         jumpSpeed = baseJumpSpeed;
         canJump = true;
         powerUpState = -1;
 
-        body.setTransform(cam.position.x, cam.position.y + gameHeight/6, 0);
+        body.setTransform(respawnPlatform.getX() + respawnPlatform.getWidth()/2, respawnPlatform.getWorldHeight() - 4, 0);
     }
 
     // Call this function when responding to screen touch
@@ -212,7 +221,7 @@ public class Player implements ContactFilter, ContactListener {
             body.setLinearVelocity(0, 0);
         }
 
-        if ((powerUpState==7 || powerUpState==8) && timer > 0.3f) {
+        if ((powerUpState==7 || powerUpState==8) && timer > 0.5f) {
             if (powerUpState==8)
                 lives--;
             powerUpState = -1;
@@ -249,17 +258,17 @@ public class Player implements ContactFilter, ContactListener {
         timer = 0;
     }
 
-    public void reset() {
-        position = new Vector2(gameWidth/2, gameHeight*3/2);
-        jumpSpeed = baseJumpSpeed;
-        canJump = true;
-        alive = false;
-        score = 0;
-        powerUpState = -1;
-        lives = 4;
-
-        body.setTransform(position, 0);
-    }
+//    public void reset() {
+//        position = new Vector2(gameWidth/2, gameHeight*3/2);
+//        jumpSpeed = baseJumpSpeed;
+//        canJump = true;
+//        alive = false;
+//        score = 0;
+//        powerUpState = -1;
+//        lives = 4;
+//
+//        body.setTransform(position, 0);
+//    }
 
     private void sendPlayerUpdate() {
         try {
@@ -285,6 +294,10 @@ public class Player implements ContactFilter, ContactListener {
 
     public void setPlatformHandler(PlatformHandler p) {
         platformHandler = p;
+    }
+
+    public String getName() {
+        return name;
     }
 
     //upper left corner

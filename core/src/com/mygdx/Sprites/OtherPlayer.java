@@ -21,6 +21,7 @@ import com.mygdx.JumpyHelper.PlayerResult;
  * Created by acer on 16/2/2016.
  */
 public class OtherPlayer implements ContactFilter, ContactListener {
+    private String name;
     private volatile Vector2 position;
 
     private volatile float width = 5;
@@ -45,7 +46,8 @@ public class OtherPlayer implements ContactFilter, ContactListener {
 
     private PlayerResult result;
 
-    public OtherPlayer(OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
+    public OtherPlayer(String name, OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
+        this.name = name;
         position = new Vector2(gameWidth/2, gameHeight*0.8f);
         this.cam = cam;
 
@@ -96,6 +98,10 @@ public class OtherPlayer implements ContactFilter, ContactListener {
 
     public void setResult(PlayerResult result) {
         this.result = result;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public PlayerResult getResult() {

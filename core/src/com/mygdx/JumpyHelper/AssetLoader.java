@@ -103,22 +103,40 @@ public class AssetLoader {
 
         Array<TextureRegion> frames = new Array<TextureRegion>();
         run = new TextureRegion(texture,9,112,31,49);
-        run.flip(false,true);
+        run.flip(false, true);
         frames.add(run);
         run = new TextureRegion(texture,105,111,31,49);
-        run.flip(false,true);
+        run.flip(false, true);
         frames.add(run);
-        playerMoveR = new Animation(0.1f,frames);
+        playerMoveR = (new Animation(0.1f,frames));
         frames.clear();
 
         run = new TextureRegion(texture,9,54,31,48);
-        run.flip(false,true);
+        run.flip(false, true);
         frames.add(run);
         run = new TextureRegion(texture,105,54,29,49);
-        run.flip(false,true);
+        run.flip(false, true);
         frames.add(run);
-        playerMoveL = new Animation(0.1f,frames);
+        playerMoveL = (new Animation(0.1f,frames));
         frames.clear();
+
+//        run = new TextureRegion(texture,149,112,31,49);
+//        run.flip(false,true);
+//        frames.add(run);
+//        run = new TextureRegion(texture,105,111,31,49);
+//        run.flip(false,true);
+//        frames.add(run);
+//        playerMoveR.add(new Animation(0.1f,frames));
+//        frames.clear();
+//
+//        run = new TextureRegion(texture,9,54,31,48);
+//        run.flip(false,true);
+//        frames.add(run);
+//        run = new TextureRegion(texture,105,54,29,49);
+//        run.flip(false,true);
+//        frames.add(run);
+//        playerMoveL.add(new Animation(0.1f,frames));
+//        frames.clear();
 
         texture = new Texture(Gdx.files.internal("rainbowbar.png"));
         heightBarTexture = new TextureRegion(texture, 0, 0, 100, 1250);

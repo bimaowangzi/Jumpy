@@ -13,12 +13,14 @@ import com.mygdx.appwarp.WarpController;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by Admin on 3/21/2016.
  */
 public class GameWorld {
     private Player player;
-    private OtherPlayer otherPlayer;
+    private ArrayList<OtherPlayer> otherPlayers = new ArrayList<OtherPlayer>();
     private PlatformHandler platformHandler;
     private World world;
     private PowerUp powerUp;
@@ -40,7 +42,6 @@ public class GameWorld {
 
 
     public GameWorld(OrthographicCamera cam, float gameWidth, float gameHeight) {
-        System.out.println("World initiated");
         this.cam = cam;
         this.gameHeight = gameHeight;
         this.gameWidth = gameWidth;
@@ -51,8 +52,13 @@ public class GameWorld {
 
         powerUp = new PowerUp(gameWidth, gameHeight);
 
-        player = new Player(cam, world, powerUp, gameWidth, gameHeight);
-        otherPlayer = new OtherPlayer(cam, world, gameWidth, gameHeight);
+        player = new Player(WarpController.getLocalUser(), cam, world, powerUp, gameWidth, gameHeight);
+
+        String[] players = WarpController.getLiveUsers();
+        for (String name:players)
+            if (!name.equals(player.getName()))
+                otherPlayers.add(new OtherPlayer(name, cam, world, gameWidth, gameHeight));
+
         world.setContactFilter(player);
         world.setContactListener(player);
         scrollSpeed = -10f;
@@ -132,8 +138,10 @@ public class GameWorld {
         }
 
         player.update(delta);
-        if (otherPlayer.getResult()==null)
-            otherPlayer.update();
+        for (OtherPlayer other:otherPlayers)
+            if (other.getResult()==null)
+                other.update();
+
         platformHandler.update(delta);
         powerUp.update(delta);
 
@@ -147,23 +155,27 @@ public class GameWorld {
     }
 
     public void updateEnd() {
-        if (otherPlayer.getResult()!=null && player.getResult()!=null) {
-            for (int i = 0; i < 10; i++) {
-                try {
-                    JSONObject data = new JSONObject();
-                    data.put("type", "GameEnd");
-                    data.put("dead", player.getLives() == 0);
-                    data.put("time", timer);
-                    data.put("height", player.getScore());
-                    WarpController.getInstance().sendGameUpdate(data.toString());
-                    //                    System.out.println("sent");
-                } catch (Exception e) {
-                    //                    System.out.println("exception caught");
-                    // exception in sendLocation
-                }
-                currentState = GameState.ENDED;
-            }
+        for (OtherPlayer other:otherPlayers) {
+            if (other.getResult()==null)
+                return;
         }
+
+        for (int i = 0; i < 10; i++) {
+            try {
+                JSONObject data = new JSONObject();
+                data.put("type", "GameEnd");
+                data.put("dead", player.getLives() == 0);
+                data.put("time", timer);
+                data.put("height", player.getScore());
+                WarpController.getInstance().sendGameUpdate(data.toString());
+                //                    System.out.println("sent");
+            } catch (Exception e) {
+                //                    System.out.println("exception caught");
+                // exception in sendLocation
+            }
+            currentState = GameState.ENDED;
+        }
+
     }
 
 
@@ -178,8 +190,8 @@ public class GameWorld {
 //
 //    }
 
-    public void setResult(PlayerResult result) {
-        otherPlayer.setResult(result);
+    public void setResult(OtherPlayer other, PlayerResult result) {
+        other.setResult(result);
     }
 
     public float getScrollSpeed() {
@@ -190,8 +202,15 @@ public class GameWorld {
         return player;
     }
 
-    public OtherPlayer getOtherPlayer() {
-        return otherPlayer;
+    public OtherPlayer getOtherPlayer(String name) {
+        for (OtherPlayer other:otherPlayers)
+            if (other.getName().equals(name))
+                return other;
+        return null;
+    }
+
+    public ArrayList<OtherPlayer> getOtherPlayers() {
+        return otherPlayers;
     }
 
     public PlatformHandler getPlatformHandler() {

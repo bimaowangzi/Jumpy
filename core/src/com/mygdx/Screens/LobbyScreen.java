@@ -215,8 +215,8 @@ public class LobbyScreen extends AbstractScreen {
         if (startGame){
             lobbyUpdateThread.interrupt();
             checkStartThread.interrupt();
-            warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting" + avatarMap.get(WarpController.getLocalUser()));
-            buttonStatusToggle.setChecked(true);
+//            warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting" + avatarMap.get(WarpController.getLocalUser()));
+//            buttonStatusToggle.setChecked(true);
             Gdx.input.setOnscreenKeyboardVisible(false);
             ScreenManager.getInstance().showScreen(ScreenEnum.PLAY);
         }

@@ -69,7 +69,7 @@ public class PlayScreen extends AbstractScreen {
         renderer.render(delta); // GameRenderer renders
         if (world.isEnded()) {
             fetchDataThread.interrupt();
-            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer().getResult(), world.getOtherPlayer().getResult());
+            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer().getResult(), world.getOtherPlayers());
         }
     }
 
@@ -134,7 +134,7 @@ class FetchDataThread extends Thread {
                     float worldHeight = (float) data.getDouble("worldHeight");
                     int lives = data.getInt("lives");
 
-                    world.getOtherPlayer().update(x, y, vx, vy, width, height, powerUpState, score, worldHeight, lives);
+                    world.getOtherPlayer(userName).update(x, y, vx, vy, width, height, powerUpState, score, worldHeight, lives);
                     WarpController.dataAvailable = false;
                     boolean lightningStruck = data.getBoolean("lightning");
                     if (lightningStruck & world.isRunning())
@@ -143,7 +143,7 @@ class FetchDataThread extends Thread {
                     boolean dead = data.getBoolean("dead");
                     float time = (float) data.getDouble("time");
                     int height = data.getInt("height");
-                    world.setResult(new PlayerResult(dead, time, height, userName));
+                    world.setResult(world.getOtherPlayer(userName), new PlayerResult(dead, time, height, userName));
 //                    System.out.println("Received");
                 }
             } catch (Exception e) {

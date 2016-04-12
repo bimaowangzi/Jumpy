@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.mygdx.JumpyHelper.PlayerResult;
+import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
@@ -37,16 +38,6 @@ public class WinScreen extends AbstractScreen {
     private ArrayList<String> deadTimeings = new ArrayList<String>();
     private ArrayList<String> deadHeight = new ArrayList<String>();
 
-//    private String[] alivePlayers = new String[]{"Alvin","Lam"};
-//    private String[] aliveRankings = new String[]{"1st","2nd"};
-//    private String[] aliveTimeings = new String[]{"1:30","1:40"};
-//    private String[] aliveHeight = new String[]{"500m","500m"};
-//
-//    private String[] deadPlayers = new String[]{"Daniel","Junsheng"};
-//    private String[] deadRankings = new String[]{"3rd","4th"};
-//    private String[] deadTimeings = new String[]{"1:53","2:02"};
-//    private String[] deadHeight = new String[]{"400m","300m"};
-
     private final Label labelWinner;
     private final Label labelPlayers;
     private final Label labelRanking;
@@ -64,12 +55,13 @@ public class WinScreen extends AbstractScreen {
 
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-    public WinScreen(PlayerResult playerResult,PlayerResult otherPlayerResult) {
+    public WinScreen(PlayerResult playerResult, ArrayList<OtherPlayer> otherPlayers) {
 
         getWarpClient();
 
         playersResultArray.add(playerResult);
-        playersResultArray.add(otherPlayerResult);
+        for (OtherPlayer other:otherPlayers)
+            playersResultArray.add(other.getResult());
 
         Collections.sort(playersResultArray);
 
