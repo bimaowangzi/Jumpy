@@ -15,9 +15,11 @@ public class AssetLoader {
 
     public static Texture texture;
     public static TextureRegion bg;
+    public static TextureRegion avatarbg;
     public static ArrayList<TextureRegion> platformTextures = new ArrayList<TextureRegion>();
     public static ArrayList<TextureRegion> powerupTextures = new ArrayList<TextureRegion>();
     public static ArrayList<TextureRegion> playerTextures = new ArrayList<TextureRegion>();
+    public static ArrayList<TextureRegion> avatarTextures = new ArrayList<TextureRegion>();
     public static TextureRegion groundTexture;
     public static TextureRegion life;
     public static BitmapFont font, shadow;
@@ -28,6 +30,10 @@ public class AssetLoader {
         texture = new Texture(Gdx.files.internal("BG.png"));
         bg = new TextureRegion(texture, 0, 0, 600, 1000);
         bg.flip(false, true);
+
+        texture = new Texture(Gdx.files.internal("008.jpg"));
+        avatarbg = new TextureRegion(texture, 0, 0, 600, 1000);
+        avatarbg.flip(false, true);
 
         texture = new Texture(Gdx.files.internal("tileset.png"));
         platformTextures.add(new TextureRegion(texture, 91, 144, 52, 17)); //normal
@@ -46,6 +52,19 @@ public class AssetLoader {
 
         for (TextureRegion t:powerupTextures)
             t.flip(false, true);
+
+        texture = new Texture(Gdx.files.internal("Avatar.png"));
+        avatarTextures.add(new TextureRegion(texture, 0, 0, 142, 142)); // high jump
+        avatarTextures.add(new TextureRegion(texture, 144, 0, 142, 142)); // low jump
+        avatarTextures.add(new TextureRegion(texture, 288, 0, 142, 142)); // flyer
+        avatarTextures.add(new TextureRegion(texture, 0, 145, 142, 142)); // life
+        avatarTextures.add(new TextureRegion(texture, 144, 145, 142, 142));
+        avatarTextures.add(new TextureRegion(texture, 288, 145, 142, 142)); // flyer
+
+
+        for (TextureRegion t:avatarTextures)
+            t.flip(false, false);
+
 
         playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal
         playerTextures.add(new TextureRegion(texture, 6, 107, 16, 16)); // high jump
