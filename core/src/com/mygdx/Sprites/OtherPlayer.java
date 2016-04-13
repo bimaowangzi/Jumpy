@@ -22,6 +22,7 @@ import com.mygdx.JumpyHelper.PlayerResult;
  */
 public class OtherPlayer implements ContactFilter, ContactListener {
     private String name;
+    private int avatarID;
     private volatile Vector2 position;
 
     private volatile float width = 5;
@@ -34,6 +35,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
 
     private volatile int lives = 3;
     private volatile int powerUpState; //(-1)-nothing; 0-high jump; 1-weight; 2-balloon; 3-swap Position;
+    private volatile boolean inAir;
 
     private volatile float radius = 2.5f;
 
@@ -46,8 +48,9 @@ public class OtherPlayer implements ContactFilter, ContactListener {
 
     private PlayerResult result;
 
-    public OtherPlayer(String name, OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
+    public OtherPlayer(String name, int avatarID, OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
         this.name = name;
+        this.avatarID = avatarID;
         position = new Vector2(gameWidth/2, gameHeight*0.8f);
         this.cam = cam;
 
@@ -77,13 +80,14 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     }
 
     // This update method is called when a new data set is received
-    public synchronized void update(float x, float y, float vx, float vy, float width, float height, int powerUpState, int score, float worldHeight, int lives) {
+    public synchronized void update(float x, float y, float vx, float vy, float width, float height,
+                                    int powerUpState, boolean inAir, float worldHeight, int lives) {
         this.body.setTransform(x, y, 0);
         this.body.setLinearVelocity(vx, vy);
         this.width = width;
         this.height = height;
         this.powerUpState = powerUpState;
-        this.score = score;
+        this.inAir = inAir;
         this.lives = lives;
         this.worldHeight = worldHeight;
     }
@@ -134,8 +138,20 @@ public class OtherPlayer implements ContactFilter, ContactListener {
         return this.worldHeight;
     }
 
+    public boolean inAir() {
+        return inAir;
+    }
+
+    public int getAvatarID() {
+        return avatarID;
+    }
+
     public int getPowerUpState() {
         return powerUpState + 1;
+    }
+
+    public boolean MovingRight(){
+        return body.getLinearVelocity().x > 0;
     }
 
     @Override

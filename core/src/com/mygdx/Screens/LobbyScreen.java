@@ -342,6 +342,17 @@ class CheckStartThread extends Thread{
                 continue;
             }
 
+            boolean avatarFlag = true;
+            for (Map.Entry<String, String> entry: WarpController.getAvatarMap().entrySet()) {
+                if (entry.getValue()=="none") {
+                    avatarFlag = false;
+                    break;
+                }
+            }
+
+            if (!avatarFlag)
+                continue;
+
             Iterator it = statusMap.entrySet().iterator();
             allReady = true;
             while (it.hasNext()){

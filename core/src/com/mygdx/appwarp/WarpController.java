@@ -249,7 +249,7 @@ public class WarpController {
 		}
 
 		if (!avatarMap.containsKey(user)){
-			avatarMap.put(user,"none");
+			avatarMap.put(user,"avatar1");
 		} else if (!avatarMap.get(user).equals(avatar)) {
 			avatarMap.put(user,avatar);
 		}

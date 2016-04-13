@@ -130,11 +130,11 @@ class FetchDataThread extends Thread {
                     float width = (float) data.getDouble("width");
                     float height = (float) data.getDouble("height");
                     int powerUpState = data.getInt("powerUpState");
-                    int score = data.getInt("score");
+                    boolean inAir = data.getBoolean("inAir");
                     float worldHeight = (float) data.getDouble("worldHeight");
                     int lives = data.getInt("lives");
 
-                    world.getOtherPlayer(userName).update(x, y, vx, vy, width, height, powerUpState, score, worldHeight, lives);
+                    world.getOtherPlayer(userName).update(x, y, vx, vy, width, height, powerUpState, inAir, worldHeight, lives);
                     WarpController.dataAvailable = false;
 
                     if ((powerUpState==2 || powerUpState==7 || powerUpState==8 || powerUpState==9) & world.isRunning())

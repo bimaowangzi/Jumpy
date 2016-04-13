@@ -29,6 +29,7 @@ import org.json.JSONObject;
  */
 public class Player implements ContactFilter, ContactListener {
     private String name;
+    private int avatarID;
     private Vector2 position;
 
     private float width = 5;
@@ -62,8 +63,9 @@ public class Player implements ContactFilter, ContactListener {
 
     private PlayerResult result;
 
-    public Player(String name, OrthographicCamera cam, World world, PowerUp powerUp, float gameWidth, float gameHeight) {
+    public Player(String name, int avatarID, OrthographicCamera cam, World world, PowerUp powerUp, float gameWidth, float gameHeight) {
         this.name = name;
+        this.avatarID = avatarID;
         position = new Vector2(gameWidth/2, gameHeight*0.8f);
         this.cam = cam;
         this.powerUp = powerUp;
@@ -194,7 +196,7 @@ public class Player implements ContactFilter, ContactListener {
         } else if (powerUpState == 1) {
             jumpSpeed = baseJumpSpeed * 2;
         } else if (powerUpState == -2) {
-            jumpSpeed = baseJumpSpeed*0.7f;
+            jumpSpeed = baseJumpSpeed*0.75f;
         } else if (powerUpState==3) { // umbrella
             body.setLinearVelocity(body.getLinearVelocity().x, -35);
         } else if (powerUpState == 4) {
@@ -258,7 +260,7 @@ public class Player implements ContactFilter, ContactListener {
         }
 
         if (platformType==1) {
-            body.setLinearVelocity(body.getLinearVelocity().x*15, 0);
+            body.setLinearVelocity(body.getLinearVelocity().x*12, 0);
         } else if (platformType==2) {
             canJump = false;
             body.setLinearVelocity(body.getLinearVelocity().x, baseJumpSpeed*1.5f);
@@ -311,7 +313,7 @@ public class Player implements ContactFilter, ContactListener {
             data.put("width", width);
             data.put("height", height);
             data.put("powerUpState", powerUpState);
-            data.put("score", score);
+            data.put("inAir", inAir());
             data.put("worldHeight", getWorldHeight());
             data.put("lives", lives);
             WarpController.getInstance().sendGameUpdate(data.toString());
@@ -360,6 +362,9 @@ public class Player implements ContactFilter, ContactListener {
         return alive;
     }
 
+    public int getAvatarID() {
+        return avatarID;
+    }
 
     public int getPowerUpState() {
         return powerUpState;
@@ -375,20 +380,8 @@ public class Player implements ContactFilter, ContactListener {
         return score;
     }
 
-    public boolean MovingLeft(){
-        if(body.getLinearVelocity().x < 0){
-            return true;
-        }
-        else
-            return false;
-    }
-
     public boolean MovingRight(){
-        if(body.getLinearVelocity().x > 0){
-            return true;
-        }
-        else
-            return false;
+        return body.getLinearVelocity().x > 0;
     }
 
     public void setResult(PlayerResult result) {

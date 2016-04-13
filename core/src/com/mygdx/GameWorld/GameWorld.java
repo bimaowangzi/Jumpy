@@ -53,14 +53,14 @@ public class GameWorld {
         world = new World(new Vector2(0, 70), true);
 
         powerUp = new PowerUp(gameWidth, gameHeight);
-
-        player = new Player(WarpController.getLocalUser(), cam, world, powerUp, gameWidth, gameHeight);
+        int avatarID = Integer.parseInt(WarpController.getAvatarMap().get(WarpController.getLocalUser()).substring(6)) - 1;
+        player = new Player(WarpController.getLocalUser(), avatarID, cam, world, powerUp, gameWidth, gameHeight);
 
         String[] players = WarpController.getLiveUsers();
         for (String name:players) {
-            System.out.println(name);
+            avatarID = Integer.parseInt(WarpController.getAvatarMap().get(name).substring(6)) - 1;
             if (!name.equals(player.getName()))
-                otherPlayers.add(new OtherPlayer(name, cam, world, gameWidth, gameHeight));
+                otherPlayers.add(new OtherPlayer(name, avatarID, cam, world, gameWidth, gameHeight));
         }
 
 
@@ -145,13 +145,13 @@ public class GameWorld {
         if (player.getPowerUpState()==-9) {
             if (reversePowerupTimer==0) {
                 world.setGravity(new Vector2(0, -70));
-                AssetLoader.reverseWorld();
+                AssetLoader.reverseWorld(AssetLoader.avatars.get(player.getAvatarID()));
             }
             reversePowerupTimer += delta;
         } else if (reversePowerupTimer>0) {
             reversePowerupTimer = 0;
             world.setGravity(new Vector2(0, 70));
-            AssetLoader.reverseWorld();
+            AssetLoader.reverseWorld(AssetLoader.avatars.get(player.getAvatarID()));
         }
 
         player.update(delta);
