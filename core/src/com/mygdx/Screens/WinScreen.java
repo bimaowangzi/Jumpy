@@ -59,6 +59,8 @@ public class WinScreen extends AbstractScreen {
 
         getWarpClient();
 
+        warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + WarpController.getAvatarMap().get(WarpController.getLocalUser()));
+
         playersResultArray.add(playerResult);
         for (OtherPlayer other:otherPlayers)
             playersResultArray.add(other.getResult());
