@@ -230,14 +230,12 @@ public class Player implements ContactFilter, ContactListener {
             jumpSpeed = -baseJumpSpeed;
         }
 
-        if ((powerUpState==8 || powerUpState==-8) && timer > 0.7f) {
-            if (powerUpState==-7)
-                lives--;
+        if ((powerUpState==2 || powerUpState==7 || powerUpState==8 || powerUpState==9) && timer > 0.4)
             powerUpState = 0;
-        }
 
-        if ((powerUpState==2 || powerUpState==-2 || powerUpState==7 || powerUpState==-7 ||
-                powerUpState==9 || powerUpState==-9) && timer > 2.5f) {
+        if (powerUpState==-8 && timer > 1) {
+            if (powerUpState==-8)
+                lives--;
             powerUpState = 0;
         }
 
@@ -289,18 +287,6 @@ public class Player implements ContactFilter, ContactListener {
         powerUpState = -powerUp;
         timer = 0;
     }
-
-//    public void reset() {
-//        position = new Vector2(gameWidth/2, gameHeight*3/2);
-//        jumpSpeed = baseJumpSpeed;
-//        canJump = true;
-//        alive = false;
-//        score = 0;
-//        powerUpState = -1;
-//        lives = 4;
-//
-//        body.setTransform(position, 0);
-//    }
 
     private void sendPlayerUpdate() {
         try {
@@ -402,12 +388,6 @@ public class Player implements ContactFilter, ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-//        for (Platform p: platformHandler.getPlatforms()) {
-//            if (Math.abs(p.getY() - (getY() + height)) < 0.05f && p.getType() == 2) {
-//                canJump = false;
-//                return;
-//            }
-//        }
         canJump = true;
     }
 
