@@ -1,7 +1,5 @@
 package com.mygdx.JumpyHelper;
 
-import java.util.Comparator;
-
 /**
  * Created by user on 11/4/2016.
  */

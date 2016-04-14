@@ -17,8 +17,8 @@ public class WarpController {
 	
 	private boolean showLog = true;
 	
-	private final String apiKey = "ae293bed82680eb9c8103f1e383e7e76067e40dfe0071873b9d34886ec3eb878";
-	private final String secretKey = "10fca0a440aa2412530f11c3343d224291d5fece843d2bb566819f7957fd0b19";
+	private final String apiKey = "40e0337ff634af465e740f8a4410da356eca662a483038011ac647e890b60722";
+	private final String secretKey = "20d562e799e708ccb2a2a625c53d2975ee2771efd85a5640474547aed5394927";
 	
 	private WarpClient warpClient;
 
@@ -249,7 +249,7 @@ public class WarpController {
 		}
 
 		if (!avatarMap.containsKey(user)){
-			avatarMap.put(user,"avatar1");
+			avatarMap.put(user,"none");
 		} else if (!avatarMap.get(user).equals(avatar)) {
 			avatarMap.put(user,avatar);
 		}

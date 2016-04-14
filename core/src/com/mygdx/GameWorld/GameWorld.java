@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.JumpyHelper.AssetLoader;
 import com.mygdx.JumpyHelper.PlayerResult;
-import com.mygdx.Platform;
+import com.mygdx.JumpyHelper.SoundLoader;
 import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
 import com.mygdx.Sprites.OtherPlayer;
@@ -73,17 +73,6 @@ public class GameWorld {
         player.setPlatformHandler(platformHandler);
     }
 
-//    public static GameWorld getInstance(OrthographicCamera cam, float gameWidth, float gameHeight) {
-//        if(instance == null) {
-//            instance = new GameWorld(cam, gameWidth, gameHeight);
-//        }
-//        return instance;
-//    }
-//
-//    public static GameWorld getInstance() {
-//        return instance;
-//    }
-
     public void update(float delta) {
         switch (currentState) {
             case READY:
@@ -95,8 +84,6 @@ public class GameWorld {
                 break;
 
             case GAMEOVER:
-                player.setResult(new PlayerResult(player.getLives() == 0, timer, player.getScore(), WarpController.getLocalUser()));
-
                 try {
                     JSONObject data = new JSONObject();
                     data.put("type", "GameEnd");
@@ -114,22 +101,25 @@ public class GameWorld {
 
 
             default:
-
         }
     }
 
     public void updateReady(float delta) {
-        if (player.isAlive()) {
+        timer+=delta;
+        if (timer>=3f) {
+            SoundLoader.startSound.play();
             currentState = GameState.RUNNING;
+            timer=0;
         }
     }
 
 
     public void updateRunning(float delta) {
-        if (player.isAlive()) { // if player not alive, stop the world
-            world.step(delta, 1, 1);
-            timer += delta;
-        } else currentState = GameState.READY;
+//        if (player.isAlive()) { // if player not alive, stop the world
+
+//        } else currentState = GameState.READY;
+        world.step(delta, 1, 1);
+        timer += delta;
 
         scrollSpeed += -0.001;
         if (player.getPowerUpState()==-7) {
@@ -161,13 +151,13 @@ public class GameWorld {
         platformHandler.update(delta);
         powerUp.update(delta);
 
-        if (player.getLives()<=0) {
-            currentState = GameState.GAMEOVER;
-        }
-        Platform finishingLine = platformHandler.getFinishlineLine();
+        setRespawnTimeFactor();
 
-        if (player.getWorldHeight() < finishingLine.getWorldHeight())
+        if (player.getLives()<=0 || player.getWorldHeight() < platformHandler.getFinishlineLine().getWorldHeight()) {
             currentState = GameState.GAMEOVER;
+            player.setResult(new PlayerResult(player.getLives() == 0, timer, player.getScore(), WarpController.getLocalUser()));
+        }
+
     }
 
     public void updateEnd() {
@@ -196,17 +186,20 @@ public class GameWorld {
 
     }
 
-
-
-//    public void restart() {
-//        currentState = GameState.READY;
-//        cam.position.y = gameHeight/2;
-//        player.reset();
-//        platformHandler.reset();
-//        scrollSpeed = -10f;
-//        currentState = GameState.RUNNING;
-//
-//    }
+    private void setRespawnTimeFactor() {
+        int rank = 1;
+        for (OtherPlayer other:otherPlayers) {
+            if (other.getWorldHeight()<player.getWorldHeight())
+                rank++;
+        }
+        switch (rank) {
+            case 1: powerUp.setRespawnTimeFactor(1.5f);
+            case 2: powerUp.setRespawnTimeFactor(1);
+            case 3: powerUp.setRespawnTimeFactor(0.85f);
+            case 4: powerUp.setRespawnTimeFactor(0.7f);
+            default: powerUp.setRespawnTimeFactor(1);
+        }
+    }
 
     public void setResult(OtherPlayer other, PlayerResult result) {
         other.setResult(result);

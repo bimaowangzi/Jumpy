@@ -45,6 +45,8 @@ public class AssetLoader {
         avatars.add(new Avatar(3));
         avatars.add(new Avatar(4));
 
+        SoundLoader.load();
+
         texture = new Texture(Gdx.files.internal("BG.png"));
         bg = new TextureRegion(texture, 0, 0, 600, 1000);
         bg.flip(false, true);
@@ -106,12 +108,6 @@ public class AssetLoader {
 
         for (TextureRegion t:avatarTextures)
             t.flip(false, false);
-
-/*        playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal
-        playerTextures.add(new TextureRegion(texture, 6, 107, 16, 16)); // high jump
-        playerTextures.add(new TextureRegion(texture, 24, 107, 16, 16)); // low jump
-        playerTextures.add(new TextureRegion(texture, 42, 39, 16, 20)); // wings
-        playerTextures.add(new TextureRegion(texture, 6, 90, 16, 16)); // normal*/
 
         font = new BitmapFont(Gdx.files.internal("text.fnt"));
         font.getData().setScale(.05f, -.05f);

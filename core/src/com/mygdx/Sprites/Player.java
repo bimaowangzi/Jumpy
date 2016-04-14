@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.JumpyHelper.PlayerResult;
+import com.mygdx.JumpyHelper.SoundLoader;
 import com.mygdx.Platform;
 import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
@@ -45,8 +46,8 @@ public class Player implements ContactFilter, ContactListener {
     private int initialHeight;
 
     private int lives = 3;
-    private boolean alive;
     private int powerUpState; //(-1)-nothing; 0-high jump; 1-weight; 2-balloon; 3-swap Position;
+    private int prevPowerUpState;
 
     private PowerUp powerUp;
     private PlatformHandler platformHandler;
@@ -76,8 +77,8 @@ public class Player implements ContactFilter, ContactListener {
         jumpSpeed = baseJumpSpeed;
 
         canJump = true;
-        alive = false;
         powerUpState = 0;
+        prevPowerUpState = 0;
 
         boundingCircle = new Circle();
 
@@ -102,6 +103,7 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     public void update(float delta) {
+        System.out.println(canJump);
         timer += delta;
 
         // Set x-velocity according to accelerometer value
@@ -129,7 +131,6 @@ public class Player implements ContactFilter, ContactListener {
         // Handling death
         if (isDead()) {
             lives -= 1;
-            alive = false;
             if (lives > 0)
                 respawn();
         }
@@ -140,14 +141,16 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     public void respawn() {
-        Platform respawnPlatform = platformHandler.getPlatforms().get(0);
+        // Find a platform to respawn the player
+        Platform respawnPlatform=platformHandler.getPlatforms().get(0);
+        // First let this platform be the highest one in the game
+        for (Platform p : platformHandler.getPlatforms())
+            if (p.getY() < respawnPlatform.getY())
+                respawnPlatform = p;
+        // Then find the platform that is closest to the middle of the screen from above
         for (Platform p : platformHandler.getPlatforms())
             if (p.getY() < gameHeight/2 && p.getY() > respawnPlatform.getY())
                 respawnPlatform = p;
-        if (respawnPlatform.getY() > gameHeight)
-            for (Platform p : platformHandler.getPlatforms())
-                if (p.getY() < respawnPlatform.getY())
-                    respawnPlatform = p;
 
 
         position = new Vector2(respawnPlatform.getX() + respawnPlatform.getWidth()/2,
@@ -155,15 +158,17 @@ public class Player implements ContactFilter, ContactListener {
         jumpSpeed = baseJumpSpeed;
         canJump = true;
         powerUpState = 0;
+        prevPowerUpState = 0;
 
         body.setTransform(respawnPlatform.getX() + respawnPlatform.getWidth()/2, respawnPlatform.getWorldHeight() - 4, 0);
     }
 
     // Call this function when responding to screen touch
     public void onJump() {
-        if (!alive) alive = true;   // if a player was not alive, a touch revives him
-        if (canJump)
+        if (canJump) {
             body.setLinearVelocity(new Vector2(0, jumpSpeed));
+            SoundLoader.jumpSound.play();
+        }
         canJump = false;
     }
 
@@ -171,6 +176,20 @@ public class Player implements ContactFilter, ContactListener {
         if (boundingCircle.overlaps(powerUp.getBoundingCircle())) {
             powerUpState = powerUp.getType();
             timer = 0;
+        }
+
+        if (powerUpState != prevPowerUpState) {
+            prevPowerUpState = powerUpState;
+            if (powerUpState==-8 || powerUpState==8) {
+                SoundLoader.thunder.play();
+            } else if (powerUpState==-2 || powerUpState==2) {
+                SoundLoader.weightSound.play();
+            } else if (powerUpState==3)
+                SoundLoader.flyingSound.play();
+            else if (powerUpState==7 || powerUpState==-7)
+                SoundLoader.speedupSound.play();
+            else if (powerUpState==9 || powerUpState==-9)
+                SoundLoader.reverseSound.play();
         }
 
         // Set jump speed based on power ups
@@ -230,7 +249,7 @@ public class Player implements ContactFilter, ContactListener {
             jumpSpeed = -baseJumpSpeed;
         }
 
-        if ((powerUpState==2 || powerUpState==7 || powerUpState==8 || powerUpState==9) && timer > 0.4)
+        if ((powerUpState==2 || powerUpState==7 || powerUpState==8 || powerUpState==9) && timer > 0.5)
             powerUpState = 0;
 
         if (powerUpState==-8 && timer > 1) {
@@ -262,6 +281,7 @@ public class Player implements ContactFilter, ContactListener {
         } else if (platformType==2) {
             canJump = false;
             body.setLinearVelocity(body.getLinearVelocity().x, baseJumpSpeed*1.5f);
+            SoundLoader.jumpSound.play();
         }
     }
 
@@ -342,10 +362,6 @@ public class Player implements ContactFilter, ContactListener {
 
     public boolean isDead() {
         return (position.y > gameHeight || position.y < 0);
-    }
-
-    public boolean isAlive(){
-        return alive;
     }
 
     public int getAvatarID() {

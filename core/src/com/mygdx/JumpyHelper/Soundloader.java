@@ -6,7 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 /**
  * Created by user on 13/4/2016.
  */
-public class Soundloader {
+public class SoundLoader {
 
     public static Sound startSound;
     public static Sound thunder;
@@ -24,7 +24,6 @@ public class Soundloader {
         jumpSound = Gdx.audio.newSound(Gdx.files.internal("jump.wav"));
         speedupSound = Gdx.audio.newSound(Gdx.files.internal("speedup.wav"));
         flyingSound = Gdx.audio.newSound(Gdx.files.internal("beating-wings.wav"));
-
     }
 
 }

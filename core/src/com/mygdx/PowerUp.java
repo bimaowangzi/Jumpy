@@ -18,6 +18,7 @@ public class PowerUp {
     private boolean isActive;
     private float timer;
     private float nextRespawningTime;
+    private float respawnTimeFactor;
 
     private float gameWidth, gameHeight;
     private Circle boundingCircle;
@@ -30,7 +31,7 @@ public class PowerUp {
     private final float maxDirectionChangeAmount=5;
 
     // timer to keep track of when this moving circle should change direction
-    float directionChangetimer=0;
+    float directionChangeTimer=0;
 
     public PowerUp(float gameWidth, float gameHeight) {
         this.gameWidth = gameWidth;
@@ -42,7 +43,9 @@ public class PowerUp {
         boundingCircle = new Circle();
 
         timer = 0;
-        nextRespawningTime = 7 + randomNumberGen.nextFloat()*7;
+        respawnTimeFactor = 1;
+        nextRespawningTime = (8 + randomNumberGen.nextFloat()*5)*respawnTimeFactor;
+
     }
 
     private void respawn() {
@@ -79,10 +82,10 @@ public class PowerUp {
 
         boundingCircle.set(position, radius);
 
-        directionChangetimer+=delta;
+        directionChangeTimer+=delta;
 
-        if(directionChangetimer>=directionChangePeriod){
-            directionChangetimer-=directionChangePeriod;
+        if(directionChangeTimer>=directionChangePeriod){
+            directionChangeTimer-=directionChangePeriod;
             float directionChangeRange=maxDirectionChangeAmount-minDirectionChangeAmount;
             // calculate a random change amount between the minimum and max
             float directionChangeAmount=randomNumberGen.nextFloat()*directionChangeRange+minDirectionChangeAmount;
@@ -97,7 +100,7 @@ public class PowerUp {
         if (isGone()) {
             isActive = false;
             timer = 0;
-            nextRespawningTime = 5 + randomNumberGen.nextFloat()*5;
+            nextRespawningTime = (8 + randomNumberGen.nextFloat()*5)*respawnTimeFactor;
             boundingCircle.set(0,0,0);
         }
 
@@ -150,6 +153,9 @@ public class PowerUp {
         return boundingCircle;
     }
 
+    public void setRespawnTimeFactor(float respawnTimeFactor) {
+        this.respawnTimeFactor = respawnTimeFactor;
+    }
 }
 
 

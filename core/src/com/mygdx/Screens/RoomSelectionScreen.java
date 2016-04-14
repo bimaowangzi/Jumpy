@@ -190,7 +190,7 @@ class RoomSelUpdateThread extends Thread{
     public void run() {
         while (!isInterrupted()){
             // look for rooms with 1 to 3 players already
-            warpClient.getRoomInRange(0, 3);
+            warpClient.getRoomInRange(1, 3);
             while (!WarpController.isWaitRoomFlag()){
                 // busy wait
             }

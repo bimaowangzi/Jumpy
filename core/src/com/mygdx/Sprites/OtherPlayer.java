@@ -95,7 +95,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     // This update method is called by the GameWorld
     public synchronized void update() {
         if (result != null)
-            body.setLinearVelocity(0, 0);
+            body.setLinearVelocity(0, -0.1f);
 
         // Map position on screen with world position
         position.x = body.getPosition().x;

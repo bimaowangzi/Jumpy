@@ -30,12 +30,12 @@ public class WinScreen extends AbstractScreen {
 
     private ArrayList<String> alivePlayers = new ArrayList<String>();
     private ArrayList<String> aliveRankings = new ArrayList<String>();
-    private ArrayList<String> aliveTimeings = new ArrayList<String>();
+    private ArrayList<String> aliveTimings = new ArrayList<String>();
     private ArrayList<String> aliveHeight = new ArrayList<String>();
 
     private ArrayList<String> deadPlayers = new ArrayList<String>();
     private ArrayList<String> deadRankings = new ArrayList<String>();
-    private ArrayList<String> deadTimeings = new ArrayList<String>();
+    private ArrayList<String> deadTimings = new ArrayList<String>();
     private ArrayList<String> deadHeight = new ArrayList<String>();
 
     private final Label labelWinner;
@@ -72,7 +72,7 @@ public class WinScreen extends AbstractScreen {
             if (playersResultArray.get(index).isDead()){
                 deadCount++;
                 deadPlayers.add(playersResultArray.get(index).getUserName());
-                deadTimeings.add(Double.toString(Math.round(playersResultArray.get(index).getTime()*100)/100));
+                deadTimings.add(Double.toString(Math.round(playersResultArray.get(index).getTime()*100)/100));
                 deadHeight.add(Integer.toString(playersResultArray.get(index).getHeight()));
                 // need to tweak formatting if more than 10 players.
                 if (i == 1){
@@ -87,7 +87,7 @@ public class WinScreen extends AbstractScreen {
             } else {
                 aliveCount++;
                 alivePlayers.add(playersResultArray.get(index).getUserName());
-                aliveTimeings.add(Double.toString(Math.round(playersResultArray.get(index).getTime()*100)/100));
+                aliveTimings.add(Double.toString(Math.round(playersResultArray.get(index).getTime()*100)/100));
                 aliveHeight.add(Integer.toString(playersResultArray.get(index).getHeight()));
                 // need to tweak formatting if more than 10 players.
                 if (i == 1){
@@ -144,14 +144,14 @@ public class WinScreen extends AbstractScreen {
         if (aliveCount>0){
             listAlivePlayers.setItems(alivePlayers.toArray());
             listAliveRanking.setItems(aliveRankings.toArray());
-            listAliveTime.setItems(aliveTimeings.toArray());
+            listAliveTime.setItems(aliveTimings.toArray());
             listAliveHeight.setItems(aliveHeight.toArray());
         }
 
         if (deadCount>0){
             listDeadPlayers.setItems(deadPlayers.toArray());
             listDeadRanking.setItems(deadRankings.toArray());
-            listDeadTime.setItems(deadTimeings.toArray());
+            listDeadTime.setItems(deadTimings.toArray());
             listDeadHeight.setItems(deadHeight.toArray());
         }
     }

@@ -49,7 +49,6 @@ public class GameRenderer {
 
     private TextureRegion currentFrame;
     private float stateTime;
-
     private int lightingCounter = 0;
 
     public GameRenderer (OrthographicCamera cam, GameWorld world, float gameWidth, float gameHeight) {
@@ -276,7 +275,40 @@ public class GameRenderer {
             AssetLoader.font.draw(batcher, "Game Over", 18, gameHeight/3);
         }
 
+        // Count downt
+        if (stateTime<4) {
+            AssetLoader.font.getData().setScale(.10f, -.10f);
+            if (stateTime < 1)
+                print3();
+            else if (stateTime < 2)
+                print2();
+            else if (stateTime < 3)
+                print1();
+            else printStart();
+            AssetLoader.font.getData().setScale(.05f, -.05f);
+        }
+
         // End SpriteBatch
         batcher.end();
+    }
+
+    public void print3() {
+        AssetLoader.shadow.draw(batcher, "3", 5, 10);
+        AssetLoader.font.draw(batcher, "3", 5, 10);
+    }
+
+    public void print2() {
+        AssetLoader.shadow.draw(batcher, "2", 10, 10);
+        AssetLoader.font.draw(batcher, "2", 10, 10);
+    }
+
+    public void print1() {
+        AssetLoader.shadow.draw(batcher, "1", 20, 10);
+        AssetLoader.font.draw(batcher, "1", 20, 10);
+    }
+
+    public void printStart() {
+        AssetLoader.shadow.draw(batcher, "Start!", 30, 10);
+        AssetLoader.font.draw(batcher, "Start!", 30, 10);
     }
 }
