@@ -58,7 +58,8 @@ public class WarpController {
 	private static volatile boolean waitflag = false;
 	private static volatile boolean waitRoomFlag = false;
 	private static volatile boolean statusflag = false;
-	
+	private static volatile boolean deleteFlag = false;
+
 	public WarpController() {
 		initAppwarp();
 		warpClient.addConnectionRequestListener(new ConnectionListener(this));
@@ -173,7 +174,6 @@ public class WarpController {
 			log("onGetLiveRoomInfo: "+liveUsers.length);
 		} else {
 			log("onGetLiveRoomInfo: No users");
-//			warpClient.deleteRoom(roomId);
 		}
 		WarpController.liveUsers = liveUsers;
 		setWaitflag(true);
@@ -286,10 +286,16 @@ public class WarpController {
 	}
 	
 	public void handleLeave(){
+		setDeleteFlag(true);
 		warpClient.getLiveRoomInfo(roomId);
 		while (!waitflag){};
 		setWaitflag(false);
 		System.out.println("wait done in handle leave");
+		setDeleteFlag(false);
+//		if (liveUsers.length<=1){
+//			System.out.println("try delete the room");
+//			warpClient.deleteRoom(roomId);
+//		}
 //		roomId = null;
 //		room = null;
 
@@ -359,6 +365,10 @@ public class WarpController {
 		return waitRoomFlag;
 	}
 
+	public static boolean isDeleteFlag() {
+		return deleteFlag;
+	}
+
 	public static void setWaitflag(boolean waitflag) {
 		WarpController.waitflag = waitflag;
 	}
@@ -369,6 +379,10 @@ public class WarpController {
 
 	public static void setWaitRoomFlag(boolean waitRoomFlag) {
 		WarpController.waitRoomFlag = waitRoomFlag;
+	}
+
+	public static void setDeleteFlag(boolean deleteFlag) {
+		WarpController.deleteFlag = deleteFlag;
 	}
 
 	public static HashMap<String, String> getStatusMap() {

@@ -109,6 +109,7 @@ public class GameWorld {
         if (timer>=3f) {
             SoundLoader.startSound.play();
             currentState = GameState.RUNNING;
+            player.setCanJump(true);
             timer=0;
         }
     }

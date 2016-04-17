@@ -76,7 +76,7 @@ public class Player implements ContactFilter, ContactListener {
 
         jumpSpeed = baseJumpSpeed;
 
-        canJump = true;
+        canJump = false;
         powerUpState = 0;
         prevPowerUpState = 0;
 
@@ -380,6 +380,10 @@ public class Player implements ContactFilter, ContactListener {
         if (score < (initialHeight - (int) body.getPosition().y)/10)
             score = (initialHeight - (int) body.getPosition().y)/10;
         return score;
+    }
+
+    public void setCanJump(boolean canJump) {
+        this.canJump = canJump;
     }
 
     public boolean MovingRight(){

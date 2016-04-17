@@ -174,7 +174,7 @@ public class WinScreen extends AbstractScreen {
         }
         table.setFillParent(true);
         table.top();
-        table.setDebug(true);
+        table.setDebug(false);
         table.add(labelWinner).colspan(4).pad(5);
         table.row();
         table.add(labelRanking);
