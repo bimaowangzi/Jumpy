@@ -70,8 +70,8 @@ public class LobbyScreen extends AbstractScreen {
         Random ranGen = new Random();
         try {
             if (WarpController.getLiveUsers()[0].equals(WarpController.getLocalUser())){
-                Integer startSeed =  ranGen.nextInt(100);
-                Integer intervalSeed = ranGen.nextInt(100);
+                Integer startSeed =  ranGen.nextInt(100) + 1;
+                Integer intervalSeed = ranGen.nextInt(100) + 1;
                 HashMap<String,Object> roomProperties = new HashMap<String,Object>();
                 roomProperties.put("start",startSeed);
                 roomProperties.put("interval",intervalSeed);
