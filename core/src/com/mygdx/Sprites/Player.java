@@ -286,6 +286,8 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     public void getHit(int powerUp) {
+        if (powerUpState==5)
+            return;
         jumpSpeed = baseJumpSpeed;
         if (radius!=2.5f) {
             body.destroyFixture(body.getFixtureList().first());
