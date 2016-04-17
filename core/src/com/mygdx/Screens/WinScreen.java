@@ -168,7 +168,7 @@ public class WinScreen extends AbstractScreen {
     public void buildStage() {
         Table table = new Table();
         if (phoneDisplay){
-            table.pad(100,0,400,0);
+            table.pad(15,0,350,0);
         } else {
             table.pad(50,0,0,0);
         }

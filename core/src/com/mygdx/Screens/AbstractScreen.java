@@ -38,8 +38,8 @@ public abstract class AbstractScreen extends Stage implements Screen{
         }else {
             System.out.println("PhoneDisplay");
             phoneDisplay = true;
-            this.getViewport().setWorldSize((int) (Gdx.graphics.getWidth()*0.6f),(int) (Gdx.graphics.getHeight()*0.6f));
-//            this.getViewport().setScreenBounds(0, 0, (int) (Gdx.graphics.getWidth()*0.6f),(int) (Gdx.graphics.getHeight()*0.6));
+//            this.getViewport().setWorldSize((int) (Gdx.graphics.getWidth()*0.6f),(int) (Gdx.graphics.getHeight()*0.6f));
+            this.getViewport().setWorldSize((int) (Gdx.graphics.getWidth()*0.4f),(int) (Gdx.graphics.getHeight()*0.4f));
         }
 
         texture = new Texture(Gdx.files.internal("BG.png"));

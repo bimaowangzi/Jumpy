@@ -1,6 +1,5 @@
 package com.mygdx.Screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -25,9 +24,6 @@ import java.util.Map;
 public class LobbyScreen extends AbstractScreen {
 
     private WarpClient warpClient;
-
-    private Game game;
-
     private RoomData room;
     private String roomId;
     private String roomName;
@@ -230,7 +226,7 @@ public class LobbyScreen extends AbstractScreen {
         Table tableBig = new Table();
         tableBig.setFillParent(true);
         if (phoneDisplay){
-            tableBig.pad(75,0,450,0);
+            tableBig.pad(15,0,350,0);
         }else {
             tableBig.pad(50,0,200,0);
         }
@@ -337,6 +333,7 @@ class CheckStartThread extends Thread{
             if (isInterrupted()){
                 break;
             }
+
             // check if there is at least 2 players in the room
             if (statusMap.size() <= 1){
                 continue;
@@ -363,12 +360,16 @@ class CheckStartThread extends Thread{
                     break;
                 }
             }
+
+            System.out.println("All Ready");
+
             if (isInterrupted()){
                 break;
             }
         }
         if (!isInterrupted()){
             LobbyScreen.startGame = true;
+            System.out.println("Starting Game");
         }
         System.out.println("start thread ended");
     }
