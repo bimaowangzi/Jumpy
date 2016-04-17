@@ -147,7 +147,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     }
 
     public int getPowerUpState() {
-        return powerUpState + 1;
+        return powerUpState;
     }
 
     public boolean MovingRight(){
