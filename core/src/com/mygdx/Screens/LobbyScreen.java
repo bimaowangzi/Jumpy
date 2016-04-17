@@ -318,7 +318,7 @@ public class LobbyScreen extends AbstractScreen {
 
 class CheckStartThread extends Thread{
 
-    private static HashMap<String,String> statusMap = new HashMap<String,String>();
+    private static volatile HashMap<String,String> statusMap = new HashMap<String,String>();
     private boolean allReady;
 
     public CheckStartThread() {

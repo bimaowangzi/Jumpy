@@ -242,17 +242,12 @@ public class WarpController {
 
 		}
 		String user = event.getName();
-		if (!statusMap.containsKey(user)){
-			statusMap.put(user,status);
-		} else if (!statusMap.get(user).equals(status)) {
-			statusMap.put(user,status);
-		}
+		statusMap.put(user,status);
 
 		if (!avatarMap.containsKey(user)){
 			avatarMap.put(user,"none");
-		} else if (!avatarMap.get(user).equals(avatar)) {
+		} else
 			avatarMap.put(user,avatar);
-		}
 
 		setWaitflag(true);
 	}
