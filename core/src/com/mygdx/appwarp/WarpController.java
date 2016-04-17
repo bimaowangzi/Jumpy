@@ -284,29 +284,29 @@ public class WarpController {
 		disconnect();
 	}
 	
-	public void handleLeave(){
-		setDeleteFlag(true);
-		warpClient.getLiveRoomInfo(roomId);
-		while (!waitflag){};
-		setWaitflag(false);
-		System.out.println("wait done in handle leave");
-		setDeleteFlag(false);
-//		if (liveUsers.length<=1){
-//			System.out.println("try delete the room");
-//			warpClient.deleteRoom(roomId);
-//		}
-//		roomId = null;
-//		room = null;
-
-//		if(isConnected){
-//			warpClient.unsubscribeRoom(roomId);
-//			warpClient.leaveRoom(roomId);
-//			if(STATE!=STARTED){
-//				warpClient.deleteRoom(roomId);
-//			}
-//			warpClient.disconnect();
-//		}
-	}
+//	public void handleLeave(){
+//		setDeleteFlag(true);
+//		warpClient.getLiveRoomInfo(roomId);
+//		while (!waitflag){};
+//		setWaitflag(false);
+//		System.out.println("wait done in handle leave");
+//		setDeleteFlag(false);
+////		if (liveUsers.length<=1){
+////			System.out.println("try delete the room");
+////			warpClient.deleteRoom(roomId);
+////		}
+////		roomId = null;
+////		room = null;
+//
+////		if(isConnected){
+////			warpClient.unsubscribeRoom(roomId);
+////			warpClient.leaveRoom(roomId);
+////			if(STATE!=STARTED){
+////				warpClient.deleteRoom(roomId);
+////			}
+////			warpClient.disconnect();
+////		}
+//	}
 	
 	public void disconnect(){
 		warpClient.removeConnectionRequestListener(new ConnectionListener(this));

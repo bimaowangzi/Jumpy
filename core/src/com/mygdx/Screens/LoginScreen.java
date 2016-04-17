@@ -75,7 +75,8 @@ public class LoginScreen extends AbstractScreen{
                     if (WarpController.isStatusflag()){
                         WarpController.setStatusflag(false);
                         // wait for setRoomData
-                        warpClient.getRoomInRange(1, 3);
+                        WarpController.setDeleteFlag(true);
+                        warpClient.getRoomInRange(0,0);
                         while (!WarpController.isWaitRoomFlag()){
                             // busy waiting
                         }

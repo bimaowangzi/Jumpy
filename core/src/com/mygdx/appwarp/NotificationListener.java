@@ -74,8 +74,6 @@ public class NotificationListener implements NotifyListener{
 	@Override
 	public void onUserChangeRoomProperty (RoomData roomData, String userName, HashMap<String, Object> properties, HashMap<String, String> lockProperties) {
 		callBack.onRoomUpdateReceived((Integer) properties.get("start"),(Integer) properties.get("interval"));
-//		int code = Integer.parseInt(properties.get("result").toString());
-//		callBack.onResultUpdateReceived(userName, code);
 	}
 
 	@Override

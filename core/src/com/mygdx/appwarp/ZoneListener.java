@@ -1,5 +1,6 @@
 package com.mygdx.appwarp;
 
+import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.events.AllRoomsEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.AllUsersEvent;
@@ -50,11 +51,25 @@ public class ZoneListener implements ZoneRequestListener{
 	@Override
 	public void onGetMatchedRoomsDone (MatchedRoomsEvent me) {
 		RoomData[] roomDataList = me.getRoomsData();
-		if(roomDataList!=null && roomDataList.length>0){
-			WarpController.setRoomDatas(roomDataList);
-		}else{
-			WarpController.setRoomDatas(null);
-//			System.out.println("Unable to find matching rooms");
+		if (WarpController.isDeleteFlag()){
+			if(roomDataList!=null && roomDataList.length>0){
+				try {
+					WarpClient warpClient = WarpClient.getInstance();
+					for (RoomData roomData:roomDataList){
+						warpClient.deleteRoom(roomData.getId());
+					}
+				} catch (Exception ex) {
+					System.out.println("Fail to get warpClient");
+				}
+			}
+			WarpController.setDeleteFlag(false);
+			WarpController.setWaitRoomFlag(true);
+		} else {
+			if(roomDataList!=null && roomDataList.length>0){
+				WarpController.setRoomDatas(roomDataList);
+			}else{
+				WarpController.setRoomDatas(null);
+			}
 		}
 	}
 

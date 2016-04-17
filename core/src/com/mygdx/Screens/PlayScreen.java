@@ -69,7 +69,8 @@ public class PlayScreen extends AbstractScreen {
         renderer.render(delta); // GameRenderer renders
         if (world.isEnded()) {
             fetchDataThread.interrupt();
-            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer().getResult(), world.getOtherPlayers());
+            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer().getResult(), world.getOtherPlayers(), world);
+
         }
     }
 

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.mygdx.GameWorld.GameWorld;
 import com.mygdx.JumpyHelper.PlayerResult;
 import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.appwarp.WarpController;
@@ -53,9 +54,13 @@ public class WinScreen extends AbstractScreen {
     private final List listDeadHeight;
     private final TextButton buttonReturnToLobby;
 
+    private GameWorld world;
+
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-    public WinScreen(PlayerResult playerResult, ArrayList<OtherPlayer> otherPlayers) {
+    public WinScreen(PlayerResult playerResult, ArrayList<OtherPlayer> otherPlayers, final GameWorld world) {
+
+        this.world = world;
 
         getWarpClient();
 
@@ -135,7 +140,7 @@ public class WinScreen extends AbstractScreen {
                     }
                     WarpController.setWaitflag(false);
                 }
-
+                clearInfo();
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
@@ -153,6 +158,13 @@ public class WinScreen extends AbstractScreen {
             listDeadRanking.setItems(deadRankings.toArray());
             listDeadTime.setItems(deadTimings.toArray());
             listDeadHeight.setItems(deadHeight.toArray());
+        }
+    }
+
+    private void clearInfo(){
+        world.getPlayer().setResult(null);
+        for (OtherPlayer otherPlayer : world.getOtherPlayers()){
+            otherPlayer.setResult(null);
         }
     }
 

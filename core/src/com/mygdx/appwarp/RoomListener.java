@@ -36,7 +36,7 @@ public class RoomListener implements RoomRequestListener{
 
 	public void onLeaveRoomDone(RoomEvent arg0) {
 		System.out.println("onLeaveRoomDone: "+arg0.getResult());
-		callBack.handleLeave();
+//		callBack.handleLeave();
 	}
 
 	public void onSetCustomRoomDataDone(LiveRoomInfoEvent arg0) {
