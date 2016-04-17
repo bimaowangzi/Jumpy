@@ -17,6 +17,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by user on 11/3/2016.
@@ -65,6 +66,20 @@ public class LobbyScreen extends AbstractScreen {
         room = WarpController.getRoom();
         roomId = WarpController.getRoomId();
         roomName = room.getName();
+
+        Random ranGen = new Random();
+        try {
+            if (WarpController.getLiveUsers()[0].equals(WarpController.getLocalUser())){
+                Integer startSeed =  ranGen.nextInt(100);
+                Integer intervalSeed = ranGen.nextInt(100);
+                HashMap<String,Object> roomProperties = new HashMap<String,Object>();
+                roomProperties.put("start",startSeed);
+                roomProperties.put("interval",intervalSeed);
+                WarpClient.getInstance().updateRoomProperties(roomId,roomProperties,null);
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
 
         startGame = false;
 

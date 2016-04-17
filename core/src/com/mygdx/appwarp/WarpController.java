@@ -43,6 +43,8 @@ public class WarpController {
 	private static Label labelChat;
 	
 	private int STATE;
+	private static int start;
+	private static int interval;
 	
 	// Game state constants
 	public static final int WAITING = 1;
@@ -214,13 +216,15 @@ public class WarpController {
 		dataAvailable = true;
 	}
 	
-	public void onResultUpdateReceived(String userName, int code){
-		if(localUser.equals(userName)==false){
-			STATE = FINISHED;
-			warpListener.onGameFinished(code, true);
-		}else{
-			warpListener.onGameFinished(code, false);
-		}
+	public void onRoomUpdateReceived(Integer start, Integer interval){
+		WarpController.start = start;
+		WarpController.interval = interval;
+//		if(localUser.equals(userName)==false){
+//			STATE = FINISHED;
+//			warpListener.onGameFinished(code, true);
+//		}else{
+//			warpListener.onGameFinished(code, false);
+//		}
 	}
 	
 	public void onUserLeftRoom(String roomId, String userName){
@@ -362,6 +366,14 @@ public class WarpController {
 
 	public static boolean isDeleteFlag() {
 		return deleteFlag;
+	}
+
+	public static int getStart() {
+		return start;
+	}
+
+	public static int getInterval() {
+		return interval;
 	}
 
 	public static void setWaitflag(boolean waitflag) {
