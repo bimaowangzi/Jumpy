@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class GameWorld {
     private Player player;
-    private ArrayList<OtherPlayer> otherPlayers = new ArrayList<OtherPlayer>();
+    private volatile ArrayList<OtherPlayer> otherPlayers;
     private PlatformHandler platformHandler;
     private World world;
     private PowerUp powerUp;
@@ -55,6 +55,8 @@ public class GameWorld {
         powerUp = new PowerUp(gameWidth, gameHeight);
         int avatarID = Integer.parseInt(WarpController.getAvatarMap().get(WarpController.getLocalUser()).substring(6)) - 1;
         player = new Player(WarpController.getLocalUser(), avatarID, cam, world, powerUp, gameWidth, gameHeight);
+        otherPlayers = new ArrayList<OtherPlayer>();
+        otherPlayers.clear();
 
         String[] players = WarpController.getLiveUsers();
         for (String name:players) {
@@ -106,6 +108,18 @@ public class GameWorld {
 
     public void updateReady(float delta) {
         timer+=delta;
+        try {
+            JSONObject data = new JSONObject();
+            data.put("type", "GameEnd");
+            data.put("dead", false);
+            data.put("time", -1);
+            data.put("height", -1);
+            WarpController.getInstance().sendGameUpdate(data.toString());
+            //                    System.out.println("sent");
+        } catch (Exception e) {
+            //                    System.out.println("exception caught");
+            // exception in sendLocation
+        }
         if (timer>=3f) {
             SoundLoader.startSound.play();
             currentState = GameState.RUNNING;
@@ -119,6 +133,10 @@ public class GameWorld {
 //        if (player.isAlive()) { // if player not alive, stop the world
 
 //        } else currentState = GameState.READY;
+        for (OtherPlayer other:otherPlayers) {
+            if (other.getResult().getTime()<0)
+                System.out.println("Other player result not NULL");
+        }
         world.step(delta, 1, 1);
         timer += delta;
 
@@ -165,7 +183,7 @@ public class GameWorld {
         for (OtherPlayer other:otherPlayers)
             other.update();
         for (OtherPlayer other:otherPlayers) {
-            if (other.getResult()==null)
+            if (other.getResult().getTime()<0)
                 return;
         }
 
@@ -231,6 +249,10 @@ public class GameWorld {
 
     public PowerUp getPowerUp() {
         return powerUp;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     public boolean isGameOver() {

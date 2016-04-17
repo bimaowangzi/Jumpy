@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.mygdx.GameWorld.GameWorld;
 import com.mygdx.JumpyHelper.PlayerResult;
 import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.appwarp.WarpController;
@@ -54,14 +53,9 @@ public class WinScreen extends AbstractScreen {
     private final List listDeadHeight;
     private final TextButton buttonReturnToLobby;
 
-    private GameWorld world;
-
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-    public WinScreen(PlayerResult playerResult, ArrayList<OtherPlayer> otherPlayers, final GameWorld world) {
-
-        this.world = world;
-
+    public WinScreen(PlayerResult playerResult, ArrayList<OtherPlayer> otherPlayers) {
         getWarpClient();
 
         warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + WarpController.getAvatarMap().get(WarpController.getLocalUser()));
@@ -140,7 +134,7 @@ public class WinScreen extends AbstractScreen {
                     }
                     WarpController.setWaitflag(false);
                 }
-                clearInfo();
+                //clearInfo();
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
@@ -161,12 +155,15 @@ public class WinScreen extends AbstractScreen {
         }
     }
 
-    private void clearInfo(){
-        world.getPlayer().setResult(null);
+/*    private void clearInfo(){
+        world.getPlayer().setResult(new PlayerResult(false, -1, -1, world.getPlayer().getName()));
         for (OtherPlayer otherPlayer : world.getOtherPlayers()){
-            otherPlayer.setResult(null);
+            otherPlayer.setResult(new PlayerResult(false, -1, -1, otherPlayer.getName()));
+            System.out.println("Player " + otherPlayer.getName() + " result cleared");
         }
-    }
+        world.getOtherPlayers().clear();
+        System.out.println("Info cleared");
+    }*/
 
     private void getWarpClient(){
         try {

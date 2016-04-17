@@ -46,7 +46,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     private Body body;
     private CircleShape shape;
 
-    private PlayerResult result;
+    private volatile PlayerResult result;
 
     public OtherPlayer(String name, int avatarID, OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
         this.name = name;
@@ -76,7 +76,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
         fixtureDef.friction=0.5f;
         body.createFixture(fixtureDef);
 
-        result = null;
+        result = new PlayerResult(false, -1, -1, name);
     }
 
     // This update method is called when a new data set is received
@@ -94,8 +94,8 @@ public class OtherPlayer implements ContactFilter, ContactListener {
 
     // This update method is called by the GameWorld
     public synchronized void update() {
-        if (result != null)
-            body.setLinearVelocity(0, -0.1f);
+        if (result.getTime()>0)
+            body.setLinearVelocity(0, -0.2f);
 
         // Map position on screen with world position
         position.x = body.getPosition().x;
@@ -136,6 +136,10 @@ public class OtherPlayer implements ContactFilter, ContactListener {
 
     public float getWorldHeight() {
         return this.worldHeight;
+    }
+
+    public int getLives() {
+        return lives;
     }
 
     public boolean inAir() {

@@ -229,6 +229,7 @@ public class WarpController {
 	
 	public void onUserLeftRoom(String roomId, String userName){
 		log("onUserLeftRoom "+userName+" left room "+roomId);
+
 //		if(STATE==STARTED && !localUser.equals(userName)){// Game Started and other user left the room
 //			warpListener.onGameFinished(ENEMY_LEFT, true);
 //		}
@@ -348,7 +349,6 @@ public class WarpController {
 	}
 
 	public static void clearLiveUsers() {
-		System.out.println("Clear LiveUsers");
 		liveUsers = null;
 	}
 

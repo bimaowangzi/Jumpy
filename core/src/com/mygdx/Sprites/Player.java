@@ -99,7 +99,7 @@ public class Player implements ContactFilter, ContactListener {
 
         initialHeight = (int) body.getPosition().y;
 
-        result = null;
+        result = new PlayerResult(false, -1, -1, name);
     }
 
     public void update(float delta) {

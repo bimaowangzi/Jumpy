@@ -6,7 +6,9 @@ import com.mygdx.GameWorld.GameRenderer;
 import com.mygdx.GameWorld.GameWorld;
 import com.mygdx.JumpyHelper.InputHandler;
 import com.mygdx.JumpyHelper.PlayerResult;
+import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.appwarp.WarpController;
+import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
 import org.json.JSONObject;
 
@@ -18,8 +20,9 @@ public class PlayScreen extends AbstractScreen {
     private GameWorld world;
     private GameRenderer renderer;
     private OrthographicCamera cam;
+    private WarpClient warpClient;
 
-    private Thread fetchDataThread;
+    private Thread fetchDataThread, checkActiveUsers;
 
     private float runTime = 0;
 
@@ -31,6 +34,8 @@ public class PlayScreen extends AbstractScreen {
     public PlayScreen (){
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
+
+        getWarpClient();
 
         cam = new OrthographicCamera();
 
@@ -44,6 +49,9 @@ public class PlayScreen extends AbstractScreen {
 
         fetchDataThread = new FetchDataThread(world);
         fetchDataThread.start();
+
+        checkActiveUsers = new CheckActiveUsers(warpClient,WarpController.getRoomId(),world);
+        checkActiveUsers.start();
 
 //        if (world.sent){
 //            labelState = new Label("Ended",skin);
@@ -69,7 +77,17 @@ public class PlayScreen extends AbstractScreen {
         renderer.render(delta); // GameRenderer renders
         if (world.isEnded()) {
             fetchDataThread.interrupt();
-            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer().getResult(), world.getOtherPlayers(), world);
+            //Player player = world.getPlayer();
+            // back up array of other players for sending
+//            ArrayList<OtherPlayer> otherPlayers = new ArrayList<OtherPlayer>();
+//            for (int i = 0;i<world.getOtherPlayers().size();i++){
+//                OtherPlayer otherPlayer = world.getOtherPlayers().get(i);
+//                otherPlayers.add(new OtherPlayer(new String(otherPlayer.getName()),otherPlayer.getAvatarID(),cam, world.getWorld(),width,height));
+//                otherPlayers.get(i).setResult(new PlayerResult(otherPlayer.getResult().isDead(), otherPlayer.getResult().getTime(), otherPlayer.getResult().getHeight(), otherPlayer.getName()));
+//                otherPlayer.setResult(new PlayerResult(false,-1,-1,otherPlayer.getName()));
+//            }
+//            PlayerResult playerResult = new PlayerResult(player.getLives()==0,-1,-1,player.getName());
+            ScreenManager.getInstance().showScreen(ScreenEnum.WIN, world.getPlayer().getResult(), world.getOtherPlayers());
 
         }
     }
@@ -96,6 +114,14 @@ public class PlayScreen extends AbstractScreen {
     @Override
     public void dispose() {
 
+    }
+
+    private void getWarpClient(){
+        try {
+            warpClient = WarpClient.getInstance();
+        } catch (Exception ex) {
+            System.out.println("Fail to get warpClient");
+        }
     }
 }
 
@@ -150,6 +176,45 @@ class FetchDataThread extends Thread {
             } catch (Exception e) {
                 // exception
                 // e.printStackTrace();
+            }
+        }
+    }
+}
+
+class CheckActiveUsers extends Thread {
+    WarpClient warpClient;
+    GameWorld world;
+    String roomId;
+
+    public CheckActiveUsers(WarpClient warpClient, String roomId, GameWorld world) {
+        this.warpClient = warpClient;
+        this.world = world;
+        this.roomId = roomId;
+    }
+
+    @Override
+    public void run() {
+        while (!isInterrupted()) {
+            warpClient.getLiveRoomInfo(roomId);
+            while (!WarpController.isWaitflag()) {
+                // busy wait
+            }
+            WarpController.setWaitflag(false);
+
+            if (isInterrupted()) {
+                break;
+            }
+
+            String[] liveUsers = WarpController.getLiveUsers();
+            for (OtherPlayer otherPlayer : world.getOtherPlayers()) {
+                boolean contains = false;
+                for (String user:liveUsers) {
+                    if (otherPlayer.getName().equals(user)) {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains) world.getOtherPlayers().remove(otherPlayer);
             }
         }
     }
