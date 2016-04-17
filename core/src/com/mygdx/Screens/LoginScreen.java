@@ -75,7 +75,7 @@ public class LoginScreen extends AbstractScreen{
                     if (WarpController.isStatusflag()){
                         WarpController.setStatusflag(false);
                         // wait for setRoomData
-                        warpClient.getRoomInRange(0, 3);
+                        warpClient.getRoomInRange(1, 3);
                         while (!WarpController.isWaitRoomFlag()){
                             // busy waiting
                         }
@@ -122,7 +122,7 @@ public class LoginScreen extends AbstractScreen{
         table = new Table();
         table.setFillParent(true);
         table.center();
-        table.setDebug(true);
+        table.setDebug(false);
 
         table.add(labelGame).colspan(2).pad(1);
         table.row();
