@@ -377,6 +377,8 @@ public class WarpController {
 
 	public static void clearStatusMap() { statusMap.clear(); }
 
+	public static void clearAvatarMap() { avatarMap.clear(); }
+
 	public static HashMap<String, String> getAvatarMap() {
 		return avatarMap;
 	}
