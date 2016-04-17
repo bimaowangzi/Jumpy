@@ -36,7 +36,7 @@ public class AvatarScreen extends AbstractScreen{
     private Label labelAvatar;
 
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-    private static TextureRegionDrawable bg = new TextureRegionDrawable(AssetLoader.avatarbg);
+//    private static TextureRegionDrawable bg = new TextureRegionDrawable(AssetLoader.avatarbg);
 
     private static TextureRegionDrawable avatar1 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(0));
     private static TextureRegionDrawable avatar2 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(1));
@@ -52,7 +52,7 @@ public class AvatarScreen extends AbstractScreen{
     private ImageButton imageAvatar4 = new ImageButton(avatar4);
     private ImageButton imageAvatar5 = new ImageButton(avatar5);
 
-    private Image bgImage = new Image(bg);
+//    private Image bgImage = new Image(bg);
 
 
     private static String avatarName = "none";
@@ -262,7 +262,7 @@ public class AvatarScreen extends AbstractScreen{
         table.add(labelAvatar).colspan(3).setActorHeight(2);
         table.row();
         table.add(buttonSelect).colspan(3);
-        addActor(bgImage);
+//        addActor(bgImage);
 
         addActor(table);
     }

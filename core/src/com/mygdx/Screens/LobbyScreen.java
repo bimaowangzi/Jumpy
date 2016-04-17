@@ -109,6 +109,7 @@ public class LobbyScreen extends AbstractScreen {
                 warpClient.leaveRoom(roomId);
                 WarpController.clearLiveUsers();
                 WarpController.clearStatusMap();
+                WarpController.clearAvatarMap();
                 Gdx.input.setOnscreenKeyboardVisible(false);
                 ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
                 return false;
