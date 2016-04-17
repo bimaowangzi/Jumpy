@@ -219,7 +219,7 @@ public class Player implements ContactFilter, ContactListener {
         } else if (powerUpState==3) { // umbrella
             body.setLinearVelocity(body.getLinearVelocity().x, -35);
         } else if (powerUpState == 4) {
-            if (lives < 3) lives++;
+            lives = 3;
             powerUpState = 0;
         } else if (powerUpState == 5) {
             if (radius!=4f) {

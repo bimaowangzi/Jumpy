@@ -3,6 +3,7 @@ package com.mygdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.JumpyHelper.AssetLoader;
+import com.mygdx.appwarp.WarpController;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -21,6 +22,7 @@ public class PlatformHandler {
     private OrthographicCamera cam;
     private float gameWidth, gameHeight;
     private int index;
+    private int interval;
     private float currentHeight;
     private final float distance = -940f;
 
@@ -33,20 +35,21 @@ public class PlatformHandler {
 
         gap = gameHeight/10;
         random = new Random();
-
+        index = WarpController.getStart();
+        interval = WarpController.getInterval();
         ground = new Platform(cam, world, 0, 0.8f*gameHeight, gameWidth, 0.2f*gameHeight, 0, gameWidth, gameHeight);
 
         currentHeight = 0.8f*gameHeight;
-        index = 0;
+
         for (int i=0; i<5; i++) {
             currentHeight -= gap;
             platforms.add(new Platform(cam, world, AssetLoader.platformLeft[index], currentHeight-AssetLoader.platformGap[index]*gap,
                     AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
-            index++;
+            index=(index+interval)%2000;
             currentHeight-=gap;
             platforms.add(new Platform(cam, world, 25+AssetLoader.platformLeft[index], currentHeight-AssetLoader.platformGap[index]*gap,
                     AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
-            index++;
+            index=(index+interval)%2000;
         }
 
         finishlineLine = new Platform(cam, world, 0, distance, gameWidth, 5, 4, gameWidth, gameHeight);
@@ -69,18 +72,10 @@ public class PlatformHandler {
                 else
                     platforms.get(i).reset(25 + AssetLoader.platformLeft[index], 0,
                             AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], currentHeight - AssetLoader.platformGap[index] * gap);
-                index++;
+                index=(index+interval)%2000;
             }
         }
     }
-
-/*    private int generateType() {
-        int num = random.nextInt(8);
-        if (num<5) return 0;
-        else if (num==5) return 1;
-        else if (num==6) return 2;
-        else return 3;
-    }*/
 
     public void reset() {
         currentHeight = 0.8f*gameHeight;

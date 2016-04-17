@@ -78,7 +78,7 @@ public class AssetLoader {
         life.flip(false, true);
 
         powerupTextures.add(new TextureRegion(texture, 417, 19, 16, 16)); // high jump
-        powerupTextures.add(new TextureRegion(texture, 381, 104, 16, 16)); // low jump
+        powerupTextures.add(new TextureRegion(texture, 24, 141, 16, 16)); // low jump
         powerupTextures.add(new TextureRegion(texture, 143, 243, 28, 17)); // flyer
         powerupTextures.add(new TextureRegion(texture, 362, 51, 18, 19)); // life
         powerupTextures.add(new TextureRegion(texture, 362, 19, 16, 16)); // grow
