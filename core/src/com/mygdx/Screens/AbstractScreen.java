@@ -33,8 +33,11 @@ public abstract class AbstractScreen extends Stage implements Screen{
 
 //        System.out.println("GDXwidth is " + Gdx.graphics.getWidth() + ", GDXheight is" + Gdx.graphics.getHeight());
 
-        if (Gdx.graphics.getHeight()==480){
+        if (Gdx.graphics.getHeight()==480) {
             phoneDisplay = false;
+        } else if (Gdx.graphics.getWidth() == 1080){
+            phoneDisplay = true;
+            this.getViewport().setWorldSize((int) (Gdx.graphics.getWidth()*0.6f),(int) (Gdx.graphics.getHeight()*0.6f));
         }else {
             System.out.println("PhoneDisplay");
             phoneDisplay = true;

@@ -51,7 +51,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     public OtherPlayer(String name, int avatarID, OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
         this.name = name;
         this.avatarID = avatarID;
-        position = new Vector2(gameWidth/2, gameHeight*0.8f);
+        position = new Vector2(gameWidth/6*(avatarID+1), gameHeight*0.8f);
         this.cam = cam;
 
         this.gameWidth = gameWidth;
