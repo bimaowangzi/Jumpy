@@ -235,17 +235,17 @@ public class LobbyScreen extends AbstractScreen {
         }
 //        tableBig.setBounds(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/3,Gdx.graphics.getWidth(),Gdx.graphics.getHeight()*0.6f);
         tableBig.top();
-        tableBig.setDebug(true);
+        tableBig.setDebug(false);
 
         Table tableTop = new Table();
-        tableTop.setDebug(true);
+        tableTop.setDebug(false);
         tableTop.add(labelRoom).left().pad(5);
         tableTop.add(labelNumOfPlayers).right().pad(5);
         tableBig.add(tableTop);
         tableBig.row();
 
         Table tableMid = new Table();
-        tableMid.setDebug(true);
+        tableMid.setDebug(false);
         tableMid.add(labelPlayers);
         tableMid.add(labelStatus);
         tableMid.add(labelAvatar);

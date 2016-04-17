@@ -126,7 +126,7 @@ public class RoomSelectionScreen extends AbstractScreen{
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.setDebug(true);
+        table.setDebug(false);
 
         table.add(labelWelcome).colspan(2).pad(1);
         table.row();
