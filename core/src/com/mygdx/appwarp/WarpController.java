@@ -2,6 +2,7 @@ package com.mygdx.appwarp;
 
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.mygdx.Screens.LobbyScreen;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
@@ -10,6 +11,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WarpController {
 
@@ -26,8 +28,8 @@ public class WarpController {
 	private static String roomId;
 	private static String[] liveUsers;
 
-	private static HashMap<String,String> statusMap = new HashMap<String,String>();
-	private static HashMap<String,String> avatarMap = new HashMap<String,String>();
+	private static ConcurrentHashMap<String,String> statusMap = new ConcurrentHashMap<String,String>();
+	private static ConcurrentHashMap<String,String> avatarMap = new ConcurrentHashMap<String,String>();
 
 	private static String data;
 	public static volatile boolean dataAvailable = false;
@@ -193,6 +195,17 @@ public class WarpController {
 	
 	public void onUserJoinedRoom(String roomId, String userName){
 		log("onUserJoinRoom "+userName+" joined room "+roomId);
+		try {
+			if (WarpController.getLiveUsers()[0].equals(WarpController.getLocalUser())){
+				HashMap<String,Object> roomProperties = new HashMap<String,Object>();
+				roomProperties.put("start", LobbyScreen.startSeed);
+				roomProperties.put("interval",LobbyScreen.intervalSeed);
+				WarpClient.getInstance().updateRoomProperties(WarpController.getRoomId(),roomProperties,null);
+			}
+			System.out.println("update " + userName + " room property");
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
 //		if(localUser.equals(userName)==false){
 //			startGame();
 //		}
@@ -236,23 +249,28 @@ public class WarpController {
 	}
 
 	public void onGetUserInfo(LiveUserInfoEvent event){
-		String[] customData = event.getCustomData().split(",");
-		String status = event.getCustomData();
-		String avatar = "none";
-		try {
-			status = customData[0];
-			avatar = customData[1];
-		}
-		catch(ArrayIndexOutOfBoundsException e){
-			e.printStackTrace();
-		}
-		String user = event.getName();
-		statusMap.put(user,status);
+		if (event != null){
+			String[] customData = event.getCustomData().split(",");
+			String status = event.getCustomData();
+			String avatar = "none";
 
-		if (!avatarMap.containsKey(user)){
-			avatarMap.put(user,"none");
-		} else
-			avatarMap.put(user,avatar);
+			try {
+				status = customData[0];
+				avatar = customData[1];
+			}
+			catch(ArrayIndexOutOfBoundsException e){
+				e.printStackTrace();
+			}
+			String user = event.getName();
+			statusMap.put(user,status);
+
+			if (!avatarMap.containsKey(user)){
+				avatarMap.put(user,"none");
+			} else
+				avatarMap.put(user,avatar);
+		} else {
+			System.out.println("user event is null");
+		}
 
 		setWaitflag(true);
 	}
@@ -392,7 +410,7 @@ public class WarpController {
 		WarpController.deleteFlag = deleteFlag;
 	}
 
-	public static HashMap<String, String> getStatusMap() {
+	public static ConcurrentHashMap<String, String> getStatusMap() {
 		return statusMap;
 	}
 
@@ -400,7 +418,7 @@ public class WarpController {
 
 	public static void clearAvatarMap() { avatarMap.clear(); }
 
-	public static HashMap<String, String> getAvatarMap() {
+	public static ConcurrentHashMap<String, String> getAvatarMap() {
 		return avatarMap;
 	}
 

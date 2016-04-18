@@ -44,7 +44,7 @@ public class RoomListener implements RoomRequestListener{
 	}
 
 	public void onSubscribeRoomDone(RoomEvent event) {
-//		System.out.println("onSubscribeRoomDone: "+event.getResult());
+		System.out.println("onSubscribeRoomDone: "+event.getResult());
 		if(event.getResult()==WarpResponseResultCode.SUCCESS){
 //			callBack.onRoomSubscribed(event.getData().getId());
 			callBack.onRoomSubscribed(event);

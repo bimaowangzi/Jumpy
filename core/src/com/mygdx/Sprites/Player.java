@@ -103,7 +103,6 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     public void update(float delta) {
-        System.out.println(canJump);
         timer += delta;
 
         // Set x-velocity according to accelerometer value
@@ -279,8 +278,10 @@ public class Player implements ContactFilter, ContactListener {
         if (platformType==1) {
             body.setLinearVelocity(body.getLinearVelocity().x*12, 0);
         } else if (platformType==2) {
-            canJump = false;
-            body.setLinearVelocity(body.getLinearVelocity().x, baseJumpSpeed*1.5f);
+            synchronized (this) {
+                canJump = false;
+                body.setLinearVelocity(body.getLinearVelocity().x, baseJumpSpeed * 1.5f);
+            }
             SoundLoader.jumpSound.play();
         }
     }
@@ -385,7 +386,7 @@ public class Player implements ContactFilter, ContactListener {
         return score;
     }
 
-    public void setCanJump(boolean canJump) {
+    public synchronized void setCanJump(boolean canJump) {
         this.canJump = canJump;
     }
 
@@ -410,7 +411,7 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     @Override
-    public void beginContact(Contact contact) {
+    public synchronized void beginContact(Contact contact) {
         canJump = true;
     }
 
@@ -419,7 +420,7 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     @Override
-    public void endContact(Contact contact) {
+    public synchronized void endContact(Contact contact) {
         for (Platform p: platformHandler.getPlatforms()) {
             if (Math.abs(p.getY() - (getY() + height)) < 0.1f) {
                 canJump = true;

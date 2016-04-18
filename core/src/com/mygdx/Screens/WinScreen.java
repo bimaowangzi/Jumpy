@@ -16,6 +16,8 @@ import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Created by user on 11/3/2016.
  */
@@ -58,7 +60,10 @@ public class WinScreen extends AbstractScreen {
     public WinScreen(PlayerResult playerResult, ArrayList<OtherPlayer> otherPlayers) {
         getWarpClient();
 
-        warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + WarpController.getAvatarMap().get(WarpController.getLocalUser()));
+        WinUpdateThread winUpdateThread = new WinUpdateThread(warpClient,this,WarpController.getRoomId());
+        winUpdateThread.start();
+
+//        warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + WarpController.getAvatarMap().get(WarpController.getLocalUser()));
 
         playersResultArray.add(playerResult);
         for (OtherPlayer other:otherPlayers)
@@ -127,22 +132,21 @@ public class WinScreen extends AbstractScreen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Returning to lobby.");
 
-                warpClient.getLiveRoomInfo(WarpController.getRoomId());
-                while (!WarpController.isWaitflag()){
-                    // busy wait
-                }
-                WarpController.setWaitflag(false);
-
-                String[] liveUsers = WarpController.getLiveUsers();
-
-                for (String user : liveUsers){
-                    warpClient.getLiveUserInfo(user);
-                    while (!WarpController.isWaitflag()){
-                        // busy wait
-                    }
-                    WarpController.setWaitflag(false);
-                }
-                //clearInfo();
+//                warpClient.getLiveRoomInfo(WarpController.getRoomId());
+//                while (!WarpController.isWaitflag()){
+//                    // busy wait
+//                }
+//                WarpController.setWaitflag(false);
+//
+//                String[] liveUsers = WarpController.getLiveUsers();
+//
+//                for (String user : liveUsers){
+//                    warpClient.getLiveUserInfo(user);
+//                    while (!WarpController.isWaitflag()){
+//                        // busy wait
+//                    }
+//                    WarpController.setWaitflag(false);
+//                }
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
@@ -211,5 +215,40 @@ public class WinScreen extends AbstractScreen {
         table.row();
         table.add(buttonReturnToLobby).colspan(4).pad(5);
         addActor(table);
+    }
+}
+
+class WinUpdateThread extends Thread{
+
+    WarpClient warpClient;
+    WinScreen winScreen;
+    String roomId;
+
+    public WinUpdateThread(WarpClient warpClient, WinScreen winScreen, String roomId) {
+        this.warpClient = warpClient;
+        this.winScreen = winScreen;
+        this.roomId = roomId;
+    }
+
+    @Override
+    public void run() {
+        warpClient.getLiveRoomInfo(roomId);
+        while (!WarpController.isWaitflag()){
+            // busy wait
+        }
+        WarpController.setWaitflag(false);
+
+        warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + WarpController.getAvatarMap().get(WarpController.getLocalUser()));
+
+        String[] liveUsers = WarpController.getLiveUsers();
+        if (liveUsers != null){
+            for (String user : liveUsers){
+                warpClient.getLiveUserInfo(user);
+                while (!WarpController.isWaitflag()){
+                    // busy wait
+                }
+                WarpController.setWaitflag(false);
+            }
+        }
     }
 }

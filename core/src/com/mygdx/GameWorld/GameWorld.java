@@ -123,9 +123,7 @@ public class GameWorld {
         if (timer>=3f) {
             SoundLoader.startSound.play();
             currentState = GameState.RUNNING;
-            synchronized (player) {
-                player.setCanJump(true);
-            }
+            player.setCanJump(true);
             timer=0;
         }
     }

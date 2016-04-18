@@ -21,6 +21,7 @@ import com.mygdx.appwarp.WarpController;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by user on 11/3/2016.
@@ -57,13 +58,13 @@ public class AvatarScreen extends AbstractScreen{
 
     private static String avatarName = "none";
     private Image displayAvatar = new Image(avatar6);
-    private static HashMap<String,String> avatarMap = WarpController.getAvatarMap();
+    private static ConcurrentHashMap<String,String> avatarMap = WarpController.getAvatarMap();
 
     public static String getAvatarName() {
         return avatarName;
     }
 
-    public static HashMap<String, String> getAvatarMap() {
+    public static ConcurrentHashMap<String, String> getAvatarMap() {
         return avatarMap;
     }
 

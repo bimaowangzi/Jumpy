@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by user on 11/3/2016.
@@ -29,6 +30,9 @@ public class LobbyScreen extends AbstractScreen {
     private String roomId;
     private String roomName;
     private String[] liveUsers;
+
+    public static Integer startSeed;
+    public static Integer intervalSeed;
 
     public static volatile boolean startGame;
 
@@ -48,7 +52,7 @@ public class LobbyScreen extends AbstractScreen {
     private final List listStatus;
     private final Label labelAvatar;
     private final List listAvatar;
-    HashMap avatarMap = WarpController.getAvatarMap();
+    ConcurrentHashMap avatarMap = WarpController.getAvatarMap();
 
     final LobbyUpdateThread lobbyUpdateThread;
     final CheckStartThread checkStartThread;
@@ -67,19 +71,22 @@ public class LobbyScreen extends AbstractScreen {
         roomId = WarpController.getRoomId();
         roomName = room.getName();
 
-        Random ranGen = new Random();
-        try {
-            if (WarpController.getLiveUsers()[0].equals(WarpController.getLocalUser())){
-                Integer startSeed =  ranGen.nextInt(100) + 1;
-                Integer intervalSeed = ranGen.nextInt(100) + 1;
-                HashMap<String,Object> roomProperties = new HashMap<String,Object>();
-                roomProperties.put("start",startSeed);
-                roomProperties.put("interval",intervalSeed);
-                WarpClient.getInstance().updateRoomProperties(roomId,roomProperties,null);
-            }
-        } catch (Exception ex){
-            ex.printStackTrace();
+        if (WarpController.getLiveUsers()[0].equals(WarpController.getLocalUser())){
+            Random ranGen = new Random();
+
+            startSeed =  ranGen.nextInt(100) + 1;
+            intervalSeed = ranGen.nextInt(100) + 1;
         }
+//        try {
+//            if (WarpController.getLiveUsers()[0].equals(WarpController.getLocalUser())){
+//                HashMap<String,Object> roomProperties = new HashMap<String,Object>();
+//                roomProperties.put("start",startSeed);
+//                roomProperties.put("interval",intervalSeed);
+//                WarpClient.getInstance().updateRoomProperties(roomId,roomProperties,null);
+//            }
+//        } catch (Exception ex){
+//            ex.printStackTrace();
+//        }
 
         // start thread to update in-lobby players
         lobbyUpdateThread = new LobbyUpdateThread(warpClient,this,roomId);
@@ -275,7 +282,7 @@ public class LobbyScreen extends AbstractScreen {
     public void addStatusToList(){
         liveUsers = WarpController.getLiveUsers();
         String[] statuses = new String[liveUsers.length];
-        HashMap statusMap = WarpController.getStatusMap();
+        ConcurrentHashMap statusMap = WarpController.getStatusMap();
         for (int i = 0;i<liveUsers.length;i++){
             String user = liveUsers[i];
             statuses[i] = (String) statusMap.get(user);
@@ -323,7 +330,7 @@ public class LobbyScreen extends AbstractScreen {
 
 class CheckStartThread extends Thread{
 
-    private static volatile HashMap<String,String> statusMap = new HashMap<String,String>();
+    private static volatile ConcurrentHashMap<String,String> statusMap = new ConcurrentHashMap<String,String>();
     private boolean allReady;
 
     public CheckStartThread() {
