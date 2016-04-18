@@ -164,7 +164,7 @@ public class Player implements ContactFilter, ContactListener {
     }
 
     // Call this function when responding to screen touch
-    public void onJump() {
+    public synchronized void onJump() {
         if (canJump) {
             body.setLinearVelocity(new Vector2(0, jumpSpeed));
             SoundLoader.jumpSound.play();
