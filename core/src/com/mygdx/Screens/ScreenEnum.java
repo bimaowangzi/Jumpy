@@ -4,6 +4,7 @@ import com.mygdx.JumpyHelper.PlayerResult;
 import com.mygdx.Sprites.OtherPlayer;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by user on 11/3/2016.
@@ -34,7 +35,7 @@ public enum ScreenEnum {
     },
     WIN {
         public AbstractScreen getScreen(Object... params) {
-            return new WinScreen((PlayerResult) params[0],(ArrayList<OtherPlayer>) params[1]);
+            return new WinScreen((PlayerResult) params[0],(CopyOnWriteArrayList<OtherPlayer>) params[1]);
 //            return new WinScreen();
         }
     },

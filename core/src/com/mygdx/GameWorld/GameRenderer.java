@@ -16,6 +16,7 @@ import com.mygdx.Sprites.Player;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Admin on 3/21/2016.
@@ -30,7 +31,7 @@ public class GameRenderer {
 
     // Game Objects
     private Player player;
-    private ArrayList<OtherPlayer> otherPlayers;
+    private CopyOnWriteArrayList<OtherPlayer> otherPlayers;
     private PlatformHandler platformHandler;
     private ArrayList<Platform> platforms;
     private Platform finishingline;

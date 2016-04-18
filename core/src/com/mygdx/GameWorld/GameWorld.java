@@ -15,13 +15,14 @@ import com.mygdx.appwarp.WarpController;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Admin on 3/21/2016.
  */
 public class GameWorld {
     private Player player;
-    private volatile ArrayList<OtherPlayer> otherPlayers;
+    private volatile CopyOnWriteArrayList<OtherPlayer> otherPlayers;
     private PlatformHandler platformHandler;
     private World world;
     private PowerUp powerUp;
@@ -55,7 +56,7 @@ public class GameWorld {
         powerUp = new PowerUp(gameWidth, gameHeight);
         int avatarID = Integer.parseInt(WarpController.getAvatarMap().get(WarpController.getLocalUser()).substring(6)) - 1;
         player = new Player(WarpController.getLocalUser(), avatarID, cam, world, powerUp, gameWidth, gameHeight);
-        otherPlayers = new ArrayList<OtherPlayer>();
+        otherPlayers = new CopyOnWriteArrayList<OtherPlayer>();
         otherPlayers.clear();
 
         String[] players = WarpController.getLiveUsers();
@@ -239,7 +240,7 @@ public class GameWorld {
         return null;
     }
 
-    public ArrayList<OtherPlayer> getOtherPlayers() {
+    public CopyOnWriteArrayList<OtherPlayer> getOtherPlayers() {
         return otherPlayers;
     }
 

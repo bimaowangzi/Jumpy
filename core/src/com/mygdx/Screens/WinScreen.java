@@ -15,6 +15,7 @@ import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Thread.sleep;
 
@@ -57,7 +58,7 @@ public class WinScreen extends AbstractScreen {
 
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-    public WinScreen(PlayerResult playerResult, ArrayList<OtherPlayer> otherPlayers) {
+    public WinScreen(PlayerResult playerResult, CopyOnWriteArrayList<OtherPlayer> otherPlayers) {
         getWarpClient();
 
         WinUpdateThread winUpdateThread = new WinUpdateThread(warpClient,this,WarpController.getRoomId());
