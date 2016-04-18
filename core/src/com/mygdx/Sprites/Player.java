@@ -221,9 +221,9 @@ public class Player implements ContactFilter, ContactListener {
             lives = 3;
             powerUpState = 0;
         } else if (powerUpState == 5) {
+            jumpSpeed = baseJumpSpeed;
             if (radius!=4f) {
                 body.destroyFixture(body.getFixtureList().first());
-
                 radius = 4f;
                 height = 8;
                 width = 8;
@@ -237,6 +237,7 @@ public class Player implements ContactFilter, ContactListener {
                 fixtureDef.friction = 0.5f;
                 body.createFixture(fixtureDef);
             }
+
         } else if (powerUpState == 6) {
             while (powerUpState == 6)
                 powerUpState = powerUp.typeGenerator();
