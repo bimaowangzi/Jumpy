@@ -151,7 +151,7 @@ public class LobbyScreen extends AbstractScreen {
 //                System.out.println("Before:" + buttonStatusToggle.isChecked());
                 if (buttonStatusToggle.isChecked()) {
 
-                    buttonStatusToggle.setText("Selecting");
+                    buttonStatusToggle.setText("Ready");
 //                    buttonStatusToggle.setChecked(false);
 
                     System.out.println("Sets Selecting");
@@ -160,7 +160,7 @@ public class LobbyScreen extends AbstractScreen {
                     warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + avatarMap.get(WarpController.getLocalUser()));
                 } else {
 
-                    buttonStatusToggle.setText("Ready");
+                    buttonStatusToggle.setText("Selecting");
 //                    buttonStatusToggle.setChecked(true);
 
                     System.out.println("Sets Ready");

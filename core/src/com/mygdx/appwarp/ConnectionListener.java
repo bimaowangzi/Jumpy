@@ -14,9 +14,10 @@ public class ConnectionListener implements ConnectionRequestListener {
 	
 	public void onConnectDone(ConnectEvent e) {
 		System.out.println("Result: " + e.getResult());
+
 		if(e.getResult()==WarpResponseResultCode.SUCCESS){
 			callBack.onConnectDone(true);
-		}else{
+		} else{
 			callBack.onConnectDone(false);
 		}
 	}
@@ -27,6 +28,7 @@ public class ConnectionListener implements ConnectionRequestListener {
 	@Override
 	public void onInitUDPDone (byte result) {
 		if(result==WarpResponseResultCode.SUCCESS){
+			System.out.println("udp connection successful");
 			callBack.isUDPEnabled = true;
 		}
 	}

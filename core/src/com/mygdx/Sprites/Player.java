@@ -325,8 +325,8 @@ public class Player implements ContactFilter, ContactListener {
             data.put("inAir", inAir());
             data.put("worldHeight", getWorldHeight());
             data.put("lives", lives);
-            //byte[] dataByte = data.toString().getBytes();
             WarpController.getInstance().sendGameUpdate(data.toString());
+
         } catch (Exception e) {
             // exception in sendLocation
         }
