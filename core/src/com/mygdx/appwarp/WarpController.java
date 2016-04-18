@@ -244,7 +244,7 @@ public class WarpController {
 			avatar = customData[1];
 		}
 		catch(ArrayIndexOutOfBoundsException e){
-
+			e.printStackTrace();
 		}
 		String user = event.getName();
 		statusMap.put(user,status);

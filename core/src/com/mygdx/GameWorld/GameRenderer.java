@@ -290,7 +290,7 @@ public class GameRenderer {
             } else {
                 connectionState = "RECOVERING";
             }
-            AssetLoader.shadow.draw(batcher, connectionState, 2, gameHeight / 3);
+            AssetLoader.font.draw(batcher, connectionState, 2, gameHeight / 3);
         } catch (Exception e) {
             e.printStackTrace();
         }

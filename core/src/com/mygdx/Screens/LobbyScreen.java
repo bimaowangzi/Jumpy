@@ -81,8 +81,6 @@ public class LobbyScreen extends AbstractScreen {
             ex.printStackTrace();
         }
 
-        startGame = false;
-
         // start thread to update in-lobby players
         lobbyUpdateThread = new LobbyUpdateThread(warpClient,this,roomId);
         lobbyUpdateThread.start();
@@ -167,11 +165,7 @@ public class LobbyScreen extends AbstractScreen {
         });
 
         textInput = new TextField("",skin);
-//        textInput.setBounds(textInput.getX(), textInput.getY(), Gdx.graphics.getWidth()/2,textInput.getHeight());
         labelChat = new Label("",skin);
-//        labelChat.setWidth(300);
-//        labelChat.setBounds(0,0,300,400);
-//        labelChat.setWrap(true);
         // This is a bug that if u set fill parent, Spaces will be created at the top and bottom is unreadable.
 //        labelChat.setFillParent(true);
 
@@ -181,10 +175,6 @@ public class LobbyScreen extends AbstractScreen {
         chatTable.add(labelChat).expand();
         scrollChat = new ScrollPane(chatTable);
         scrollChat.setScrollingDisabled(true,false);
-//        chatTable = new Table();
-//        chatTable.add(labelChat).expandX().expandY();
-//        chatTable.setFillParent(true);
-//        chatTable.left();
         labelRoom = new Label(roomName,skin,"title");
         warpClient.getLiveRoomInfo(roomId);
         liveUsers = WarpController.getLiveUsers();

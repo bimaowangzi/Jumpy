@@ -126,7 +126,15 @@ public class WinScreen extends AbstractScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Returning to lobby.");
+
+                warpClient.getLiveRoomInfo(WarpController.getRoomId());
+                while (!WarpController.isWaitflag()){
+                    // busy wait
+                }
+                WarpController.setWaitflag(false);
+
                 String[] liveUsers = WarpController.getLiveUsers();
+
                 for (String user : liveUsers){
                     warpClient.getLiveUserInfo(user);
                     while (!WarpController.isWaitflag()){
