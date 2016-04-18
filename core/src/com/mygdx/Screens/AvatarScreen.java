@@ -42,8 +42,8 @@ public class AvatarScreen extends AbstractScreen{
     private static TextureRegionDrawable avatar1 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(0));
     private static TextureRegionDrawable avatar2 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(1));
     private static TextureRegionDrawable avatar3 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(2));
-    private static TextureRegionDrawable avatar4 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(3));
-    private static TextureRegionDrawable avatar5 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(4));
+    private static TextureRegionDrawable avatar4 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(4));
+    private static TextureRegionDrawable avatar5 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(3));
     private static TextureRegionDrawable avatar6 = new TextureRegionDrawable(AssetLoader.avatarTextures.get(5));
 
 

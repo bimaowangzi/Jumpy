@@ -142,7 +142,7 @@ public class LobbyScreen extends AbstractScreen {
                 return false;
             }
         });
-        buttonStatusToggle = new TextButton("Selecting",skin);
+        buttonStatusToggle = new TextButton("Ready",skin);
         buttonStatusToggle.setChecked(false);
         buttonStatusToggle.addListener(new InputListener() {
             @Override

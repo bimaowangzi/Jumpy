@@ -100,7 +100,6 @@ public class WarpController {
 	private void initAppwarp(){
 		try {
 			WarpClient.initialize(apiKey, secretKey);
-			WarpClient . setRecoveryAllowance ( 120 );
 //			warpClient.initUDP();
 			warpClient = WarpClient.getInstance();
 		} catch (Exception e) {
