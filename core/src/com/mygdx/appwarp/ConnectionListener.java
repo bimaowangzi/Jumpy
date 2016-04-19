@@ -4,6 +4,7 @@ import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultC
 import com.shephertz.app42.gaming.multiplayer.client.events.ConnectEvent;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ConnectionRequestListener;
 
+/**Listener that listens to notifications related to connections such as onConnectDone and onDisconnectDone*/
 public class ConnectionListener implements ConnectionRequestListener {
 
 	WarpController callBack;

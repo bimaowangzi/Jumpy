@@ -13,6 +13,8 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**WarpController is a Hub for managing the Appwarp listeners and
+ * Callbacks from the listeners will usually return to the WarpController*/
 public class WarpController {
 
 	private static WarpController instance;
@@ -48,22 +50,11 @@ public class WarpController {
 
 	private WarpListener warpListener ;
 	private static Label labelChat;
-	
-	private int STATE;
+
 	private static int start;
 	private static int interval;
-	
-	// Game state constants
-	public static final int WAITING = 1;
-	public static final int STARTED = 2;
-	public static final int COMPLETED = 3;
-	public static final int FINISHED = 4;
-	
-	// Game completed constants
-	public static final int GAME_WIN = 5;
-	public static final int GAME_LOOSE = 6;
-	public static final int ENEMY_LEFT = 7;
 
+	/**Flags are use to synchronize the Appwarp with the game*/
 	private static volatile boolean waitflag = false;
 	private static volatile boolean waitRoomFlag = false;
 	private static volatile boolean statusflag = false;
@@ -84,28 +75,17 @@ public class WarpController {
 		}
 		return instance;
 	}
-	
+
+	/**Called at upon login to connect with username*/
 	public void startApp(String localUser){
 		this.localUser = localUser;
 		warpClient.connectWithUserName(localUser);
 	}
-	
-	public void setListener(WarpListener listener){
-		this.warpListener = listener;
-	}
-	
-	public void stopApp(){
-		if(isConnected){
-			warpClient.unsubscribeRoom(roomId);
-			warpClient.leaveRoom(roomId);
-		}
-		warpClient.disconnect();
-	}
-	
+
+	/**Initialize Appwarp*/
 	private void initAppwarp(){
 		try {
 			WarpClient.initialize(apiKey, secretKey);
-//			warpClient.initUDP();
 			warpClient = WarpClient.getInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,10 +101,9 @@ public class WarpController {
 			}
 		}
 	}
-	
+
 	public void updateResult(int code, String msg){
 		if(isConnected){
-			STATE = COMPLETED;
 			HashMap<String, Object> properties = new HashMap<String, Object>();
 			properties.put("result", code);
 			warpClient.lockProperties(properties);
@@ -143,10 +122,10 @@ public class WarpController {
 	
 	public void onRoomCreated(String roomId){
 		if(roomId!=null){
-			// join room is nested in subscribe loop
-			// we wan to always subscribe before we join room
-			// although it may not be that necessary for creating room
-			// but it is a good practice
+			/** Join room is nested in subscribe loop
+			 We want to always subscribe before we join room
+			 Although it may not be that necessary for creating room
+			 But it is a good practice*/
 			warpClient.subscribeRoom(roomId);
 		}else{
 			handleError();
@@ -180,23 +159,8 @@ public class WarpController {
 	
 	public void onGetLiveRoomInfo(LiveRoomInfoEvent event){
 		String[] liveUsers = event.getJoinedUsers();
-//		if (liveUsers!=null){
-//			log("onGetLiveRoomInfo: "+liveUsers.length);
-//		} else {
-//			log("onGetLiveRoomInfo: No users");
-//		}
 		WarpController.liveUsers = liveUsers;
 		setWaitflag(true);
-//		if(liveUsers!=null){
-//			if(liveUsers.length==2){
-//				startGame();
-//			}else{
-//				waitForOtherUser();
-//			}
-//		}else{
-//			warpClient.disconnect();
-//			handleError();
-//		}
 	}
 	
 	public void onUserJoinedRoom(String roomId, String userName){
@@ -212,24 +176,16 @@ public class WarpController {
 		} catch (Exception ex){
 			ex.printStackTrace();
 		}
-//		if(localUser.equals(userName)==false){
-//			startGame();
-//		}
 	}
 
 	public void onSendChatDone(boolean status){
 		log("onSendChatDone: "+status);
 	}
 	
-	public void onGameUpdateReceived(String message){
-//		log("onMoveUpdateReceived: message"+ message );
+	public void onGameUpdateReceived(String message) {
 		String userName = message.substring(0, message.indexOf("#@"));
 		if (userName.equals(getLocalUser()))
 			return;
-		//String data = message.substring(message.indexOf("#@")+2, message.length());
-		//if(!localUser.equals(userName)){
-		//	warpListener.onGameUpdateReceived(data);
-		//}
 
 		data = message;
 		dataAvailable = true;
@@ -238,20 +194,10 @@ public class WarpController {
 	public void onRoomUpdateReceived(Integer start, Integer interval){
 		WarpController.start = start;
 		WarpController.interval = interval;
-//		if(localUser.equals(userName)==false){
-//			STATE = FINISHED;
-//			warpListener.onGameFinished(code, true);
-//		}else{
-//			warpListener.onGameFinished(code, false);
-//		}
 	}
 	
 	public void onUserLeftRoom(String roomId, String userName){
 		log("onUserLeftRoom "+userName+" left room "+roomId);
-
-//		if(STATE==STARTED && !localUser.equals(userName)){// Game Started and other user left the room
-//			warpListener.onGameFinished(ENEMY_LEFT, true);
-//		}
 	}
 
 	public void onGetUserInfo(LiveUserInfoEvent event){
@@ -281,24 +227,10 @@ public class WarpController {
 		setWaitflag(true);
 	}
 	
-	public int getState(){
-		return this.STATE;
-	}
-	
 	private void log(String message){
 		if(showLog){
 			System.out.println(message);
 		}
-	}
-	
-	private void startGame(){
-		STATE = STARTED;
-		warpListener.onGameStarted("Start the Game");
-	}
-	
-	private void waitForOtherUser(){
-		STATE = WAITING;
-		warpListener.onWaitingStarted("Waiting for other user");
 	}
 	
 	private void handleError(){
@@ -308,30 +240,6 @@ public class WarpController {
 		System.out.println("Disconnect");
 		disconnect();
 	}
-	
-//	public void handleLeave(){
-//		setDeleteFlag(true);
-//		warpClient.getLiveRoomInfo(roomId);
-//		while (!waitflag){};
-//		setWaitflag(false);
-//		System.out.println("wait done in handle leave");
-//		setDeleteFlag(false);
-////		if (liveUsers.length<=1){
-////			System.out.println("try delete the room");
-////			warpClient.deleteRoom(roomId);
-////		}
-////		roomId = null;
-////		room = null;
-//
-////		if(isConnected){
-////			warpClient.unsubscribeRoom(roomId);
-////			warpClient.leaveRoom(roomId);
-////			if(STATE!=STARTED){
-////				warpClient.deleteRoom(roomId);
-////			}
-////			warpClient.disconnect();
-////		}
-//	}
 	
 	public void disconnect(){
 		warpClient.removeConnectionRequestListener(new ConnectionListener(this));

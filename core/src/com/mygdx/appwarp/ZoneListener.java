@@ -12,6 +12,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 import com.shephertz.app42.gaming.multiplayer.client.listener.RoomRequestListener;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ZoneRequestListener;
 
+/**Listener that listens to lobby notifications such as onGetMatchedRoomsDone and onCreateRoomDone*/
 public class ZoneListener implements ZoneRequestListener{
 
 	
