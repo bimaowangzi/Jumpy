@@ -362,6 +362,8 @@ class CheckStartThread extends Thread{
             if (!avatarFlag)
                 continue;
 
+//            System.out.println("avatars all selected");
+
             Iterator it = statusMap.entrySet().iterator();
             allReady = true;
             while (it.hasNext()){
@@ -373,7 +375,11 @@ class CheckStartThread extends Thread{
                 }
             }
 
-            System.out.println("All Ready");
+            if (!allReady){
+                continue;
+            }
+
+            System.out.println("All Ready and more than 1 player in room");
 
             if (isInterrupted()){
                 break;
