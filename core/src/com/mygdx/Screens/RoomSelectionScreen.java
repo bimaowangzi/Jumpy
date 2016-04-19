@@ -18,6 +18,8 @@ import java.util.HashMap;
 /**
  * Created by user on 11/3/2016.
  */
+
+/**This screen displays the list of rooms available for joining and allows the user to create room*/
 public class RoomSelectionScreen extends AbstractScreen{
 
     private WarpClient warpClient;
@@ -39,11 +41,13 @@ public class RoomSelectionScreen extends AbstractScreen{
         System.out.println("roomSelConstructed");
         getWarpClient();
 
-        // start thread to call getRoomInRange()
+        /**start thread to call getRoomInRange()
+         * which polls for available rooms*/
         final RoomSelUpdateThread roomSelUpdateThread = new RoomSelUpdateThread(warpClient,this);
         roomSelUpdateThread.start();
 
         final RoomData[] roomDataList = WarpController.getRoomDatas();
+        /**Button to create room*/
         buttonCreateRoom = new TextButton("Create Room",skin);
         buttonCreateRoom.addListener(new InputListener() {
             @Override
@@ -65,6 +69,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                 return false;
             }
         });
+        /**Button to connect to selected room*/
         buttonConnectRoom = new TextButton("Connect Room",skin);
         buttonConnectRoom.addListener(new InputListener() {
             @Override
@@ -89,6 +94,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                 return false;
             }
         });
+        /**Button to logout to Login Screen*/
         buttonLogout = new TextButton("Logout",skin);
         buttonLogout.addListener(new InputListener(){
             @Override
@@ -154,6 +160,7 @@ public class RoomSelectionScreen extends AbstractScreen{
         addRoomToList(roomDataList);
     }
 
+    /**Method to update room list*/
     public void addRoomToList(RoomData[] roomDatas){
         roomMap = new HashMap<String, String>();
         if (roomDatas != null){
@@ -176,6 +183,8 @@ public class RoomSelectionScreen extends AbstractScreen{
     }
 }
 
+/**Thread to pull update to Room Sel Screen
+ * It constantly polls available rooms*/
 class RoomSelUpdateThread extends Thread{
 
     WarpClient warpClient;

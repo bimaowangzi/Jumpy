@@ -15,6 +15,8 @@ import com.mygdx.JumpyHelper.AssetLoader;
 /**
  * Created by user on 11/3/2016.
  */
+
+/**Abstract screens is the parent of all our screens, it inherits Stage and implements Screen*/
 public abstract class AbstractScreen extends Stage implements Screen{
 
     protected float width;
@@ -28,20 +30,19 @@ public abstract class AbstractScreen extends Stage implements Screen{
     SpriteBatch batcher;
 
     public AbstractScreen() {
-//        super(new FitViewport(380.0f, 640.0f, new OrthographicCamera()));
         super(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()));
 
-//        System.out.println("GDXwidth is " + Gdx.graphics.getWidth() + ", GDXheight is" + Gdx.graphics.getHeight());
-
         if (Gdx.graphics.getHeight()==480) {
+            /**For Desktop, note that this is not optimal*/
             phoneDisplay = false;
         } else if (Gdx.graphics.getWidth() == 1080){
+            /**For 1080 * 1920 phones*/
             phoneDisplay = true;
             this.getViewport().setWorldSize((int) (Gdx.graphics.getWidth()*0.6f),(int) (Gdx.graphics.getHeight()*0.6f));
         }else {
+            /**For 1440 * 2560 phones*/
             System.out.println("PhoneDisplay");
             phoneDisplay = true;
-//            this.getViewport().setWorldSize((int) (Gdx.graphics.getWidth()*0.6f),(int) (Gdx.graphics.getHeight()*0.6f));
             this.getViewport().setWorldSize((int) (Gdx.graphics.getWidth()*0.5f),(int) (Gdx.graphics.getHeight()*0.5f));
         }
 
@@ -63,7 +64,6 @@ public abstract class AbstractScreen extends Stage implements Screen{
     @Override
     public void render(float delta) {
         // Clear screen
-//        Gdx.gl.glClearColor(0, 0.2f, 0, 1);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -85,13 +85,6 @@ public abstract class AbstractScreen extends Stage implements Screen{
     public void resize(int width, int height) {
         this.width = width;
         this.height = height;
-//        if (phoneDisplay){
-//            this.width = width/2;
-//            this.height = height/2;
-//        } else {
-//            this.width = width;
-//            this.height = height;
-//        }
         System.out.println("resize with width " + this.width + " and height" + this.height);
         getViewport().update((int) this.width,(int) this.height, true);
     }

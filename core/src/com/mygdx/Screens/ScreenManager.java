@@ -6,6 +6,8 @@ import com.badlogic.gdx.Screen;
 /**
  * Created by user on 11/3/2016.
  */
+
+/**Screen Manager is responsible for switching of the screens and displaying them*/
 public class ScreenManager {
 
     // Singleton: unique instance
