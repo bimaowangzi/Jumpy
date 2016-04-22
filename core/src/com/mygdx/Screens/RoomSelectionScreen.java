@@ -69,7 +69,6 @@ public class RoomSelectionScreen extends AbstractScreen{
 
                 RoomData[] roomDataList = WarpController.getRoomDatas();
                 if (roomDataList!=null){
-                    System.out.println("not null");
                     for (RoomData roomData:roomDataList){
                         System.out.println(roomData.getName() + " is it equal to " + text);
                         if ((roomData.getName()).equals(text)){
