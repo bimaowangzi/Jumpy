@@ -37,6 +37,9 @@ public class LoginScreen extends AbstractScreen{
         final Label labelError = new Label("Unable to connect Appwarp, try a different ID and check your connections",skin);
         labelError.setWrap(true);
 
+        final Label labelNoUserError = new Label("Please key in a username.",skin);
+        labelNoUserError.setWrap(true);
+
         /**Button to connect to Appwarp*/
         buttonConnect = new TextButton("Connect",skin);
         buttonConnect.addListener(new InputListener(){
@@ -63,6 +66,7 @@ public class LoginScreen extends AbstractScreen{
                         Gdx.input.setOnscreenKeyboardVisible(false);
                         ScreenManager.getInstance().showScreen(ScreenEnum.ROOMSELECTION);
                     } else {
+                        /**Connection or username taken error*/
                         table.setVisible(false);
                         new Dialog("Error",skin){
 
@@ -79,6 +83,23 @@ public class LoginScreen extends AbstractScreen{
 
                         }.show(stage);
                     }
+                } else if (text.length() == 0){
+                    /**Username field empty error*/
+                    table.setVisible(false);
+                    new Dialog("Error",skin){
+
+                        {
+                            this.getContentTable().add(labelNoUserError).prefWidth(table.getWidth());
+                            button("OK");
+                        }
+
+                        @Override
+                        protected void result(Object object) {
+                            super.result(object);
+                            table.setVisible(true);
+                        }
+
+                    }.show(stage);
                 }
                 return false;
             }
