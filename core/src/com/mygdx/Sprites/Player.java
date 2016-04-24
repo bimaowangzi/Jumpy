@@ -139,7 +139,7 @@ public class Player implements ContactFilter, ContactListener {
 
     }
 
-    public void respawn() {
+    private void respawn() {
         // Find a platform to respawn the player
         Platform respawnPlatform=platformHandler.getPlatforms().get(0);
         // First let this platform be the highest one in the game
