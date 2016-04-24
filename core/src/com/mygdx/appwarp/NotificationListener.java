@@ -10,6 +10,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.UpdateEvent;
 import com.shephertz.app42.gaming.multiplayer.client.listener.NotifyListener;
 
+/**Listener that listens to general notifications such as onUpdatePeersReceived and onUserChangeRoomProperty*/
 public class NotificationListener implements NotifyListener{
 
 	

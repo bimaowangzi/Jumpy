@@ -5,6 +5,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.LiveRoomInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 import com.shephertz.app42.gaming.multiplayer.client.listener.RoomRequestListener;
 
+/**Listener that listens to room notifications such as onGetLiveRoomInfoDone and onSubscribeRoomDone*/
 public class RoomListener implements RoomRequestListener{
 
 	

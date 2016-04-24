@@ -26,11 +26,6 @@ public class PlayScreen extends AbstractScreen {
 
     private float runTime = 0;
 
-//    // testing on screen
-//    private Label labelState;
-//
-//    Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-
     public PlayScreen (){
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
@@ -77,6 +72,7 @@ public class PlayScreen extends AbstractScreen {
         renderer.render(delta); // GameRenderer renders
         if (world.isEnded()) {
             fetchDataThread.interrupt();
+            checkActiveUsers.interrupt();
             //Player player = world.getPlayer();
             // back up array of other players for sending
 //            ArrayList<OtherPlayer> otherPlayers = new ArrayList<OtherPlayer>();
@@ -207,16 +203,21 @@ class CheckActiveUsers extends Thread {
 
             String[] liveUsers = WarpController.getLiveUsers();
             for (OtherPlayer otherPlayer : world.getOtherPlayers()) {
-                boolean contains = false;
-                for (String user:liveUsers) {
-                    if (otherPlayer.getName().equals(user)) {
-                        contains = true;
-                        break;
+                try{
+                    boolean contains = false;
+                    for (String user:liveUsers) {
+                        if (otherPlayer.getName().equals(user)) {
+                            contains = true;
+                            break;
+                        }
                     }
+                    if (!contains) world.getOtherPlayers().remove(otherPlayer);
+                } catch (Exception ex){
+                    ex.printStackTrace();
                 }
-                if (!contains) world.getOtherPlayers().remove(otherPlayer);
             }
         }
+        System.out.println("checkactive user ended");
     }
 }
 

@@ -133,10 +133,10 @@ public class GameWorld {
 //        if (player.isAlive()) { // if player not alive, stop the world
 
 //        } else currentState = GameState.READY;
-        for (OtherPlayer other:otherPlayers) {
-            if (other.getResult().getTime()<0)
-                System.out.println("Other player result not NULL");
-        }
+//        for (OtherPlayer other:otherPlayers) {
+//            if (other.getResult().getTime()<0)
+//                System.out.println("Other player result not NULL");
+//        }
         world.step(delta, 1, 1);
         timer += delta;
 

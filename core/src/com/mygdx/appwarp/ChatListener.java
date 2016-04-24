@@ -3,8 +3,7 @@ package com.mygdx.appwarp;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ChatRequestListener;
 
-
-
+/**Listener that listens to notifications related to chatting such as onSendChatDone and onSendPrivateChatDone*/
 public class ChatListener implements ChatRequestListener{
 	
 	WarpController callBack;

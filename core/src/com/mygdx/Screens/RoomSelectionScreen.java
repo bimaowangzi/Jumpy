@@ -3,6 +3,8 @@ package com.mygdx.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -14,13 +16,17 @@ import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by user on 11/3/2016.
  */
+
+/**This screen displays the list of rooms available for joining and allows the user to create room*/
 public class RoomSelectionScreen extends AbstractScreen{
 
     private WarpClient warpClient;
+    private Stage stage = this;
 
     private final TextButton buttonCreateRoom;
     private final TextButton buttonConnectRoom;
@@ -30,25 +36,63 @@ public class RoomSelectionScreen extends AbstractScreen{
     private final Label labelNewRoom;
     private final Label labelRoomList;
     private final List listRooms;
+    private Table table;
 
-    HashMap<String,String> roomMap;
+    ConcurrentHashMap<String,String> roomMap;
 
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 
     public RoomSelectionScreen() {
+
         System.out.println("roomSelConstructed");
+
+        final Label labelNoRoomError = new Label("Please key in a room name.",skin);
+        labelNoRoomError.setWrap(true);
+
+        final Label labelRoomTakenError = new Label("Room name is taken, please key in another room name.",skin);
+        labelRoomTakenError.setWrap(true);
+
         getWarpClient();
 
-        // start thread to call getRoomInRange()
+        /**start thread to call getRoomInRange()
+         * which polls for available rooms*/
         final RoomSelUpdateThread roomSelUpdateThread = new RoomSelUpdateThread(warpClient,this);
         roomSelUpdateThread.start();
 
         final RoomData[] roomDataList = WarpController.getRoomDatas();
+        /**Button to create room*/
         buttonCreateRoom = new TextButton("Create Room",skin);
         buttonCreateRoom.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 String text = textNewRoom.getText();
+
+                RoomData[] roomDataList = WarpController.getRoomDatas();
+                if (roomDataList!=null){
+                    for (RoomData roomData:roomDataList){
+                        System.out.println(roomData.getName() + " is it equal to " + text);
+                        if ((roomData.getName()).equals(text)){
+                            /**Room name taken error*/
+                            table.setVisible(false);
+                            new Dialog("Error",skin){
+
+                                {
+                                    this.getContentTable().add(labelRoomTakenError).prefWidth(table.getWidth());
+                                    button("OK");
+                                }
+
+                                @Override
+                                protected void result(Object object) {
+                                    super.result(object);
+                                    table.setVisible(true);
+                                }
+
+                            }.show(stage);
+                            return false;
+                        }
+                    }
+                }
+
                 if (text.length() > 0) {
                     roomSelUpdateThread.interrupt();
 
@@ -61,10 +105,29 @@ public class RoomSelectionScreen extends AbstractScreen{
                     WarpController.setWaitflag(false);
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
+                } else if (text.length() == 0){
+                    /**Empty New Room field error*/
+                    table.setVisible(false);
+                    new Dialog("Error",skin){
+
+                        {
+                            this.getContentTable().add(labelNoRoomError).prefWidth(table.getWidth());
+                            button("OK");
+                        }
+
+                        @Override
+                        protected void result(Object object) {
+                            super.result(object);
+                            table.setVisible(true);
+                        }
+
+                    }.show(stage);
+                    return false;
                 }
                 return false;
             }
         });
+        /**Button to connect to selected room*/
         buttonConnectRoom = new TextButton("Connect Room",skin);
         buttonConnectRoom.addListener(new InputListener() {
             @Override
@@ -89,6 +152,7 @@ public class RoomSelectionScreen extends AbstractScreen{
                 return false;
             }
         });
+        /**Button to logout to Login Screen*/
         buttonLogout = new TextButton("Logout",skin);
         buttonLogout.addListener(new InputListener(){
             @Override
@@ -123,7 +187,7 @@ public class RoomSelectionScreen extends AbstractScreen{
 
     @Override
     public void buildStage() {
-        Table table = new Table();
+        table = new Table();
         table.setFillParent(true);
         table.center();
         table.setDebug(false);
@@ -154,8 +218,9 @@ public class RoomSelectionScreen extends AbstractScreen{
         addRoomToList(roomDataList);
     }
 
+    /**Method to update room list*/
     public void addRoomToList(RoomData[] roomDatas){
-        roomMap = new HashMap<String, String>();
+        roomMap = new ConcurrentHashMap<String, String>();
         if (roomDatas != null){
             if (!listRooms.isVisible()){
                 listRooms.setVisible(true);
@@ -176,6 +241,8 @@ public class RoomSelectionScreen extends AbstractScreen{
     }
 }
 
+/**Thread to pull update to Room Sel Screen
+ * It constantly polls available rooms*/
 class RoomSelUpdateThread extends Thread{
 
     WarpClient warpClient;

@@ -9,7 +9,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by user on 11/3/2016.
  */
+
+/**Enum java type ScreenEnum defines a list of available screens
+ * Each element of ScreenEnum has a getScreen method
+ * Which allow us to get an screen instance of each enum type*/
 public enum ScreenEnum {
+
+    /**Each getScreen method has a Object... params parsed in as an argument
+     * It allows us to send as many Objects as we want from one screen to another*/
 
     LOGIN {
         public AbstractScreen getScreen(Object... params) {
@@ -35,13 +42,12 @@ public enum ScreenEnum {
     },
     WIN {
         public AbstractScreen getScreen(Object... params) {
+            /**2 Objects are being parsed to Win Screen, PlayerResult and CopyOnWriteArrayList*/
             return new WinScreen((PlayerResult) params[0],(CopyOnWriteArrayList<OtherPlayer>) params[1]);
-//            return new WinScreen();
         }
     },
     PLAY {
         public AbstractScreen getScreen(Object... params) {
-//            return new PlayScreen((Integer) params[0]);
             return new PlayScreen();
         }
     };

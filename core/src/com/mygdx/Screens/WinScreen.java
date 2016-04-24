@@ -22,12 +22,18 @@ import static java.lang.Thread.sleep;
 /**
  * Created by user on 11/3/2016.
  */
+
+/**This screen displays the game results
+ * Showing who wins
+ * Who made it alive, who didn't
+ * Each player ranking*/
 public class WinScreen extends AbstractScreen {
 
     private WarpClient warpClient;
 
     private ArrayList<PlayerResult> playersResultArray = new ArrayList<PlayerResult>();
 
+    /**Counters to gauge number of players alive or dead*/
     private int aliveCount = 0;
     private int deadCount = 0;
 
@@ -61,15 +67,17 @@ public class WinScreen extends AbstractScreen {
     public WinScreen(PlayerResult playerResult, CopyOnWriteArrayList<OtherPlayer> otherPlayers) {
         getWarpClient();
 
+        /**Start thread to pull update to update the liveUsers
+         * And set the user status to Selecting
+         * And pull update about other players' status*/
         WinUpdateThread winUpdateThread = new WinUpdateThread(warpClient,this,WarpController.getRoomId());
         winUpdateThread.start();
-
-//        warpClient.setCustomUserData(WarpController.getLocalUser(), "Selecting," + WarpController.getAvatarMap().get(WarpController.getLocalUser()));
 
         playersResultArray.add(playerResult);
         for (OtherPlayer other:otherPlayers)
             playersResultArray.add(other.getResult());
 
+        /**PlayerResult implements comparable which has a compareTo method defined for sorting*/
         Collections.sort(playersResultArray);
 
         for (int i = 1; i <= playersResultArray.size(); i++){
@@ -79,7 +87,6 @@ public class WinScreen extends AbstractScreen {
                 deadPlayers.add(playersResultArray.get(index).getUserName());
                 deadTimings.add(Double.toString(Math.round(playersResultArray.get(index).getTime()*100)/100));
                 deadHeight.add(Integer.toString(playersResultArray.get(index).getHeight()));
-                // need to tweak formatting if more than 10 players.
                 if (i == 1){
                     deadRankings.add("1st");
                 } else if (i == 2){
@@ -94,7 +101,6 @@ public class WinScreen extends AbstractScreen {
                 alivePlayers.add(playersResultArray.get(index).getUserName());
                 aliveTimings.add(Double.toString(Math.round(playersResultArray.get(index).getTime()*100)/100));
                 aliveHeight.add(Integer.toString(playersResultArray.get(index).getHeight()));
-                // need to tweak formatting if more than 10 players.
                 if (i == 1){
                     aliveRankings.add("1st");
                 } else if (i == 2){
@@ -108,11 +114,10 @@ public class WinScreen extends AbstractScreen {
         }
 
         if (aliveCount>0){
-            // at least one player complete and the first to complete is the winner
+            /**At least one player complete and the first to complete is the winner*/
             labelWinner = new Label(alivePlayers.get(0) + " Wins!",skin,"title");
         } else {
-            // no one complete, the highest player wins
-            // this is according to timing now WRONG
+            /**no one complete, the highest player wins*/
             labelWinner = new Label(deadPlayers.get(0) + " Wins!",skin,"title");
         }
         labelPlayers = new Label("Players",skin,"title");
@@ -127,27 +132,13 @@ public class WinScreen extends AbstractScreen {
         listDeadRanking = new List(skin,"Dead");
         listDeadTime = new List(skin,"Dead");
         listDeadHeight = new List(skin,"Dead");
+
+        /**Button to return to Lobby Screen*/
         buttonReturnToLobby = new TextButton("Back to Lobby",skin);
         buttonReturnToLobby.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 System.out.println("Returning to lobby.");
-
-//                warpClient.getLiveRoomInfo(WarpController.getRoomId());
-//                while (!WarpController.isWaitflag()){
-//                    // busy wait
-//                }
-//                WarpController.setWaitflag(false);
-//
-//                String[] liveUsers = WarpController.getLiveUsers();
-//
-//                for (String user : liveUsers){
-//                    warpClient.getLiveUserInfo(user);
-//                    while (!WarpController.isWaitflag()){
-//                        // busy wait
-//                    }
-//                    WarpController.setWaitflag(false);
-//                }
                 ScreenManager.getInstance().showScreen(ScreenEnum.LOBBY);
                 return false;
             }
@@ -167,16 +158,6 @@ public class WinScreen extends AbstractScreen {
             listDeadHeight.setItems(deadHeight.toArray());
         }
     }
-
-/*    private void clearInfo(){
-        world.getPlayer().setResult(new PlayerResult(false, -1, -1, world.getPlayer().getName()));
-        for (OtherPlayer otherPlayer : world.getOtherPlayers()){
-            otherPlayer.setResult(new PlayerResult(false, -1, -1, otherPlayer.getName()));
-            System.out.println("Player " + otherPlayer.getName() + " result cleared");
-        }
-        world.getOtherPlayers().clear();
-        System.out.println("Info cleared");
-    }*/
 
     private void getWarpClient(){
         try {
@@ -219,6 +200,7 @@ public class WinScreen extends AbstractScreen {
     }
 }
 
+/**Thread to pull update to Win Screen*/
 class WinUpdateThread extends Thread{
 
     WarpClient warpClient;
