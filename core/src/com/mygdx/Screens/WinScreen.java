@@ -200,7 +200,7 @@ public class WinScreen extends AbstractScreen {
     }
 }
 
-/**Thread to pull update to Win Screen*/
+/**Thread to pull update to liveUsers and change the player status back to selecting*/
 class WinUpdateThread extends Thread{
 
     WarpClient warpClient;
