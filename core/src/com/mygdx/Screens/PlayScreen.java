@@ -26,11 +26,6 @@ public class PlayScreen extends AbstractScreen {
 
     private float runTime = 0;
 
-//    // testing on screen
-//    private Label labelState;
-//
-//    Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-
     public PlayScreen (){
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();

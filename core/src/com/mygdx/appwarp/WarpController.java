@@ -48,7 +48,6 @@ public class WarpController {
 	private static RoomData[] roomDatas = null;
 	private static RoomData room;
 
-	private WarpListener warpListener ;
 	private static Label labelChat;
 
 	private static int start;

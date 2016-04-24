@@ -66,6 +66,8 @@ public class LobbyScreen extends AbstractScreen {
 
         System.out.println("Lobby Constructed");
 
+        this.setDebugAll(true);
+
         getWarpClient();
 
         startGame = false;
@@ -233,17 +235,14 @@ public class LobbyScreen extends AbstractScreen {
             tableBig.pad(50,0,200,0);
         }
         tableBig.top();
-        tableBig.setDebug(false);
 
         Table tableTop = new Table();
-        tableTop.setDebug(false);
         tableTop.add(labelRoom).left().pad(5);
         tableTop.add(labelNumOfPlayers).right().pad(5);
         tableBig.add(tableTop);
         tableBig.row();
 
         Table tableMid = new Table();
-        tableMid.setDebug(false);
         tableMid.add(labelPlayers);
         tableMid.add(labelStatus);
         tableMid.add(labelAvatar);
