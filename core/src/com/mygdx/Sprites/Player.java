@@ -39,7 +39,7 @@ public class Player implements ContactFilter, ContactListener {
     private float gameHeight;
 
     private float jumpSpeed;
-    private final float baseJumpSpeed = -55;
+    private final float baseJumpSpeed = -55; // power-ups and special platforms scale according to this base speed
     private float accelX;
     private boolean canJump; //determine whether to respond to the touch, to avoid multiple jumps
     private int score = 0;
@@ -171,6 +171,7 @@ public class Player implements ContactFilter, ContactListener {
         canJump = false;
     }
 
+    // set player properties according to power-up state
     private void detectPowerUp() {
         if (boundingCircle.overlaps(powerUp.getBoundingCircle())) {
             powerUpState = powerUp.getType();
@@ -287,6 +288,7 @@ public class Player implements ContactFilter, ContactListener {
         }
     }
 
+    // when another player sends a power-down, this method is called on player to "receive" it
     public void getHit(int powerUp) {
         if (powerUpState==5)
             return;

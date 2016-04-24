@@ -26,7 +26,6 @@ public class PlatformHandler {
     private float currentHeight;
     private final float distance = -940f;
 
-    // Constructor receives a float that tells us where we need to create our platforms
     public PlatformHandler(OrthographicCamera cam, World world, float gameWidth, float gameHeight) {
         this.cam = cam;
         this.world = world;
@@ -56,12 +55,17 @@ public class PlatformHandler {
     }
 
     public void update(float delta) {
+        // update grounds and finishing line first
         ground.update(delta);
         finishlineLine.update(delta);
+
+        // now update all platforms
         for (int i=0; i<10; i++) {
             platforms.get(i).update(delta);
 
+            // if a platform is out of view, recycle it and put it on top
             if (platforms.get(i).isScrolledDown()) {
+                // if the finishing line is reached, then do not create more platforms; just skip ahead
                 if (finishlineLine.getY() > 0) {
                     continue;
                 }
@@ -76,22 +80,6 @@ public class PlatformHandler {
             }
         }
     }
-
-    public void reset() {
-        currentHeight = 0.8f*gameHeight;
-        index = 0;
-        for (int i=0; i<5; i++) {
-            currentHeight -= gap;
-            platforms.add(new Platform(cam, world, AssetLoader.platformLeft[index], currentHeight-AssetLoader.platformGap[index]*gap,
-                    AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
-            index++;
-            currentHeight-=gap;
-            platforms.add(new Platform(cam, world, 25+AssetLoader.platformLeft[index], currentHeight-AssetLoader.platformGap[index]*gap,
-                    AssetLoader.platformWidths[index], 2, AssetLoader.platformTypes[index], gameWidth, gameHeight));
-            index++;
-        }
-    }
-
 
     public ArrayList<Platform> getPlatforms() {
         return platforms;

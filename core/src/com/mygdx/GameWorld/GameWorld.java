@@ -52,12 +52,15 @@ public class GameWorld {
         currentState = GameState.READY;
         world = new World(new Vector2(0, 70), true);
 
+        // create power-up object
         powerUp = new PowerUp(gameWidth, gameHeight);
+
+        // create player object
         int avatarID = Integer.parseInt(WarpController.getAvatarMap().get(WarpController.getLocalUser()).substring(6)) - 1;
         player = new Player(WarpController.getLocalUser(), avatarID, cam, world, powerUp, gameWidth, gameHeight);
-        otherPlayers = new CopyOnWriteArrayList<OtherPlayer>();
-        otherPlayers.clear();
 
+        // create an OtherPlayer object for each other player in the room
+        otherPlayers = new CopyOnWriteArrayList<OtherPlayer>();
         String[] players = WarpController.getLiveUsers();
         for (String name:players) {
             avatarID = Integer.parseInt(WarpController.getAvatarMap().get(name).substring(6)) - 1;
@@ -93,10 +96,8 @@ public class GameWorld {
                     data.put("time", timer);
                     data.put("height", player.getScore());
                     WarpController.getInstance().sendGameUpdate(data.toString());
-//                    System.out.println("sent");
                 } catch (Exception e) {
-//                    System.out.println("exception caught");
-                    // exception in sendLocation
+
                 }
 
                 updateEnd();
@@ -115,10 +116,8 @@ public class GameWorld {
             data.put("time", -1);
             data.put("height", -1);
             WarpController.getInstance().sendGameUpdate(data.toString());
-            //                    System.out.println("sent");
         } catch (Exception e) {
-            //                    System.out.println("exception caught");
-            // exception in sendLocation
+
         }
         if (timer>=3f) {
             SoundLoader.startSound.play();
@@ -130,17 +129,13 @@ public class GameWorld {
 
 
     public void updateRunning(float delta) {
-//        if (player.isAlive()) { // if player not alive, stop the world
-
-//        } else currentState = GameState.READY;
-//        for (OtherPlayer other:otherPlayers) {
-//            if (other.getResult().getTime()<0)
-//                System.out.println("Other player result not NULL");
-//        }
+        // update world
         world.step(delta, 1, 1);
         timer += delta;
 
         scrollSpeed += -0.001;
+
+        // handles Flash Forward power-up: increasing world scroll speed
         if (player.getPowerUpState()==-7) {
             if (speedUpPowerUpTimer==0) {
                 scrollSpeed += -5;
@@ -151,6 +146,7 @@ public class GameWorld {
             scrollSpeed -= -5;
         }
 
+        // handles Morphee power-up: reverse gravity
         if (player.getPowerUpState()==-9) {
             if (reversePowerupTimer==0) {
                 world.setGravity(new Vector2(0, -70));
@@ -163,10 +159,10 @@ public class GameWorld {
             AssetLoader.reverseWorld(AssetLoader.avatars.get(player.getAvatarID()));
         }
 
+        // Update all game objects
         player.update(delta);
         for (OtherPlayer other:otherPlayers)
             other.update();
-
         platformHandler.update(delta);
         powerUp.update(delta);
 
@@ -205,6 +201,7 @@ public class GameWorld {
 
     }
 
+    // Set power-up respawn interval according to ranking
     private void setRespawnTimeFactor() {
         int rank = 1;
         for (OtherPlayer other:otherPlayers) {
@@ -212,10 +209,10 @@ public class GameWorld {
                 rank++;
         }
         switch (rank) {
-            case 1: powerUp.setRespawnTimeFactor(1.5f);
-            case 2: powerUp.setRespawnTimeFactor(1);
-            case 3: powerUp.setRespawnTimeFactor(0.85f);
-            case 4: powerUp.setRespawnTimeFactor(0.7f);
+            case 1: powerUp.setRespawnTimeFactor(1.5f);  // 1st player, lower freq
+            case 2: powerUp.setRespawnTimeFactor(1);     // 2nd player
+            case 3: powerUp.setRespawnTimeFactor(0.85f); // 3rd
+            case 4: powerUp.setRespawnTimeFactor(0.7f);  // 4th
             default: powerUp.setRespawnTimeFactor(1);
         }
     }
@@ -249,10 +246,6 @@ public class GameWorld {
 
     public PowerUp getPowerUp() {
         return powerUp;
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public boolean isGameOver() {

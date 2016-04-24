@@ -13,7 +13,6 @@ import com.mygdx.PlatformHandler;
 import com.mygdx.PowerUp;
 import com.mygdx.Sprites.OtherPlayer;
 import com.mygdx.Sprites.Player;
-import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -277,26 +276,6 @@ public class GameRenderer {
             AssetLoader.font.draw(batcher, "Game Over", 18, gameHeight/3);
         }
 
-
-
-//        try {
-//            WarpClient warpClient = WarpClient.getInstance();
-//            String connectionState = "";
-//            if (warpClient.getConnectionState() == 0){
-//                connectionState = "CONNECTED";
-//            } else if (warpClient.getConnectionState() == 1){
-//                connectionState = "CONNECTING";
-//            } else if (warpClient.getConnectionState() == 2){
-//                connectionState = "DISCONNECTED";
-//            } else if (warpClient.getConnectionState() == 3){
-//                connectionState = "DISCONNECTING";
-//            } else {
-//                connectionState = "RECOVERING";
-//            }
-//            AssetLoader.font.draw(batcher, connectionState, 2, gameHeight / 3);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
         // Count downt
         if (stateTime<4) {

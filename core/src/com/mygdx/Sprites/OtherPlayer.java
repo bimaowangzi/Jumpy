@@ -34,7 +34,7 @@ public class OtherPlayer implements ContactFilter, ContactListener {
     private volatile int score = 0;
 
     private volatile int lives = 3;
-    private volatile int powerUpState; //(-1)-nothing; 0-high jump; 1-weight; 2-balloon; 3-swap Position;
+    private volatile int powerUpState;
     private volatile boolean inAir;
 
     private volatile float radius = 2.5f;
